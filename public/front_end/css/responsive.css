@@ -1,0 +1,75 @@
+@media (min-width: 768px) and (max-width: 1191px){
+
+}
+
+@media (min-width: 991px) and (max-width: 1191px){
+	
+}
+
+@media (min-width: 768px) and (max-width: 991px){
+	
+	
+}
+
+@media screen and (max-width: 767px) {
+	
+	.login-page .login-box .bg-img{
+		display: none;
+	}
+	.login-page .login-box .login-form {
+		width: 100%;
+		float: unset;
+		padding: 20px;
+	}
+	.login-page .lg-wrapper{
+		padding: 80px 15px;
+	}
+	.login-page .login-box{
+		padding: 0;
+	}
+	.login-page .login-box{
+		max-width: 500px;
+	}
+	
+}
+
+@media screen and (max-width: 576px){
+	
+	.login-page .login-box {
+	    background: rgba(255, 255, 255, 0.2);
+	    border-radius: 0;
+	    box-shadow: none;
+	}
+	.login-page .login-box .login-form .heading p,
+	.login-page .login-box .login-form .link p {
+	    color: #000000;
+	}
+	.login-page .login-box .login-form .logo {
+		display: block;
+		text-align: right;
+		margin: 0 0 15px;
+	}
+	.login-page .login-box .login-form .logo img{
+		width: 130px
+	}
+	.login-page .login-box .login-form .form-group input{
+		font-size: 13px;
+	}
+}
+@media (min-width: 400px) and (max-width: 576px){
+	
+
+}
+@media (min-width: 450px) and (max-width: 576px){
+
+}
+@media (min-width: 450px) and (max-width: 767px){
+	
+}
+
+@media (min-width: 576px) and (max-width: 767px){
+	
+}
+@media screen and (max-width: 450px){
+	
+}
