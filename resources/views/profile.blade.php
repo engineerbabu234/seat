@@ -106,7 +106,7 @@
                                                 <input type="file" name="profile_image" id="upload-photo-1">
                                                 <img src="{{$data['user']->profile_image}}" id="show-image-1" width="200" >
                                             </label>
-                                            
+
                                         </div>
                                         <div class="form-group text-center">
                                             <button type="submit" class="same-btn1">Update Profile</button>
@@ -124,8 +124,32 @@
             </div>
         </div>
     </section><!--END building office-->
+
+
+<div class="modal fade" id="cropImagePop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                            <div class="modal-header">
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                              <h4 class="modal-title" id="myModalLabel"> </h4>
+                            </div>
+                            <div class="modal-body">
+                            <div id="upload-demo" class="center-block"></div>
+                      </div>
+                             <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" id="cropImageBtn" class="btn btn-primary">Crop</button>
+      </div>
+                            </div>
+                          </div>
+                        </div>
+
+
+
 @endsection
+
 @push('css')
+<link rel="stylesheet" href="https://foliotek.github.io/Croppie/croppie.css">
 <style type="text/css">
     .invalid-feedback {
     display: block;
@@ -133,6 +157,36 @@
     margin-top: .25rem;
     font-size: 80%;
     color: #dc3545;
+}
+
+label.cabinet{
+    display: block;
+    cursor: pointer;
+}
+
+label.cabinet input.file{
+    position: relative;
+    height: 100%;
+    width: auto;
+    opacity: 0;
+    -moz-opacity: 0;
+  filter:progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+  margin-top:-30px;
+}
+
+#upload-demo{
+    width: 250px;
+    height: 250px;
+  padding-bottom:25px;
+}
+figure figcaption {
+    position: absolute;
+    bottom: 0;
+    color: #fff;
+    width: 100%;
+    padding-left: 9px;
+    padding-bottom: 5px;
+    text-shadow: 0 0 10px #000;
 }
 </style>
 @endpush
@@ -166,12 +220,35 @@
         }
     @endif
 </script>
+
+  <script src="https://foliotek.github.io/Croppie/croppie.js"></script>
 <script type="text/javascript">
+    var $uploadCrop,
+    tempFilename,
+    rawImg,
+    imageId;
+     function readFile(input) {
+                            if (input.files && input.files[0]) {
+                              var reader = new FileReader();
+                                reader.onload = function (e) {
+                                    $('.upload-demo').addClass('ready');
+                                    $('#cropImagePop').modal('show');
+                                    rawImg = e.target.result;
+                                }
+                                reader.readAsDataURL(input.files[0]);
+                            }
+                            else {
+                                swal("Sorry - you're browser doesn't support the FileReader API");
+                            }
+                        }
+
+
    function readURL1(input) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
             reader.onload = function (e) {
                 $('#show-image-1').attr('src', e.target.result);
+
             }
             reader.readAsDataURL(input.files[0]);
         }
@@ -180,5 +257,37 @@
         //console.log("Iage");
         readURL1(this);
     });
+
+
+                        $uploadCrop = $('#upload-demo').croppie({
+                            viewport: {
+                                width: 150,
+                                height: 200,
+                            },
+                            enforceBoundary: false,
+                            enableExif: true
+                        });
+                        $('#cropImagePop').on('shown.bs.modal', function(){
+                            // alert('Shown pop');
+                            $uploadCrop.croppie('bind', {
+                                url: rawImg
+                            }).then(function(){
+                                console.log('jQuery bind complete');
+                            });
+                        });
+
+                        $('#upload-photo-1').on('change', function () { imageId = $(this).data('id'); tempFilename = $(this).val();
+
+                         $('#cancelCropBtn').data('id', imageId); readFile(this); });
+                        $('#cropImageBtn').on('click', function (ev) {
+                            $uploadCrop.croppie('result', {
+                                type: 'base64',
+                                format: 'jpeg',
+                                size: {width: 150, height: 200}
+                            }).then(function (resp) {
+                                $('#item-img-output').attr('src', resp);
+                                $('#cropImagePop').modal('hide');
+                            });
+                        });
 </script>
 @endpush

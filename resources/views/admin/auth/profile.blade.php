@@ -65,7 +65,7 @@
 									<h2>Change Password</h2>
 								</div>
 								<div class="body">
-									
+
 									<form method="POST" action="{{ route('admin_update_password') }}">
 										@csrf
 										{{ method_field('PUT') }}
@@ -119,11 +119,11 @@
 											<label>
 												<input type="file" name="profile_image" id="upload-photo-1" >
 												<img src="{{$data['user']->profile_image}}" id="show-image-1" >
-												
+
 											</label>
 											<div class="form-group">
 	                                            <button type="submit" class="same-btn1">Update Profile</button>
-	                                        </div> 
+	                                        </div>
 											{{-- <button type="submit" class="same-btn1">Update Profile</button> --}}
 										</div>
 									</form>
@@ -144,11 +144,11 @@
 											<label>
 												<input type="file" name="logo_image" id="upload-photo-2" >
 												<img src="{{$data['user']->logo_image}}" id="show-image-2" >
-												
+
 											</label>
 											<div class="form-group">
 	                                            <button type="submit" class="same-btn1">Update Logo</button>
-	                                        </div> 
+	                                        </div>
 											{{-- <button type="submit" class="same-btn1">Update Profile</button> --}}
 										</div>
 									</form>
@@ -199,7 +199,7 @@
 									<h2>Change Password</h2>
 								</div>
 								<div class="body">
-									
+
 									<form method="POST" action="{{ route('admin_update_password') }}">
 										@csrf
 										{{ method_field('PUT') }}
@@ -253,11 +253,11 @@
 											<label>
 												<input type="file" name="profile_image" id="upload-photo-1" >
 												<img src="{{$data['user']->profile_image}}" id="show-image-1" >
-												
+
 											</label>
 											<div class="form-group">
 	                                            <button type="submit" class="same-btn1">Update Profile</button>
-	                                        </div> 
+	                                        </div>
 											{{-- <button type="submit" class="same-btn1">Update Profile</button> --}}
 										</div>
 									</form>
@@ -270,7 +270,7 @@
 			</div>
 		</div>
 	</div>
-	
+
 @endsection
 @push('js')
 <script type="text/javascript">
