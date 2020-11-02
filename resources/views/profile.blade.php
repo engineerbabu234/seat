@@ -105,6 +105,7 @@
                                             <label>
                                                 <input type="file" name="profile_image" id="upload-photo-1">
                                                 <img src="{{$data['user']->profile_image}}" id="show-image-1" width="200" >
+                                                <input type="hidden" name="profile_base64" id="profile_base64">
                                             </label>
 
                                         </div>
@@ -234,6 +235,7 @@ figure figcaption {
                                     $('.upload-demo').addClass('ready');
                                     $('#cropImagePop').modal('show');
                                     rawImg = e.target.result;
+                                    $('#profile_base64').val(rawImg);
                                 }
                                 reader.readAsDataURL(input.files[0]);
                             }
