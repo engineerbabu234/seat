@@ -164,6 +164,7 @@ class ProfileController extends Controller
 
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
+
             return array('status' => 'error', 'message' => 'failed to update new_password', 'errors' => $validator->errors());
         }
 
@@ -171,7 +172,6 @@ class ProfileController extends Controller
         $image_64 = $input['profile_base64'];
 
         $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
-
         $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
 
         $image = str_replace($replace, '', $image_64);
@@ -180,16 +180,18 @@ class ProfileController extends Controller
 
         $imageName = str_random('10') . '_' . time() . '.' . $extension;
         $destinationPath = ImageHelper::$getProfileImagePath;
+
         $uploadPath = $destinationPath . '/' . $imageName;
 
-        // if (file_put_contents($uploadPath, base64_decode($image))) {
-        //     $User = User::find($user_id);
-        //     $User->profile_image = $imageName;
-        //     $User->update();
-        //     return back()->with('success', 'Your profile image updated successfully');
-        // } else {
-        //     return back()->with('success', 'Your profile image updated failed,please try again');
-        // }
+        if (file_put_contents($uploadPath, base64_decode($image))) {
+            $User = User::find($user_id);
+            $User->profile_image = $imageName;
+            $User->update();
+
+            return back()->with('success', 'Your profile image updated successfully');
+        } else {
+            return back()->with('success', 'Your profile image updated failed,please try again');
+        }
 
         // endbase64
 

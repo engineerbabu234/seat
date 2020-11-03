@@ -105,8 +105,8 @@
                                             <label>
                                                 <input type="file" name="profile_image" id="upload-photo-1">
                                                 <img src="{{$data['user']->profile_image}}" id="show-image-1" width="200" >
-                                                <input type="hidden" name="profile_base64" id="profile_base64">
                                             </label>
+                                             <input type="hidden"  name="profile_base64" id="profile_base64">
 
                                         </div>
                                         <div class="form-group text-center">
@@ -150,7 +150,7 @@
 @endsection
 
 @push('css')
-<link rel="stylesheet" href="https://foliotek.github.io/Croppie/croppie.css">
+<link rel="stylesheet" href="{{asset('front_end')}}/css/croppie.css">
 <style type="text/css">
     .invalid-feedback {
     display: block;
@@ -222,7 +222,7 @@ figure figcaption {
     @endif
 </script>
 
-  <script src="https://foliotek.github.io/Croppie/croppie.js"></script>
+ <script type="text/javascript" src="{{asset('front_end')}}/js/croppie.js"></script>
 <script type="text/javascript">
     var $uploadCrop,
     tempFilename,
@@ -235,7 +235,8 @@ figure figcaption {
                                     $('.upload-demo').addClass('ready');
                                     $('#cropImagePop').modal('show');
                                     rawImg = e.target.result;
-                                    $('#profile_base64').val(rawImg);
+                                    $('#show-image-1').attr('src', rawImg);
+                                     $('#profile_base64').val(rawImg);
                                 }
                                 reader.readAsDataURL(input.files[0]);
                             }
@@ -257,7 +258,8 @@ figure figcaption {
     }
     $("#upload-photo-1").change(function(){
         //console.log("Iage");
-        readURL1(this);
+        //  readURL1(this);
+        readFile(this);
     });
 
 
@@ -265,6 +267,7 @@ figure figcaption {
                             viewport: {
                                 width: 150,
                                 height: 200,
+                                 type: 'square'
                             },
                             enforceBoundary: false,
                             enableExif: true
@@ -287,7 +290,9 @@ figure figcaption {
                                 format: 'jpeg',
                                 size: {width: 150, height: 200}
                             }).then(function (resp) {
-                                $('#item-img-output').attr('src', resp);
+                                $('#show-image-1').attr('src',resp);
+                                 $('#profile_base64').val(resp);
+                                //$('#item-img-output').attr('src', resp);
                                 $('#cropImagePop').modal('hide');
                             });
                         });
