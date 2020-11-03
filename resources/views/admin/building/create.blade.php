@@ -45,7 +45,6 @@ use Illuminate\Support\Facades\Session;
 			<!--my tenders-->
 			<form method="POST" enctype="multipart/form-data" action="{{ route('admin/building/store') }}">
 				@csrf
-				{{ method_field('PUT') }}
 				<div class="add-office">
 					<h2 class="title"><i class="fas fa-building"></i> Add Building</h2>
 
@@ -92,6 +91,6 @@ use Illuminate\Support\Facades\Session;
 				</div><!--END my tenders-->
 			</form>
 
-		</div>	
+		</div>
 	</div>
 @endsection
