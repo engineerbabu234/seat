@@ -8,7 +8,6 @@ use App\Models\User;
 use Auth;
 use Hash;
 use Illuminate\Http\Request;
-use Validator;
 
 class ProfileController extends Controller
 {
@@ -159,16 +158,17 @@ class ProfileController extends Controller
         $input = $request->all();
 
         $rules = [
-            'profile_image' => 'required',
+            'profile_base64' => 'required',
         ];
+        $this->validate($request, $rules);
+        // $validator = Validator::make($request->all(), $rules);
+        // if ($validator->fails()) {
 
-        $validator = Validator::make($request->all(), $rules);
-        if ($validator->fails()) {
-
-            return array('status' => 'error', 'message' => 'failed to update new_password', 'errors' => $validator->errors());
-        }
+        //     return array('status' => 'error', 'message' => 'failed to update new_password', 'errors' => $validator->errors());
+        // }
 
         /// base64
+
         $image_64 = $input['profile_base64'];
 
         $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
