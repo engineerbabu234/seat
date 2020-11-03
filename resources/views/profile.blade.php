@@ -15,7 +15,7 @@
                         <div class="col-md-4">
                             <div class="profile-details">
                                 <div class="header">
-                                    <h2>Account details</h2>
+                                    <h2>Update Account details</h2>
                                 </div>
                                 <div class="body">
                                     <form method="POST" action="{{ route('update_profile') }}">
@@ -50,14 +50,14 @@
                         <div class="col-md-4">
                             <div class="profile-details">
                                 <div class="header">
-                                    <h2>Change Password</h2>
+                                    <h2>Update Password</h2>
                                 </div>
                                 <div class="body">
                                 <form method="POST" action="{{ route('update_password') }}">
                                     @csrf
                                     {{ method_field('PUT') }}
                                     <div class="form-group">
-                                        <label>Current Password:</label>
+                                        <label>Current Password  <span class="text-danger">*</span>  </label>
                                         <input type="password" class="form-control" placeholder="Current Password" name="old_password">
                                         @error('old_password')
                                             <span class="invalid-feedback" role="alert">
@@ -66,7 +66,7 @@
                                         @enderror
                                     </div>
                                     <div class="form-group">
-                                        <label>New Password:</label>
+                                        <label>New Password <span class="text-danger">*</span></label>
                                         <input type="password" class="form-control" placeholder="Current Password" name="new_password">
                                         @error('new_password')
                                             <span class="invalid-feedback" role="alert">
@@ -75,7 +75,7 @@
                                         @enderror
                                     </div>
                                     <div class="form-group">
-                                        <label>Confirm Password:</label>
+                                        <label>Confirm Password <span class="text-danger">*</span></label>
                                         <input type="password" class="form-control" placeholder="Confirm Password" name="confirm_password">
                                         @error('confirm_password')
                                             <span class="invalid-feedback" role="alert">
@@ -85,7 +85,7 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <button type="submit" class="same-btn1">Change</button>
+                                        <button type="submit" class="same-btn1">Update</button>
                                     </div>
                                 </form>
                                 </div>
@@ -95,7 +95,7 @@
                         <div class="col-md-4">
                             <div class="profile-details">
                                 <div class="header">
-                                    <h2>Profile Picture</h2>
+                                    <h2>Update Profile Picture</h2>
                                 </div>
                                 <div class="body">
                                     <form method="POST" action="{{ url('update_profile_image') }}" enctype="multipart/form-data"  >
@@ -103,18 +103,20 @@
                                         {{ method_field('PUT') }}
                                         <div class="profile-picture">
                                             <label>
-                                                <input type="file" name="profile_image" id="upload-photo-1">
+                                                <!-- <input type="file" name="profile_image" id="upload-photo-1"> -->
                                                 <img src="{{$data['user']->profile_image}}" id="show-image-1" width="200" >
                                             </label>
                                              <input type="hidden"  name="profile_base64" id="profile_base64">
+                                              @error('profile_image')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong style="color: red">{{ $message }}</strong>
+                                                </span>
+                                            @enderror
 
                                         </div>
                                         <div class="form-group text-center">
                                             <button type="submit" class="same-btn1">Update Profile</button>
                                         </div>
-{{--                                         <div class="form-group">
-                                            <button type="submit" class="same-btn1">Update Profile</button>
-                                        </div> --}}
                                     </form>
                                 </div>
                             </div>
@@ -128,19 +130,20 @@
 
 
 <div class="modal fade" id="cropImagePop" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-                          <div class="modal-dialog">
-                            <div class="modal-content">
-                            <div class="modal-header">
+                          <div class="modal-dialog profile-page ">
+                            <div class="modal-content  profile-details">
+                            <div class="modal-header"><h4 class="modal-title">Edit Photo</h4>
                               <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                               <h4 class="modal-title" id="myModalLabel"> </h4>
                             </div>
                             <div class="modal-body">
                             <div id="upload-demo" class="center-block"></div>
-                      </div>
+                            </div>
                              <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" id="cropImageBtn" class="btn btn-primary">Crop</button>
-      </div>
+                                 <input type="file" style="display: none" name="profile_image" id="upload-photo-1">
+                                     <button type="button" id="upload_image" class="same-btn1">Change Photo</button>
+                                    <button type="button" id="cropImageBtn" class="same-btn1">Save</button>
+                                  </div>
                             </div>
                           </div>
                         </div>
@@ -176,7 +179,7 @@ label.cabinet input.file{
 }
 
 #upload-demo{
-    width: 250px;
+    width: 470px;
     height: 250px;
   padding-bottom:25px;
 }
@@ -193,6 +196,8 @@ figure figcaption {
 @endpush
 @push('js')
 <script type="text/javascript">
+$('#upload_image').click(function(){ $('#upload-photo-1').trigger('click'); });
+
     @if($message = Session::get('success'))
         title='Success';
         message='{{$message}}';
@@ -224,24 +229,30 @@ figure figcaption {
 
  <script type="text/javascript" src="{{asset('front_end')}}/js/croppie.js"></script>
 <script type="text/javascript">
+    var image = "{{$data['user']->profile_image}}";
     var $uploadCrop,
     tempFilename,
     rawImg,
     imageId;
      function readFile(input) {
+
                             if (input.files && input.files[0]) {
                               var reader = new FileReader();
                                 reader.onload = function (e) {
                                     $('.upload-demo').addClass('ready');
                                     $('#cropImagePop').modal('show');
                                     rawImg = e.target.result;
-                                    $('#show-image-1').attr('src', rawImg);
-                                     $('#profile_base64').val(rawImg);
+                                    //$('#show-image-1').attr('src', rawImg);
+                                     $('#upload-photo-1').attr('src', rawImg);
+                                      $uploadCrop.croppie('bind', {
+                                        url:rawImg,
+                                    });
                                 }
                                 reader.readAsDataURL(input.files[0]);
+
                             }
                             else {
-                                swal("Sorry - you're browser doesn't support the FileReader API");
+                                console.log('cancel');
                             }
                         }
 
@@ -256,26 +267,45 @@ figure figcaption {
             reader.readAsDataURL(input.files[0]);
         }
     }
+
     $("#upload-photo-1").change(function(){
-        //console.log("Iage");
         //  readURL1(this);
         readFile(this);
+        $('.upload-demo').addClass('ready');
+        $('#cropImagePop').modal('show');
+
+    });
+
+    $(".profile-picture").on('click',function(){
+        $uploadCrop.croppie('bind', {
+            url:image,
+        });
+        $('.upload-demo').addClass('ready');
+        $('#cropImagePop').modal('show');
+
+        //  readURL1(this);
+        //readFile(this);
     });
 
 
                         $uploadCrop = $('#upload-demo').croppie({
                             viewport: {
                                 width: 150,
-                                height: 200,
-                                 type: 'square'
+                                height: 150,
+                                 type: 'circle',
+
                             },
                             enforceBoundary: false,
                             enableExif: true
                         });
+
                         $('#cropImagePop').on('shown.bs.modal', function(){
                             // alert('Shown pop');
+                            $('#show-image-1').attr('src', rawImg);
+                            var image1 =  $('#show-image-1').attr('src');
                             $uploadCrop.croppie('bind', {
-                                url: rawImg
+
+                                url: image1
                             }).then(function(){
                                 console.log('jQuery bind complete');
                             });
@@ -291,8 +321,8 @@ figure figcaption {
                                 size: {width: 150, height: 200}
                             }).then(function (resp) {
                                 $('#show-image-1').attr('src',resp);
+                                $('#item-img-output').attr('src', resp);
                                  $('#profile_base64').val(resp);
-                                //$('#item-img-output').attr('src', resp);
                                 $('#cropImagePop').modal('hide');
                             });
                         });
