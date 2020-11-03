@@ -53,6 +53,9 @@ use Illuminate\Support\Facades\Session;
 						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='office')){{'active'}}@endif" href="{{route('admin/office/index')}}"><i class="fas fa-building"></i> <span>My Offices</span></a>
 					</li>
 					<li>
+						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='assets')){{'active'}}@endif" href="{{url('admin/assets/index')}}"><i class="fas fa-list"></i> <span>My Offices Assets</span></a>
+					</li>
+					<li>
 						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='reservation_request')){{'active'}}@endif" href="{{route('admin/reservation/reservation_request')}}"><i class="fa fa-list"></i> <span>Reservation Request</span></a>
 					</li>
 					<li>
