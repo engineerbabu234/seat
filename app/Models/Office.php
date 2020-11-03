@@ -28,4 +28,22 @@ class Office extends Model
     {
         return $this->hasMany('App\Models\OfficeAsset', 'building_id', 'building_id');
     }
+
+    /**
+     * [seats description]
+     * @return [type] [description]
+     */
+    public function seats()
+    {
+        return $this->hasMany('App\Models\Seat', 'office_id', 'office_id');
+    }
+
+    /**
+     * [images description]
+     * @return [type] [description]
+     */
+    public function images()
+    {
+        return $this->hasMany('App\Models\OfficeImage', 'office_id', 'office_id');
+    }
 }

@@ -35,39 +35,39 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
             Route::put('update/{id?}', 'OfficeController@update')->name('update');
             Route::get('delete/{id}', 'OfficeController@destroy')->name('destroy');
             Route::get('delete_seat/{id}', 'OfficeController@deleteSeat')->name('delete_seat');
-        });
 
-        // office
-        Route::group(['prefix' => 'office'], function () {
-            Route::get('/', [
-                'as' => 'office.asset',
-                'uses' => 'OfficeAssetController@index',
-            ]);
+            // office asset
+            Route::group(['prefix' => 'asset'], function () {
+                Route::get('/', [
+                    'as' => 'office.asset',
+                    'uses' => 'OfficeAssetController@index',
+                ]);
 
-            Route::post('/add', [
-                'as' => 'office.asset.add',
-                'uses' => 'OfficeAssetController@addAsset',
-            ]);
+                Route::post('/add', [
+                    'as' => 'office.asset.add',
+                    'uses' => 'OfficeAssetController@addAsset',
+                ]);
 
-            Route::post('/save', [
-                'as' => 'office.asset.save',
-                'uses' => 'OfficeAssetController@saveOfficeAsset',
-            ]);
+                Route::post('/save', [
+                    'as' => 'office.asset.save',
+                    'uses' => 'OfficeAssetController@saveOfficeAsset',
+                ]);
 
-            Route::post('/edit/{asset_id}', [
-                'as' => 'office.asset.edit',
-                'uses' => 'OfficeAssetController@editOfficeAsset',
-            ]);
+                Route::post('/edit/{asset_id}', [
+                    'as' => 'office.asset.edit',
+                    'uses' => 'OfficeAssetController@editOfficeAsset',
+                ]);
 
-            Route::post('/update/{asset_id}', [
-                'as' => 'office.asset.update',
-                'uses' => 'OfficeAssetController@updateOfficeAsset',
-            ]);
+                Route::post('/update/{asset_id}', [
+                    'as' => 'office.asset.update',
+                    'uses' => 'OfficeAssetController@updateOfficeAsset',
+                ]);
 
-            Route::post('/delete/{asset_id}', [
-                'as' => 'office.asset.delete',
-                'uses' => 'OfficeAssetController@deleteOfficeAsset',
-            ]);
+                Route::post('/delete/{asset_id}', [
+                    'as' => 'office.asset.delete',
+                    'uses' => 'OfficeAssetController@deleteOfficeAsset',
+                ]);
+            });
         });
 
         // reservation

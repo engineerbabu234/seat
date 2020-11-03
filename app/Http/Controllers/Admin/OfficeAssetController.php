@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\admin;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\OfficeAsset;
 use Illuminate\Http\Request;
 use Validator;
@@ -13,7 +14,6 @@ class OfficeAssetController extends Controller
      */
     public function __construct()
     {
-        parent::__construct();
         $this->viewPath = "office_asset.";
     }
 
