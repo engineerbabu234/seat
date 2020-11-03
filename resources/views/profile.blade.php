@@ -289,12 +289,7 @@ $('#upload_image').click(function(){ $('#upload-photo-1').trigger('click'); });
 
 
                         $uploadCrop = $('#upload-demo').croppie({
-                            viewport: {
-                                width: 200,
-                                height: 200,
-                                 type: 'circle',
-
-                            },
+                            viewport: { width: 200, height:200, type: 'circle' },
                             enforceBoundary: false,
                             enableExif: true
                         });
@@ -318,7 +313,7 @@ $('#upload_image').click(function(){ $('#upload-photo-1').trigger('click'); });
                             $uploadCrop.croppie('result', {
                                 type: 'base64',
                                 format: 'png',
-                                size: {width: 150, height: 200}
+                                size: {width: 200, height: 200}
                             }).then(function (resp) {
                                 $('#show-image-1').attr('src',resp);
                                 $('#item-img-output').attr('src', resp);
