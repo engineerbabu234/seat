@@ -184,6 +184,9 @@ class ProfileController extends Controller
         $uploadPath = $destinationPath . '/' . $imageName;
 
         if (file_put_contents($uploadPath, base64_decode($image))) {
+
+            $this->remove_user_image($user_id);
+
             $User = User::find($user_id);
             $User->profile_image = $imageName;
             $User->update();
@@ -225,5 +228,21 @@ class ProfileController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function remove_user_image($user_id)
+    {
+        $user = User::find($user_id);
+        $destinationPath = ImageHelper::$getProfileImagePath;
+        $removepath = $destinationPath . '/' . $user->profile_image;
+        if (file_exists(public_path($removepath))) {
+
+            unlink(public_path($removepath));
+
+        } else {
+
+            return false;
+
+        }
     }
 }
