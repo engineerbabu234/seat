@@ -22,7 +22,6 @@ class AddNewOfficeAssetTbl extends Migration
             $table->string('preview_image')->nullable();
             $table->softDeletes();
             $table->timestamps();
-
         });
     }
 
