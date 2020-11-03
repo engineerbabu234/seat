@@ -290,8 +290,8 @@ $('#upload_image').click(function(){ $('#upload-photo-1').trigger('click'); });
 
                         $uploadCrop = $('#upload-demo').croppie({
                             viewport: {
-                                width: 150,
-                                height: 150,
+                                width: 200,
+                                height: 200,
                                  type: 'circle',
 
                             },
@@ -317,7 +317,7 @@ $('#upload_image').click(function(){ $('#upload-photo-1').trigger('click'); });
                         $('#cropImageBtn').on('click', function (ev) {
                             $uploadCrop.croppie('result', {
                                 type: 'base64',
-                                format: 'jpeg',
+                                format: 'png',
                                 size: {width: 150, height: 200}
                             }).then(function (resp) {
                                 $('#show-image-1').attr('src',resp);
