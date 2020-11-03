@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Session;
 							<!-- <h2>My Tenders</h2> -->
 							<p class="navigation">
 								<a href="{{route('dashboard')}}">Dashboard</a>
-								<a href="{{route('admin/office/edit_office',$data['office']->office_id)}}">Edit Office</a>
+								<a href="{{url('admin/office/edit_office',$data['office']->office_id)}}">Edit Office</a>
 							</p>
 						</div>
 					</div>
@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Session;
 			</div><!--END header-->
 
 			<!--my tenders-->
-			<form action="{{route('admin/office/update',$data['office']->office_id)}}" method="post" id="update-office-form">
+			<form action="{{url('admin/office/update',$data['office']->office_id)}}" method="post" id="update-office-form">
 					@csrf
 					{{method_field('PUT')}}
 					<input type="hidden" name="office_id" value="{{$data['office']->office_id}}">
@@ -137,7 +137,8 @@ use Illuminate\Support\Facades\Session;
 <script type="text/javascript">
 	  $('.add-more-btn').on('click', function(e){
         e.preventDefault();
-        var seats = '<?php $seats = env('TOTAL_MAX_SEATS'); echo $seats-1?>';
+        var seats = '<?php $seats = env('TOTAL_MAX_SEATS');
+echo $seats - 1?>';
   		if($('body tbody tr').length > seats){
   			seatcount=$('body tbody tr').length;
 			swal("Failed!",'You can add only '+seatcount+' seats', "error");

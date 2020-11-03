@@ -62,7 +62,7 @@
 									<a href="{{url('admin/office/edit_office',$office->office_id)}}" class="button accept">Edit</a>
 									<a href="{{url('admin/office/office_details',$office->office_id)}}" class="button accept">Details</a>
 
-									<button class="button reject btn-delete" data-url="{{route('admin/office/destroy',$office->office_id)}}">Delete</button>
+									<button class="button reject btn-delete" data-url="{{url('admin/office/destroy',$office->office_id)}}">Delete</button>
 								</td>
 						</tr> <!--end-->
 						@endforeach
@@ -81,7 +81,7 @@
   <script type="text/javascript" src="{{asset('public')}}/js/sweetalert.min.js"></script>
  <script type="text/javascript">
  	$(function(e){
-       
+
           // Get Offices
   	    var getOffices = function(){
 					$.ajax(
@@ -90,7 +90,7 @@
 						'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
 					},
 						'type':'get',
-						'url' : "{{route('admin/office/index')}}",
+						'url' : "{{url('admin/office/index')}}",
 					beforeSend: function() {
 
 					},

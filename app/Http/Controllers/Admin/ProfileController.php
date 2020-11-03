@@ -12,39 +12,37 @@ use Illuminate\Http\Request;
 class ProfileController extends Controller
 {
     /**
-     * Create a new controller instance.
-     *
-     * @return void
+     * [__construct description]
      */
     public function __construct()
     {
         $this->middleware('auth');
     }
+
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * [index description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
      */
-    public function index()
+    public function index(Request $request)
     {
         //
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
+     * [create description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
      */
-    public function create()
+    public function create(Request $request)
     {
         //
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * [store description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
      */
     public function store(Request $request)
     {
@@ -52,12 +50,11 @@ class ProfileController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * [show description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
      */
-    public function show()
+    public function show(Request $request)
     {
         try {
             $user_id = Auth::id();
@@ -76,22 +73,20 @@ class ProfileController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * [edit description]
+     * @param  Request $request [description]
+     * @param  [type]  $id      [description]
+     * @return [type]           [description]
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
         //
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * [update description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
      */
     public function update(Request $request)
     {
@@ -119,6 +114,11 @@ class ProfileController extends Controller
         }
     }
 
+    /**
+     * [updatePassword description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function updatePassword(Request $request)
     {
 
@@ -155,6 +155,11 @@ class ProfileController extends Controller
         }
     }
 
+    /**
+     * [updateProfileImage description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function updateProfileImage(Request $request)
     {
         $user_id = Auth::id();
@@ -186,6 +191,11 @@ class ProfileController extends Controller
         }
     }
 
+    /**
+     * [updateLogoImage description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function updateLogoImage(Request $request)
     {
         $user_id = Auth::id();
@@ -205,17 +215,23 @@ class ProfileController extends Controller
         }
     }
 
-    public function passwordForm()
+    /**
+     * [passwordForm description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function passwordForm(Request $request)
     {
         return view('admin.profile.update_password');
     }
+
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * [destroy description]
+     * @param  Request $request [description]
+     * @param  [type]  $id      [description]
+     * @return [type]           [description]
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
         //
     }

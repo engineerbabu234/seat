@@ -3,25 +3,23 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Http\Request;
 
 class NotifyMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
-    
-    public $data = array();
 
+    public $data = array();
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    
-      public function __construct(Array $data = array())
+
+    public function __construct(array $data = array())
     {
         $this->data = $data;
     }
@@ -31,9 +29,10 @@ class NotifyMail extends Mailable implements ShouldQueue
      *
      * @return $this
      */
-    public function build(){  
+    public function build()
+    {
         //,compact(array("data"=>$this->data))
-       //return $this->subject($this->data['subject'])->view('mails/reg');
-        return $this->subject($this->data['subject'])->view('mails/'.$this->data['template']);
+        //return $this->subject($this->data['subject'])->view('mails/reg');
+        return $this->subject($this->data['subject'])->view('mails/' . $this->data['template']);
     }
 }

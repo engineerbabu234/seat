@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Session;
 							<!-- <h2>My Tenders</h2> -->
 							<p class="navigation">
 								<a href="{{route('dashboard')}}">Dashboard</a>
-								<a href="{{route('admin/office/add_office')}}">Add Office</a>
+								<a href="{{url('admin/office/add_office')}}">Add Office</a>
 							</p>
 						</div>
 					</div>
@@ -23,7 +23,7 @@ use Illuminate\Support\Facades\Session;
 			</div><!--END header-->
 
 			<!--my tenders-->
-			<form action="{{route('admin/office/store')}}" method="post" id="add-office-form">
+			<form action="{{url('admin/office/store')}}" method="post" id="add-office-form">
 					@csrf
 				<div class="add-office">
 					<div class="form-group">
@@ -122,7 +122,8 @@ use Illuminate\Support\Facades\Session;
 <script type="text/javascript">
 	  $('.add-more-btn').on('click', function(e){
         e.preventDefault();
-			var seats = '<?php $seats = env('TOTAL_MAX_SEATS'); echo $seats-1?>';
+			var seats = '<?php $seats = env('TOTAL_MAX_SEATS');
+echo $seats - 1?>';
 			if($('body tbody tr').length > seats){
 			seatcount=$('body tbody tr').length;
 			swal("Failed!",'You can add only '+seatcount+' seats', "error");
@@ -269,7 +270,7 @@ use Illuminate\Support\Facades\Session;
 			'success' : function(response){
 				if(response.status == 'success'){
    			      swal("Success!",response.message, "success");
-    				 setTimeout(function(){ window.location.href = "{{route('admin/office/index')}}" }, 2000);
+    				 setTimeout(function(){ window.location.href = "{{url('admin/office')}}" }, 2000);
 				}
 				if(response.status == 'failed'){
 					$('.add-office-btn').prop('disabled', false);

@@ -5,11 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Office extends Model
+class OfficeAsset extends Model
 {
     use SoftDeletes;
-    protected $table = 'offices';
-    protected $primaryKey = 'office_id';
+    protected $table = 'office_asset';
 
     /**
      * [building description]
@@ -21,12 +20,12 @@ class Office extends Model
     }
 
     /**
-     * [office_asset description]
+     * [office description]
      * @return [type] [description]
      */
-    public function office_asset()
+    public function office()
     {
-        return $this->hasMany('App\Models\OfficeAsset', 'building_id', 'building_id');
+        return $this->hasOne('App\Models\Office', 'office_id', 'office_id');
     }
 
     /**

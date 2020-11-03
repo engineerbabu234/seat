@@ -29,7 +29,7 @@ use Illuminate\Support\Facades\Session;
 			</div><!--END header-->
 
 			<!--my tenders-->
-			<form method="POST" enctype="multipart/form-data" action="{{ route('admin/building/update',$data['building']->building_id) }}">
+			<form method="POST" enctype="multipart/form-data" action="{{ url('admin/building/update',$data['building']->building_id) }}">
 				@csrf
 				{{ method_field('PUT') }}
 				<div class="add-office">
@@ -78,6 +78,6 @@ use Illuminate\Support\Facades\Session;
 				</div><!--END my tenders-->
 			</form>
 
-		</div>	
+		</div>
 	</div>
 @endsection
