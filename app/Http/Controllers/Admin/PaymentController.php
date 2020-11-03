@@ -2,35 +2,88 @@
 
 namespace App\Http\Controllers\admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
-    public function index(){
+    /**
+     * [index description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function index(Request $request)
+    {
         return view('admin.payment.index');
     }
 
-    public function create(){
+    /**
+     * [create description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function create(Request $request)
+    {
         return view('admin.payment.create');
     }
-    public function document(){
+
+    /**
+     * [document description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function document(Request $request)
+    {
         return view('admin.payment.document');
     }
 
-    public function invoice(){
+    /**
+     * [invoice description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function invoice(Request $request)
+    {
         return view('admin.payment.invoice');
     }
-    public function details(){
+
+    /**
+     * [details description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function details(Request $request)
+    {
         return view('admin.payment.details');
     }
-    public function edit(){
+
+    /**
+     * [edit description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function edit(Request $request)
+    {
         return view('admin.payment.edit');
     }
-    public function update(){
+
+    /**
+     * [update description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function update(Request $request)
+    {
         return view('admin.payment.index');
     }
-    public function destroy(){
+
+    /**
+     * [destroy description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function destroy(Request $request)
+    {
         return view('admin.payment.index');
     }
 }
