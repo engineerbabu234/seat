@@ -65,7 +65,12 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
 
                 Route::post('/delete/{asset_id}', [
                     'as' => 'office.asset.delete',
-                    'uses' => 'OfficeAssetController@deleteOfficeAsset',
+                    'uses' => 'OfficeAssetController@deleteAsset',
+                ]);
+
+                Route::get('/getoffice/{id}', [
+                    'as' => 'office.asset.getoffices',
+                    'uses' => 'OfficeAssetController@getoffices',
                 ]);
             });
         });

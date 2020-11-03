@@ -23,15 +23,6 @@ class AddNewOfficeAssetTbl extends Migration
             $table->softDeletes();
             $table->timestamps();
 
-            $table->foreign('building_id')
-                ->references('building_id')
-                ->on('buildings')
-                ->onDelete('cascade');
-
-            $table->foreign('office_id')
-                ->references('office_id')
-                ->on('offices')
-                ->onDelete('cascade');
         });
     }
 

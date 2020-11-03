@@ -54,7 +54,7 @@ use Illuminate\Support\Facades\Session;
 					</li>
 					<li>
 
-						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='assets')){{'active'}}@endif" href="{{url('admin/assets/index')}}"><i class="fas fa-list"></i> <span>My Offices Assets</span></a>
+						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='asset')){{'active'}}@endif" href="{{url('admin/office/asset')}}"><i class="fas fa-list"></i> <span>My Offices Assets</span></a>
 					</li>
 					<li>
 

@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ImageHelper;
 use App\Http\Controllers\Controller;
+use App\Models\Building;
+use App\Models\Office;
 use App\Models\OfficeAsset;
 use Illuminate\Http\Request;
 use Validator;
@@ -14,7 +17,7 @@ class OfficeAssetController extends Controller
      */
     public function __construct()
     {
-        $this->viewPath = "office_asset.";
+        $this->viewPath = "admin.office_asset.";
     }
 
     /**
@@ -37,9 +40,9 @@ class OfficeAssetController extends Controller
                 $whereStr .= " AND office_asset.role_id IN (" . $request->role . ")";
             }
 
-            $columns = ['office_asset.id', 'roles.name as role_name', 'office_asset.question'];
+            $columns = ['office_asset.id', 'office_asset.created_at', 'offices.office_name as office_name', 'buildings.building_name as building_name', 'office_asset.title', 'office_asset.description'];
 
-            $officeAssets = OfficeAsset::select($columns)->leftJoin("roles", "roles.id", "office_asset.role_id")->whereRaw($whereStr, $whereParams)->orderBy('id', 'desc');
+            $officeAssets = OfficeAsset::select($columns)->leftJoin("offices", "offices.office_id", "office_asset.office_id")->leftJoin("buildings", "buildings.building_id", "office_asset.building_id")->whereRaw($whereStr, $whereParams)->orderBy('id', 'desc');
 
             if ($officeAssets) {
                 $total = $officeAssets->get();
@@ -66,8 +69,10 @@ class OfficeAssetController extends Controller
 
             foreach ($officeAssets as $key => $value) {
                 $final[$key]['id'] = $value->id;
-                $final[$key]['role_name'] = $value->role_name;
-                $final[$key]['question'] = $value->question;
+                $final[$key]['office_name'] = $value->office_name;
+                $final[$key]['building_name'] = $value->building_name;
+                $final[$key]['title'] = $value->title;
+                $final[$key]['created_at'] = date('d-m-Y H:i:s', strtotime($value->created_at));
             }
 
             $response['iTotalDisplayRecords'] = count($total);
@@ -76,6 +81,9 @@ class OfficeAssetController extends Controller
             $response['aaData'] = $final;
             return $response;
         }
+
+        $buildings = Building::whereNull('deleted_at')->get();
+        return view($this->viewPath . 'index', compact('buildings'));
     }
 
     /**
@@ -84,10 +92,59 @@ class OfficeAssetController extends Controller
      */
     public function addAsset(Request $request)
     {
-        $response = [
-            'success' => true,
-            'html' => view($this->viewPath . '.add')->render(),
+
+        $inputs = $request->all();
+
+        $rules = [
+            'building_id' => 'required',
+            'office_id' => 'required',
+            'title' => 'required',
+            'preview_image' => 'required',
         ];
+        $messages = [];
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            $response = [
+                'success' => false,
+                'errors' => $validator->errors()->toArray(),
+            ];
+            return response()->json($response, 400);
+        }
+
+        $image_64 = null;
+        $image_64 = $inputs['preview_image'];
+
+        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+        $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+
+        $image = str_replace($replace, '', $image_64);
+
+        $image = str_replace(' ', '+', $image);
+
+        $imageName = str_random('10') . '_' . time() . '.' . $extension;
+        $destinationPath = ImageHelper::$getProfileImagePath;
+
+        $uploadPath = $destinationPath . '/' . $imageName;
+
+        if (file_put_contents($uploadPath, base64_decode($image))) {
+            $preview_image = $imageName;
+        }
+
+        $OfficeAsset = new OfficeAsset();
+        $OfficeAsset->building_id = $inputs['building_id'];
+        $OfficeAsset->office_id = $inputs['office_id'];
+        $OfficeAsset->title = $inputs['title'];
+        $OfficeAsset->description = $inputs['description'];
+        $OfficeAsset->preview_image = $preview_image;
+        if ($OfficeAsset->save()) {
+            $response = [
+                'success' => true,
+                'message' => 'Office Asset Added success',
+            ];
+        } else {
+            return back()->with('error', 'Building added failed,please try again');
+        }
 
         return response()->json($response, 200);
     }
@@ -202,6 +259,25 @@ class OfficeAssetController extends Controller
 
         $response = [
             'success' => true,
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    /**
+     * [get buildings description]
+     * @param  Request $request    [description]
+     * @param  [type]  $assetId [description]
+     * @return [type]              [description]
+     */
+    public function getoffices(Request $request, $building_id)
+    {
+
+        $office = Office::where('building_id', $building_id)->get();
+
+        $response = [
+            'success' => true,
+            'data' => $office,
         ];
 
         return response()->json($response, 200);
