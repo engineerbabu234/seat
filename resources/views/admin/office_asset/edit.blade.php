@@ -4,7 +4,7 @@
 					<input type="hidden" name="id"  value="{{ $officeAsset->id }}">
 					<div class="form-group">
 						<h6 class="title">Building</h6>
-						<select class="form-control" name="building_id" id="edit_building_id" required>
+						<select class="form-control bindOffice" name="building_id" id="edit_building_id" required>
 							@if($buildings->isEmpty())
 								<option value="">Record Not Found</option>
 							@else
@@ -22,18 +22,13 @@
 					<!--single-entry-->
 					<div class="single-entry">
 						<div class="form-group">
-							  <h6 class="sub-title">Office</h6><select class="form-control" name="office_id" id="editbindoffices" required>
-							@if($Office->isEmpty())
+							  <h6 class="sub-title">Office</h6>
+							  <select class="form-control OfficeData" name="office_id" id="edit_office_id" required>
 								<option value="">-- Select Office -- </option>
-							@else
 								@foreach($Office as $key => $value)
-								    @if($key == 0)
-								     <option value="">-- Select Office--</option>
-									@endif
 									<option value="{{$value->office_id}}" @if($officeAsset->office_id == $value->office_id) {{'selected'}} @endif>{{$value->office_name}}</option>
 								@endforeach
-							@endif
-						</select>
+							  </select>
 							  <span class="error" id="edit_office_id_error"></span>
 						</div>
 

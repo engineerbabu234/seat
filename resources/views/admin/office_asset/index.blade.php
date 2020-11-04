@@ -66,7 +66,7 @@
 
 					<div class="form-group">
 						<h6 class="title">Building</h6>
-						<select class="form-control" name="building_id" id="building_id" required>
+						<select class="form-control bindOffice" name="building_id" id="building_id" required>
 							@if($buildings->isEmpty())
 								<option value="">Record Not Found</option>
 							@else
@@ -83,7 +83,8 @@
 
 
 						<div class="form-group">
-							  <h6 class="sub-title">Office</h6><select class="form-control" name="office_id" id="bindoffices"><option value="">-- Select Office -- </option></select>
+							  <h6 class="sub-title">Office</h6>
+							  <select class="form-control OfficeData" name="office_id" id="bindoffices"><option value="">-- Select Office -- </option></select>
 							  <span class="error" id="office_id_error"></span>
 						</div>
 
