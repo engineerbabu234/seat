@@ -58,7 +58,7 @@
 
 <!-- The Modal -->
 <div class="modal" id="add_building">
-  <div class="modal-dialog ">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
 
       <!-- Modal Header -->
@@ -115,7 +115,7 @@
 
 
 <div class="modal" id="edit_building">
-  <div class="modal-dialog ">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
 
       <!-- Modal Header -->
