@@ -334,7 +334,7 @@ $(document).on("click", ".edit_office_request", function(e) {
 	var aurls = base_url + "/admin/office/edit_office/" + id;
 	jQuery.ajax({
 		url: aurls,
-		type: 'post',
+		type: 'get',
 		dataType: 'json',
 		headers: {
 			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
