@@ -12,6 +12,7 @@ $(document).ready(function(){
 			{ data: 'office_name', name: 'office_name' },
 			{ data: 'building_name', name: 'building_name' },
 			{ data: 'title', name: 'title' },
+			{ data: 'total_seats', name: 'total_seats' },
 			{ data: 'created_at', name: 'created_at' }, 
 			{ data: 'building_id', name: 'building_id' , 
 				render: function (data, type, column, meta) {

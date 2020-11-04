@@ -29,6 +29,7 @@
 						    <th>Building</th>
 							<th>Office Name</th>
 							<th>Assets Name</th>
+							<th>Total Seats</th>
 							<th>Date/Time </th>
 							<th nowrap>Action</th>
 						</tr>
