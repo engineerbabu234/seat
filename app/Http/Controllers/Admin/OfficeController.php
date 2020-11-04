@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\NotifyMail;
 use App\Models\Building;
 use App\Models\Office;
+use App\Models\OfficeAsset;
 use App\Models\ReserveSeat;
 use App\Models\Seat;
 use Datatables;
@@ -15,12 +16,82 @@ use Illuminate\Support\Facades\Mail;
 
 class OfficeController extends Controller
 {
+
+    /**
+     * [index description]
+     * @return [type] [description]
+     */
+    public function index(Request $request)
+    {
+        if ($request->ajax()) {
+
+            $whereStr = '1 = ?';
+            $whereParams = [1];
+
+            if (isset($request->search['value']) && $request->search['value'] != "") {
+                $search = trim(addslashes($request->search['value']));
+                $whereStr .= " AND offices.office_name like '%{$search}%'";
+                $whereStr .= " OR buildings.building_name like '%{$search}%'";
+                $whereStr .= " OR offices.office_number like '%{$search}%'";
+            }
+
+            $columns = ['offices.office_id', 'offices.created_at', 'offices.office_name as office_name', 'offices.office_number as office_number', 'buildings.building_name as building_name', 'offices.description'];
+
+            $Office = Office::select($columns)->leftJoin("buildings", "buildings.building_id", "offices.building_id")->whereRaw($whereStr, $whereParams)->orderBy('office_id', 'desc');
+
+            if ($Office) {
+                $total = $Office->get();
+            }
+
+            if ($request->has('iDisplayStart') && $request->get('iDisplayLength') != '-1') {
+                $Office = $Office->take($request->get('iDisplayLength'))->skip($request->get('iDisplayStart'));
+            }
+
+            if ($request->has('iSortCol_0')) {
+                $sql_order = '';
+                for ($i = 0; $i < $request->get('iSortingCols'); $i++) {
+                    $column = $columns[$request->get('iSortCol_' . $i)];
+                    if (false !== ($index = strpos($column, ' as '))) {
+                        $column = substr($column, 0, $index);
+                    }
+                    $Office = $Office->orderBy($column, $request->get('sSortDir_' . $i));
+                }
+            }
+
+            $Office = $Office->get();
+
+            $final = [];
+
+            foreach ($Office as $key => $value) {
+
+                $total_assets = OfficeAsset::where('office_id', $value->office_id)->get();
+
+                $final[$key]['office_id'] = $value->office_id;
+                $final[$key]['office_name'] = $value->office_name;
+                $final[$key]['building_name'] = $value->building_name;
+                $final[$key]['office_number'] = $value->office_number;
+                $final[$key]['seats'] = count($total_assets);
+                $final[$key]['created_at'] = date('d-m-Y H:i:s', strtotime($value->created_at));
+            }
+
+            $response['iTotalDisplayRecords'] = count($total);
+            $response['iTotalRecords'] = count($total);
+            $response['sEcho'] = intval($request->get('sEcho'));
+            $response['aaData'] = $final;
+            return $response;
+        }
+        $data = array();
+        $offices = Office::orderBy('office_id', 'desc')->get();
+        $data['offices'] = $offices;
+        return view('admin.office.index', compact('data'));
+    }
+
     /**
      * [index description]
      * @param  Request $request [description]
      * @return [type]           [description]
      */
-    public function index(Request $request)
+    public function index1(Request $request)
     {
         $data = array();
         $offices = Office::orderBy('office_id', 'desc')->get();

@@ -31,13 +31,11 @@ class OfficeAssetController extends Controller
             $whereStr = '1 = ?';
             $whereParams = [1];
 
-            if (isset($request->name) && $request->name != "") {
-                $search = trim(addslashes($request->name));
-                $whereStr .= " AND office_asset.question like '%{$search}%'";
-            }
-
-            if (isset($request->role) && $request->role != "") {
-                $whereStr .= " AND office_asset.role_id IN (" . $request->role . ")";
+            if (isset($request->search['value']) && $request->search['value'] != "") {
+                $search = trim(addslashes($request->search['value']));
+                $whereStr .= " AND office_asset.title like '%{$search}%'";
+                $whereStr .= " OR offices.office_name like '%{$search}%'";
+                $whereStr .= " OR buildings.building_name like '%{$search}%'";
             }
 
             $columns = ['office_asset.id', 'office_asset.created_at', 'offices.office_name as office_name', 'buildings.building_name as building_name', 'office_asset.title', 'office_asset.description'];
@@ -123,7 +121,7 @@ class OfficeAssetController extends Controller
         $image = str_replace(' ', '+', $image);
 
         $imageName = str_random('10') . '_' . time() . '.' . $extension;
-        $destinationPath = ImageHelper::$getProfileImagePath;
+        $destinationPath = ImageHelper::$getOfficeAssetsImagePath;
 
         $uploadPath = $destinationPath . '/' . $imageName;
 
@@ -198,9 +196,14 @@ class OfficeAssetController extends Controller
     {
         $officeAsset = OfficeAsset::find($assetId);
 
+        $buildings = Building::whereNull('deleted_at')->get();
+        $Office = Office::where('building_id', $officeAsset->building_id)->whereNull('deleted_at')->get();
+
+        $assets_image = ImageHelper::getOfficeAssetsImage($officeAsset->preview_image);
+
         $response = [
             'success' => true,
-            'html' => view($this->viewPath . '.edit', compact('officeAsset'))->render(),
+            'html' => view($this->viewPath . 'edit', compact('officeAsset', 'buildings', 'Office', 'assets_image'))->render(),
         ];
 
         return response()->json($response, 200);
@@ -214,13 +217,16 @@ class OfficeAssetController extends Controller
      */
     public function updateOfficeAsset(Request $request, $assetId)
     {
+
+        $inputs = $request->all();
+
         $rules = [
-            'office_id' => ['required'],
-            'building_id' => ['required'],
+            'building_id' => 'required',
+            'office_id' => 'required',
+            'title' => 'required',
+            'preview_image' => 'required',
         ];
-
         $messages = [];
-
         $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
@@ -231,19 +237,50 @@ class OfficeAssetController extends Controller
             return response()->json($response, 400);
         }
 
-        $officeAsset = OfficeAsset::find($assetId);
-        $officeAsset->building_id = $request->building_id;
-        $officeAsset->office_id = $request->office_id;
-        $officeAsset->title = $request->title;
-        $officeAsset->description = $request->description;
-        $officeAsset->preview_image = $request->preview_image;
-        $officeAsset->save();
+        if ($inputs['preview_image']) {
 
-        $response = [
-            'success' => true,
-        ];
+            $oldimage = OfficeAsset::find($assetId);
+            $new_image = explode('office_asset/', $inputs['preview_image']);
+
+            if (isset($new_image[1]) && ($oldimage->preview_image == $new_image[1])) {
+            } else {
+                $image_64 = null;
+                $image_64 = $inputs['preview_image'];
+
+                $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+                $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                $image = str_replace($replace, '', $image_64);
+                $image = str_replace(' ', '+', $image);
+                $imageName = str_random('10') . '_' . time() . '.' . $extension;
+                $destinationPath = ImageHelper::$getOfficeAssetsImagePath;
+
+                $uploadPath = $destinationPath . '/' . $imageName;
+
+                if (file_put_contents($uploadPath, base64_decode($image))) {
+                    $preview_image = $imageName;
+                }
+            }
+        }
+
+        $OfficeAsset = OfficeAsset::find($assetId);
+        $OfficeAsset->building_id = $inputs['building_id'];
+        $OfficeAsset->office_id = $inputs['office_id'];
+        $OfficeAsset->title = $inputs['title'];
+        $OfficeAsset->description = $inputs['description'];
+        if (isset($preview_image)) {
+            $OfficeAsset->preview_image = $preview_image;
+        }
+        if ($OfficeAsset->save()) {
+            $response = [
+                'success' => true,
+                'message' => 'Office Asset Updated success',
+            ];
+        } else {
+            return back()->with('error', 'Office Assets Update failed,please try again');
+        }
 
         return response()->json($response, 200);
+
     }
 
     /**

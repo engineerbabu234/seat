@@ -1,4 +1,6 @@
 $(document).ready(function(){
+
+	
 	
 	$('#laravel_datatable').DataTable({
 		processing: true,
