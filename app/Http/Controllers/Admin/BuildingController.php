@@ -8,7 +8,7 @@ use App\Models\Office;
 use Datatables;
 use DB;
 use Illuminate\Http\Request;
-use Redirect;
+use Validator;
 
 class BuildingController extends Controller
 {
@@ -64,10 +64,20 @@ class BuildingController extends Controller
             'description' => 'required',
         ];
 
-        $this->validate($request, $rules);
+        $messages = [];
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            $response = [
+                'success' => false,
+                'errors' => $validator->errors()->toArray(),
+            ];
+            return response()->json($response, 400);
+        }
+
         $BuildingCount = Building::whereNull('deleted_at')->count();
         $TOTAL_MAX_BUILDINGS = env('TOTAL_MAX_BUILDINGS');
-        if ($BuildingCount >= $TOTAL_MAX_BUILDINGS) {
+        if (isset($TOTAL_MAX_BUILDINGS) && $BuildingCount >= $TOTAL_MAX_BUILDINGS) {
             return back()->with('error', 'You can add only ' . $TOTAL_MAX_BUILDINGS . ' buildings');
         }
 
@@ -76,10 +86,15 @@ class BuildingController extends Controller
         $Building->building_address = $inputs['building_address'];
         $Building->description = $inputs['description'];
         if ($Building->save()) {
-            return Redirect('admin/building')->with('success', 'Building added successfully');
+            $response = [
+                'success' => true,
+                'message' => 'Building Added success',
+            ];
         } else {
             return back()->with('error', 'Building added failed,please try again');
         }
+
+        return response()->json($response, 200);
     }
 
     /**
@@ -131,8 +146,14 @@ class BuildingController extends Controller
      */
     public function edit($id)
     {
-        $data['building'] = Building::find($id);
-        return view('admin.building.edit', compact('data'));
+        $building = Building::find($id);
+
+        $response = [
+            'success' => true,
+            'html' => view('admin.building.edit', compact('building'))->render(),
+        ];
+
+        return response()->json($response, 200);
     }
 
     /**
@@ -150,17 +171,31 @@ class BuildingController extends Controller
             'description' => 'required',
         ];
 
-        $this->validate($request, $rules);
+        $messages = [];
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            $response = [
+                'success' => false,
+                'errors' => $validator->errors()->toArray(),
+            ];
+            return response()->json($response, 400);
+        }
 
         $Building = Building::find($id);
         $Building->building_name = $inputs['building_name'];
         $Building->building_address = $inputs['building_address'];
         $Building->description = $inputs['description'];
         if ($Building->save()) {
-            return Redirect('admin/building')->with('success', 'Building updated successfully');
+            $response = [
+                'success' => true,
+                'message' => 'Building Updated success',
+            ];
         } else {
-            return back()->with('error', 'Building updated failed,please try again');
+            return back()->with('error', 'Building update failed,please try again');
         }
+
+        return response()->json($response, 200);
     }
 
     /**

@@ -22,19 +22,19 @@
                                         @csrf
                                         {{ method_field('PUT') }}
                                         <div class="form-group">
-                                            <label>Full Name:</label>
+                                            <label>Full Name <span class="text-danger">*</span></label>
                                             <input type="text" class="form-control" placeholder="User Name" name="user_name" value="{{$data['user']->user_name}}">
                                         </div>
                                         <div class="form-group">
-                                            <label>Job Profile:</label>
+                                            <label>Job Profile <span class="text-danger">*</span> </label>
                                             <input type="text" class="form-control" placeholder="Job Profile" name="job_profile" value="{{$data['user']->job_profile}}">
                                         </div>
                                         <div class="form-group">
-                                            <label>Email:</label>
+                                            <label>Email <span class="text-danger">*</span></label>
                                             <input type="email" class="form-control" placeholder="Email" name="email" value="{{$data['user']->email}}" readonly="">
                                         </div>
                                         {{-- <div class="form-group">
-                                            <label>Mobile Number:</label>
+                                            <label>Mobile Number <span class="text-danger">*</span></label>
                                             <input type="text" class="form-control" placeholder="Mobile Number" name="">
                                         </div> --}}
 
@@ -115,7 +115,7 @@
 
                                         </div>
                                         <div class="form-group text-center">
-                                            <button type="submit" class="same-btn1">Update Profile</button>
+                                            <button type="submit" class="same-btn1">Update</button>
                                         </div>
                                     </form>
                                 </div>

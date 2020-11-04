@@ -12,12 +12,18 @@ $(document).ready(function(){
 			{ data: 'building_name', name: 'building_name' },
 			{ data: 'building_id', name: 'building_id',
 				render: function (data, type, column, meta) {
+					if(column.office_count > 0 ){
 					return ' <a target="_blank" href="'+base_url+'/admin/building/office_list/'+column.building_id+'" class="button accept">'+column.office_count+'</a>';
-					 } },
+					 } else{
+					 	return ' <a   href="#" class="button accept">'+column.office_count+'</a>';
+					
+					 }
+				} 
+			},
 			{ data: 'created_at', name: 'created_at' }, 
 			{ data: 'building_id', name: 'building_id' , 
 				render: function (data, type, column, meta) {
-					return '<a href="'+base_url+'/admin/building/edit_building/'+column.building_id+'" class="button accept">Edit</a>'+
+					return '<a  data-id="'+column.building_id+'" href="#" class="button accept edit_building_request">Edit</a>'+
 					 '<button class="button reject btn-delete" data-url="'+base_url+'/admin/building/delete/'+column.building_id+'">Delete</button>';
 				}
 			}
@@ -62,4 +68,101 @@ $(document).ready(function(){
 				});
 		 });
   	 });
+});
+
+
+
+
+$(document).on("click", ".add_building", function(e) {
+	e.preventDefault();
+	 
+	var data = jQuery(this).parents('form:first').serialize();
+	 
+	$.ajax({
+		url: base_url + '/admin/building/store',
+		type: 'post',
+		dataType: 'json',
+		data: data,
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		},
+		error: function(response) {
+			if (response.status == 400) {
+				$.each(response.responseJSON.errors, function(k, v) {
+					$('#' + k + '_error').text(v);
+					$('#' + k + '_error').addClass('text-danger');
+				});
+			}
+		},
+		success: function(response) {
+			if (response.success) {
+				$("form#add-building-form")[0].reset();
+				swal("Success!", response.message, "success");
+				var redrawtable = jQuery('#laravel_datatable').dataTable();
+				redrawtable.fnDraw();
+				$('#add_building').modal('hide');
+			}
+		},
+	});
+});
+
+
+
+$(document).on("click", ".edit_building", function(e) {
+	e.preventDefault();
+ 
+	var data = jQuery(this).parents('form:first').serialize();
+	var id = $(this).data('id'); 
+	$.ajax({
+		url: base_url + '/admin/building/update/'+id,
+		type: 'post',
+		dataType: 'json',
+		data: data,
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		},
+		error: function(response) {
+			if (response.status == 400) {
+				$.each(response.responseJSON.errors, function(k, v) {
+					$('#edit_' + k + '_error').text(v);
+					$('#edit_' + k + '_error').addClass('text-danger');
+				});
+			}
+		},
+		success: function(response) {
+			if (response.success) {
+				$("form#edit-building-form")[0].reset();
+				swal("Success!", response.message, "success");
+				var redrawtable = jQuery('#laravel_datatable').dataTable();
+				redrawtable.fnDraw();
+				$('.error').removeClass('text-danger');
+				$('#edit_building').modal('hide');
+			}
+		},
+	});
+});
+
+
+$(document).on("click", ".edit_building_request", function(e) {
+	e.preventDefault();
+	var id = $(this).data('id');
+
+	var aurls = base_url + "/admin/building/edit_building/" + id;
+	jQuery.ajax({
+		url: aurls,
+		type: 'get',
+		dataType: 'json',
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		},
+		success: function(response) {
+
+			if (response.success) {
+				$('#edit_building_info').html(response.html);
+			 
+				$('#edit_building').modal('show');
+
+			}
+		},
+	});
 });

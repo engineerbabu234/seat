@@ -47,7 +47,7 @@ use Illuminate\Support\Facades\Session;
 						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='add_office')){{'active'}}@endif" href="{{url('admin/office/add_office')}}"><i class="fas fa-plus"></i> <span>Add Office</span></a>
 					</li> -->
 					<li>
-						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='building')){{'active'}}@endif" href="{{url('admin/building')}}"><i class="fas fa-building"></i> <span>Buldings</span></a>
+						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='building')){{'active'}}@endif" href="{{url('admin/building')}}"><i class="fas fa-building"></i> <span>Buildings</span></a>
 					</li>
 					<li>
 						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='office')){{'active'}}@endif" href="{{url('admin/office')}}"><i class="fas fa-building"></i> <span>Offices</span></a>

@@ -13,6 +13,7 @@ use Datatables;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Validator;
 
 class OfficeController extends Controller
 {
@@ -81,25 +82,10 @@ class OfficeController extends Controller
             return $response;
         }
         $data = array();
-        $offices = Office::orderBy('office_id', 'desc')->get();
-        $data['offices'] = $offices;
-        return view('admin.office.index', compact('data'));
-    }
 
-    /**
-     * [index description]
-     * @param  Request $request [description]
-     * @return [type]           [description]
-     */
-    public function index1(Request $request)
-    {
-        $data = array();
-        $offices = Office::orderBy('office_id', 'desc')->get();
-        $data['offices'] = $offices;
-        if ($request->ajax()) {
-            return view('admin.office.office_list', compact('data'));
-        }
-        return view('admin.office.index', compact('data'));
+        $buildings = Building::whereNull('deleted_at')->get();
+
+        return view('admin.office.index', compact('data', 'buildings'));
     }
 
     /**
@@ -114,11 +100,11 @@ class OfficeController extends Controller
     }
 
     /**
-     * [store description]
+     * [store1 description]
      * @param  Request $request [description]
      * @return [type]           [description]
      */
-    public function store(Request $request)
+    public function store1(Request $request)
     {
         $inputs = $request->all();
 
@@ -185,6 +171,56 @@ class OfficeController extends Controller
     }
 
     /**
+     * [store description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function store(Request $request)
+    {
+
+        $inputs = $request->all();
+        $rules = [
+            'building_id' => 'required',
+            'office_name' => 'required',
+            'office_number' => 'required',
+        ];
+
+        $messages = [];
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            $response = [
+                'success' => false,
+                'errors' => $validator->errors()->toArray(),
+            ];
+            return response()->json($response, 400);
+        }
+
+        $OfficeCount = DB::table('offices')->whereNull('deleted_at')->count();
+        $TOTAL_MAX_OFFICES = env('TOTAL_MAX_OFFICES');
+        if (isset($TOTAL_MAX_OFFICES) && $OfficeCount >= $TOTAL_MAX_OFFICES) {
+            return ['status' => 'failed', 'message' => 'You can add only ' . $TOTAL_MAX_OFFICES . ' office'];
+        }
+
+        $Office = new Office();
+        $Office->building_id = $inputs['building_id'];
+        $Office->office_name = $inputs['office_name'];
+        $Office->office_number = $inputs['office_number'];
+        $Office->description = $inputs['description'];
+        if ($Office->save()) {
+            $response = [
+                'success' => true,
+                'message' => 'Office Added successfull',
+            ];
+        } else {
+            return back()->with('error', 'Office added failed,please try again');
+        }
+
+        return response()->json($response, 200);
+
+    }
+
+    /**
      * [show description]
      * @param  Request $request [description]
      * @param  [type]  $id      [description]
@@ -235,7 +271,7 @@ class OfficeController extends Controller
      * @param  [type] $id [description]
      * @return [type]     [description]
      */
-    public function edit($id)
+    public function edit1($id)
     {
         $office = Office::find($id);
         $buildings = Building::get();
@@ -254,12 +290,30 @@ class OfficeController extends Controller
     }
 
     /**
+     * [edit description]
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
+    public function edit($id)
+    {
+        $office = Office::find($id);
+        $buildings = Building::whereNull('deleted_at')->get();
+        $response = [
+            'success' => true,
+            'html' => view('admin.office.edit', compact('office', 'buildings'))->render(),
+        ];
+
+        return response()->json($response, 200);
+
+    }
+
+    /**
      * [update description]
      * @param  Request $request [description]
      * @param  [type]  $id      [description]
      * @return [type]           [description]
      */
-    public function update(Request $request, $id)
+    public function update1(Request $request, $id)
     {
         $inputs = $request->all();
         $officeData = array();
@@ -362,6 +416,56 @@ class OfficeController extends Controller
             DB::rollback();
             return ['status' => 'failed', 'message' => $e->getMessage()];
         }
+    }
+
+    /**
+     * [store description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function update(Request $request, $id)
+    {
+
+        $inputs = $request->all();
+        $rules = [
+            'building_id' => 'required',
+            'office_name' => 'required',
+            'office_number' => 'required',
+        ];
+
+        $messages = [];
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            $response = [
+                'success' => false,
+                'errors' => $validator->errors()->toArray(),
+            ];
+            return response()->json($response, 400);
+        }
+
+        $OfficeCount = DB::table('offices')->whereNull('deleted_at')->count();
+        $TOTAL_MAX_OFFICES = env('TOTAL_MAX_OFFICES');
+        if (isset($TOTAL_MAX_OFFICES) && $OfficeCount >= $TOTAL_MAX_OFFICES) {
+            return ['status' => 'failed', 'message' => 'You can add only ' . $TOTAL_MAX_OFFICES . ' office'];
+        }
+
+        $Office = Office::find($id);
+        $Office->building_id = $inputs['building_id'];
+        $Office->office_name = $inputs['office_name'];
+        $Office->office_number = $inputs['office_number'];
+        $Office->description = $inputs['description'];
+        if ($Office->save()) {
+            $response = [
+                'success' => true,
+                'message' => 'Office Updated successfull',
+            ];
+        } else {
+            return back()->with('error', 'Office added failed,please try again');
+        }
+
+        return response()->json($response, 200);
+
     }
 
     /**

@@ -21,8 +21,8 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
             Route::get('office_list/{id?}', 'BuildingController@officeList')->name('office_list');
             Route::get('show/{id?}', 'BuildingController@show')->name('show');
             Route::get('edit_building/{id?}', 'BuildingController@edit')->name('edit_building');
-            Route::put('update/{id?}', 'BuildingController@update')->name('update');
-            Route::get('delete/{id}', 'BuildingController@destroy')->name('destroy');
+            Route::post('update/{id?}', 'BuildingController@update')->name('update');
+            Route::post('delete/{id}', 'BuildingController@destroy')->name('destroy');
         });
 
         // office
@@ -32,7 +32,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
             Route::post('store', 'OfficeController@store')->name('store');
             Route::get('office_details/{id?}', 'OfficeController@show')->name('office_details');
             Route::get('edit_office/{id?}', 'OfficeController@edit')->name('edit_office');
-            Route::put('update/{id?}', 'OfficeController@update')->name('update');
+            Route::post('update/{id?}', 'OfficeController@update')->name('update');
             Route::get('delete/{id}', 'OfficeController@destroy')->name('destroy');
             Route::get('delete_seat/{id}', 'OfficeController@deleteSeat')->name('delete_seat');
 

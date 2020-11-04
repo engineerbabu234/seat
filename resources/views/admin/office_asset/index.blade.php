@@ -52,7 +52,7 @@
 
 <!-- The Modal -->
 <div class="modal" id="add_asset">
-  <div class="modal-dialog ">
+  <div class="modal-dialog modal-lg ">
     <div class="modal-content">
 
       <!-- Modal Header -->
@@ -66,8 +66,11 @@
       	<form action="#" enctype="multipart/form-data" method="post" id="add-office-asset-form">
 					@csrf
 
+					<div class="row">
+
+					<div class="col-sm-6">
 					<div class="form-group">
-						<h6 class="title">Building</h6>
+						<h6 class="title">Building <span class="text-danger">*</span></h6>
 						<select class="form-control bindOffice" name="building_id" id="building_id" required>
 							@if($buildings->isEmpty())
 								<option value="">Record Not Found</option>
@@ -82,36 +85,45 @@
 						</select>
 						 <span class="error" id="building_id_error"></span>
 					</div>
-
+				</div>
+				<div class="col-sm-6">
 
 						<div class="form-group">
-							  <h6 class="sub-title">Office</h6>
+							  <h6 class="sub-title">Office <span class="text-danger">*</span></h6>
 							  <select class="form-control OfficeData" name="office_id" id="bindoffices"><option value="">-- Select Office -- </option></select>
 							  <span class="error" id="office_id_error"></span>
 						</div>
+				</div>
+				<div class="col-sm-6">
 
 						<div class="form-group">
-							<h6 class="sub-title">Assets Title</h6>
+							<h6 class="sub-title">Assets Title <span class="text-danger">*</span></h6>
 							<input type="text" class="form-control" placeholder="Assets Title" name="title" required>
 							 <span class="error" id="title_error"></span>
 						</div>
-
+				</div>
+				<div class="col-sm-6">
 						<div class="form-group">
 							<h6 class="sub-title">Description</h6>
 							<textarea rows="4" class="form-control" placeholder="Write here..." name="description"></textarea>
 							 <span class="error" id="description_error"></span>
 						</div>
-
+				</div>
+				<div class="col-sm-12">
 						<div class="form-group">
-							<h6 class="sub-title">Preview Image</h6>
+							<h6 class="sub-title">Preview Image <span class="text-danger">*</span></h6>
 							<input type="file" required id="preview_image" name="preview_image" class="form-control dropify-event" data-default-file="" /><br>
                              <span class="error" id="preview_image_error"></span>
 
 						</div>
+				</div>
 
-					<div class="add-product-btn text-right">
+				<div class="col-sm-12">
+					<div class="add-product-btn text-center">
 						<button class="add-office-btn btn btn-info"> Add Office Asset</button>
 					</div>
+				</div>
+			</div>
 
 		    </form>
       </div>
@@ -124,7 +136,7 @@
 
 
 <div class="modal" id="edit_modal">
-  <div class="modal-dialog ">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
 
       <!-- Modal Header -->

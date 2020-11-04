@@ -20,8 +20,17 @@ $(document).ready(function() {
 			data: 'title',
 			name: 'title'
 		}, {
-			data: 'total_seats',
-			name: 'total_seats'
+			data: 'id',
+			name: 'id',
+			render: function(data, type, column, meta) {
+				if(column.total_seats > 0 ){
+					return '<a href="#" target="_blank" data-id="' + column.id + '" class="button accept">'+column.total_seats+'</a>';
+						
+				} else {
+					return '<a href="#"   data-id="' + column.id + '" class="button accept">'+column.total_seats+'</a>';
+					
+				}
+			  }
 		}, {
 			data: 'created_at',
 			name: 'created_at'
