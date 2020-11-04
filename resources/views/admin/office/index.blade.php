@@ -5,32 +5,25 @@
 		<!--header-->
 		<div class="header">
 			<div class="row">
-				<div class="col-md-12 col-sm-12 col-xs-12">
+				<div class="col-md-6 col-sm-6 col-xs-6">
 					<div class="title">
 						<h2>Office List</h2>
 					</div>
 				</div>
-				<!-- <div class="col-md-6 col-sm-6 col-xs-12">
+				<div class="col-md-6 col-sm-6 col-xs-12">
 					<div class="btns">
-						<a href="add_building.html" class="add-tender">Add Office</a>
+						<a href="{{url('admin/office/add_office')}}" class="add-asset btn btn-info" title="Add Office"><i class="fas fa-plus"></i></a>
 					</div>
-				</div> -->
+				</div>
 			</div>
 		</div><!--END header-->
 		<!--my tenders-->
 		<div class="custom-data-table">
 			<div class="data-table">
-		<div class="heading-search">
-			<div class="row">
-				<div class="col-md-6 col-sm-6 col-xs-12">
-					<h2>Total Office: {{count($data['offices'])}}</h2>
-				</div>
 
-			</div>
-		</div>
 		<div class="custom-table-height">
 			<div class="table-responsive">
-				<table class="table table-striped" id="office_datatable">
+				<table class="table table-striped" id="laravel_datatable">
 					<thead>
 						<tr>
 							<th>Office ID.</th>
@@ -57,7 +50,7 @@
 @push('js')
   <script type="text/javascript" src="{{asset('public')}}/js/sweetalert.min.js"></script>
  <script type="text/javascript">
- 		var asset_datatable =$('#office_datatable').DataTable({
+ 		var asset_datatable =$('#laravel_datatable').DataTable({
 			processing: true,
 			serverSide: true,
 			"ordering": false,

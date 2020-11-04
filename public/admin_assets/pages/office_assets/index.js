@@ -1,6 +1,6 @@
 $(document).ready(function() {
 
-	var asset_datatable = $('#asset_datatable').DataTable({
+	var laravel_datatable = $('#laravel_datatable').DataTable({
 		processing: true,
 		serverSide: true,
 		"ordering": false,
@@ -66,7 +66,7 @@ $(document).ready(function() {
 					},
 					'error': function(error) {},
 					complete: function() {
-						var redrawtable = jQuery('#asset_datatable').dataTable();
+						var redrawtable = jQuery('#laravel_datatable').dataTable();
 						redrawtable.fnDraw();
 
 					},
@@ -104,7 +104,7 @@ $(document).on("click", ".add-office-btn", function(e) {
 			if (response.success) {
 				$("form#add-office-asset-form")[0].reset();
 				swal("Success!", response.message, "success");
-				var redrawtable = jQuery('#asset_datatable').dataTable();
+				var redrawtable = jQuery('#laravel_datatable').dataTable();
 				redrawtable.fnDraw();
 				$('#add_asset').modal('hide');
 			}
@@ -142,7 +142,7 @@ $(document).on("click", ".edit-office-btn", function(e) {
 			if (response.success) {
 				$("form#add-office-asset-form")[0].reset();
 				swal("Success!", response.message, "success");
-				var redrawtable = jQuery('#asset_datatable').dataTable();
+				var redrawtable = jQuery('#laravel_datatable').dataTable();
 				redrawtable.fnDraw();
 				$('.error').removeClass('text-danger');
 				$('#edit_modal').modal('hide');

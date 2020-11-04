@@ -5,15 +5,16 @@
 		<!--header-->
 		<div class="header">
 			<div class="row">
-				<div class="col-md-12 col-sm-12 col-xs-12">
+				<div class="col-md-6 col-sm-6 col-xs-6">
 					<div class="title">
 						<h2>Office Assets</h2>
 					</div>
-					<div class="btns pull-right">
+				</div>
+				<div class="col-md-6 col-sm-6 col-xs-12">
+					<div class="btns">
 						<a href="#" class="add-asset btn btn-info"  data-toggle="modal" data-target="#add_asset"><i class="fas fa-plus"></i></a>
 					</div>
 				</div>
-
 			</div>
 		</div><!--END header-->
 		<!--my tenders-->
@@ -22,7 +23,7 @@
 
 		<div class="custom-table-height">
 			<div class="table-responsive">
-				<table class="table table-striped" id="asset_datatable">
+				<table class="table table-striped" id="laravel_datatable">
 					<thead>
 						<tr>
 							<th>Assets ID.</th>

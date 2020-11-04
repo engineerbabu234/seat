@@ -39,22 +39,22 @@ use Illuminate\Support\Facades\Session;
 					<li>
 						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='user')){{'active'}}@endif" href="{{url('admin/user')}}"><i class="fas fa-users"></i> <span>Users</span></a>
 					</li>
-					<li>
+					<!-- <li>
 						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='add_building')){{'active'}}@endif" href="{{url('admin/building/add_building')}}"><i class="fas fa-building"></i> <span>Add Bulding</span></a>
 					</li>
 
 					<li>
 						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='add_office')){{'active'}}@endif" href="{{url('admin/office/add_office')}}"><i class="fas fa-plus"></i> <span>Add Office</span></a>
+					</li> -->
+					<li>
+						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='building')){{'active'}}@endif" href="{{url('admin/building')}}"><i class="fas fa-building"></i> <span>Buldings</span></a>
 					</li>
 					<li>
-						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='building')){{'active'}}@endif" href="{{url('admin/building')}}"><i class="fas fa-building"></i> <span>My Buldings</span></a>
-					</li>
-					<li>
-						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='office')){{'active'}}@endif" href="{{url('admin/office')}}"><i class="fas fa-building"></i> <span>My Offices</span></a>
+						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='office')){{'active'}}@endif" href="{{url('admin/office')}}"><i class="fas fa-building"></i> <span>Offices</span></a>
 					</li>
 					<li>
 
-						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='asset')){{'active'}}@endif" href="{{url('admin/office/asset')}}"><i class="fas fa-list"></i> <span>My Offices Assets</span></a>
+						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='asset')){{'active'}}@endif" href="{{url('admin/office/asset')}}"><i class="fas fa-list"></i> <span>Offices Assets</span></a>
 					</li>
 					<li>
 

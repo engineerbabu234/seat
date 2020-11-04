@@ -10,14 +10,15 @@ $(document).ready(function(){
 		columns: [
 			{ data: 'number_key', name: 'number_key' },
 			{ data: 'building_name', name: 'building_name' },
-			{ data: 'office_count', name: 'office_count' },
-			{ data: 'created_at', name: 'created_at' },
-
+			{ data: 'building_id', name: 'building_id',
+				render: function (data, type, column, meta) {
+					return ' <a target="_blank" href="'+base_url+'/admin/building/office_list/'+column.building_id+'" class="button accept">'+column.office_count+'</a>';
+					 } },
+			{ data: 'created_at', name: 'created_at' }, 
 			{ data: 'building_id', name: 'building_id' , 
 				render: function (data, type, column, meta) {
 					return '<a href="'+base_url+'/admin/building/edit_building/'+column.building_id+'" class="button accept">Edit</a>'+
-					'<a href="'+base_url+'/admin/building/office_list/'+column.building_id+'" class="button accept">Details</a>'+
-					'<button class="button reject btn-delete" data-url="'+base_url+'/admin/building/delete/'+column.building_id+'">Delete</button>';
+					 '<button class="button reject btn-delete" data-url="'+base_url+'/admin/building/delete/'+column.building_id+'">Delete</button>';
 				}
 			}
 		]
