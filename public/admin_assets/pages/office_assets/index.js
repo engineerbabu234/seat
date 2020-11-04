@@ -20,6 +20,9 @@ $(document).ready(function() {
 			data: 'title',
 			name: 'title'
 		}, {
+			data: 'total_seats',
+			name: 'total_seats'
+		}, {
 			data: 'created_at',
 			name: 'created_at'
 		}, {
@@ -31,8 +34,6 @@ $(document).ready(function() {
 			}
 		}]
 	});
-
-
 
 	$('body').on('click', '.btn-delete', function(e) {
 		var url = $(this).attr('data-url');

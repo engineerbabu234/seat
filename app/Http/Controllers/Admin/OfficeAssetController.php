@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\Office;
 use App\Models\OfficeAsset;
+use App\Models\OfficeSeat;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -38,7 +39,7 @@ class OfficeAssetController extends Controller
                 $whereStr .= " OR buildings.building_name like '%{$search}%'";
             }
 
-            $columns = ['office_asset.id', 'office_asset.created_at', 'offices.office_name as office_name', 'buildings.building_name as building_name', 'office_asset.title', 'office_asset.description'];
+            $columns = ['office_asset.id', 'office_asset.office_id', 'office_asset.created_at', 'offices.office_name as office_name', 'buildings.building_name as building_name', 'office_asset.title', 'office_asset.description'];
 
             $officeAssets = OfficeAsset::select($columns)->leftJoin("offices", "offices.office_id", "office_asset.office_id")->leftJoin("buildings", "buildings.building_id", "office_asset.building_id")->whereRaw($whereStr, $whereParams)->orderBy('id', 'desc');
 
@@ -66,10 +67,14 @@ class OfficeAssetController extends Controller
             $final = [];
 
             foreach ($officeAssets as $key => $value) {
+
+                $total_seats = OfficeSeat::where('office_id', $value->office_id)->whereNull('deleted_at')->get();
+
                 $final[$key]['id'] = $value->id;
                 $final[$key]['office_name'] = $value->office_name;
                 $final[$key]['building_name'] = $value->building_name;
                 $final[$key]['title'] = $value->title;
+                $final[$key]['total_seats'] = count($total_seats);
                 $final[$key]['created_at'] = date('d-m-Y H:i:s', strtotime($value->created_at));
             }
 
