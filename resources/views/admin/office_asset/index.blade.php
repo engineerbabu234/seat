@@ -157,6 +157,9 @@
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">Office Assets seats</h4>
+
+        <a href="#" class="btn btn-info btn-sm   ml-5" id="img-create" > <i class="fas fa-plus"></i></a>
+
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
       <div class="modal-body" id="office_assets_seats">
@@ -189,14 +192,12 @@
 
  <script src="{{asset('admin_assets')}}/js/seat_book/fabric/centering_guidelines.js"></script>
  <script type="text/javascript" src="{{asset('admin_assets')}}/js/seat_book/fabric/aligning_guidelines.js"></script>
- <!--
+
 <script type="text/javascript" src="{{asset('admin_assets')}}/js/seat_book/canvas.js"></script>
- -->
+
 <script type="text/javascript">
 
-
 	$(function() {
-
         var drEvent = $('.dropify-event').dropify();
     });
 </script>

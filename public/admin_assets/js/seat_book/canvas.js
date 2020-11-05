@@ -1,4 +1,4 @@
-window.onload = function() {
+  $.fn.canvasfiles = function() {
 
     // initialize coordinate and size
     let originContentW = 1370,
@@ -447,8 +447,7 @@ window.onload = function() {
 
     // function to handle to start edit asset
     function start(url, title) {
-        alert(url);
-        alert(title);
+        
         clonedCircles.slice(0, clonedCircles.length);
         circleNums = 0;
         canvas.set("fill", "#fff");
@@ -751,7 +750,7 @@ window.onload = function() {
         $("#file-input").trigger("click");
     });
 
-    start($("#main_image").val(), 'hh');
+    start($("#main_image").val(), $("#asset_name").val());
     // create new office asset when click save button on modal
     $("#btn-save").click(async function () {
         removeMainContent();
