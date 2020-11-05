@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\Office;
 use App\Models\OfficeAsset;
+use App\Models\OfficeImage;
 use App\Models\OfficeSeat;
 use Illuminate\Http\Request;
 use Validator;
@@ -337,7 +338,7 @@ class OfficeAssetController extends Controller
     public function getofficeassets(Request $request, $assetId)
     {
 
-        $columns = ['office_asset.id', 'office_asset.preview_image', 'office_asset.office_id', 'office_asset.created_at', 'offices.office_name as office_name', 'buildings.building_name as building_name', 'office_asset.title', 'office_asset.description'];
+        $columns = ['office_asset.id', 'buildings.building_id', 'office_asset.preview_image', 'office_asset.office_id', 'office_asset.created_at', 'offices.office_name as office_name', 'buildings.building_name as building_name', 'office_asset.title', 'office_asset.description'];
         $whereStr = '1 = ?';
         $whereParams = [1];
         $whereStr .= ' AND office_asset.id = ' . $assetId;
@@ -377,8 +378,12 @@ class OfficeAssetController extends Controller
 
         $rules = [
             'building_id' => 'required',
-            'office_id' => 'required',
-            'title' => 'required',
+            'seat_no' => 'required',
+            'booking_mode' => 'required',
+            'seat_type' => 'required',
+            'is_show_user_details' => 'required',
+            'is_show_user_details' => 'required',
+            'status' => 'required',
             'preview_image' => 'required',
         ];
         $messages = [];
@@ -411,19 +416,32 @@ class OfficeAssetController extends Controller
             $preview_image = $imageName;
         }
 
-        $OfficeAsset = new OfficeAsset();
-        $OfficeAsset->building_id = $inputs['building_id'];
-        $OfficeAsset->office_id = $inputs['office_id'];
-        $OfficeAsset->title = $inputs['title'];
-        $OfficeAsset->description = $inputs['description'];
-        $OfficeAsset->preview_image = $preview_image;
-        if ($OfficeAsset->save()) {
+        $OfficeSeat = new OfficeSeat();
+        $OfficeSeat->building_id = $inputs['building_id'];
+        $OfficeSeat->office_asset_id = $inputs['asset_id'];
+        $OfficeSeat->office_id = $inputs['office_id'];
+        $OfficeSeat->seat_no = $inputs['seat_no'];
+        $OfficeSeat->description = $inputs['description'];
+        $OfficeSeat->booking_mode = $inputs['booking_mode'];
+        $OfficeSeat->seat_type = $inputs['seat_type'];
+        $OfficeSeat->is_show_user_details = $inputs['is_show_user_details'];
+        $OfficeSeat->status = $inputs['status'];
+        if ($OfficeSeat->save()) {
+
+            $OfficeImage = new OfficeImage();
+            $OfficeImage->office_id = $inputs['office_id'];
+            $OfficeImage->seat_id = $OfficeSeat->seat_id;
+            $OfficeImage->building_id = $inputs['building_id'];
+            $OfficeImage->office_asset_id = $inputs['asset_id'];
+            $OfficeImage->image = $preview_image;
+            $OfficeImage->save();
+
             $response = [
                 'success' => true,
-                'message' => 'Office Asset Added success',
+                'message' => 'Office seat Added success',
             ];
         } else {
-            return back()->with('error', 'Building added failed,please try again');
+            return back()->with('error', 'Office seat failed,please try again');
         }
 
         return response()->json($response, 200);

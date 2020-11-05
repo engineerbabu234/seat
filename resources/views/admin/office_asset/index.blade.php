@@ -207,7 +207,7 @@
     });
 
 	$(document).on('click','.seats_cancel',function(){
-        $("#changeModal").modal('hide');
+        $('#changeModal').modal('hide');
     });
 
 </script>

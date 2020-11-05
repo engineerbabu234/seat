@@ -1,13 +1,13 @@
 <form action="#" enctype="multipart/form-data" method="post" id="add-office-asset-seat-form">
 	@csrf
 	<div class="row">
-		<!-- <div class="col-sm-6">
+		<div class="col-sm-6">
 			<div class="form-group">
 				<h6 class="sub-title">seat no <span class="text-danger">*</span></h6>
 				<input type="number" class="form-control" placeholder="seat no." name="seat_no" id="seat_no" required>
 				<span class="error" id="seat_no_error"></span>
 			</div>
-		</div> -->
+		</div>
 
 		<div class="col-sm-6">
 			<div class="form-group">
@@ -44,6 +44,17 @@
 
 		<div class="col-sm-6">
 			<div class="form-group">
+				<h6 class="sub-title">Status<span class="text-danger">*</span></h6>
+				<select name="status" id="status" class="form-control" required>
+			 		 <option value="0">Available</option>
+					 <option value="1">Book</option>
+					  </select>
+				<span class="error" id="status_mode_error"></span>
+			</div>
+		</div>
+
+		<div class="col-sm-6">
+			<div class="form-group">
 				<h6 class="sub-title">Description  <span class="text-danger">*</span></h6>
 				<textarea rows="2" class="form-control"  placeholder="Write here..." name="description" required></textarea>
 				<span class="error" id="description_error"></span>
@@ -58,7 +69,7 @@
 		</div>
 		<div class="col-sm-12">
 			<div class="add-product-btn text-center">
-				<button class="add-office-btn btn btn-info add-booking-seat"> Add Seat</button>
+				<button class="  btn btn-info add-booking-seat"> Add Seat</button>
 			</div>
 		</div>
 	</div>

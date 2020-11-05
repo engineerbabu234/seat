@@ -236,13 +236,14 @@ $(document).on("click", ".get_assets", function(e) {
 
 $(document).on("click", ".add-booking-seat", function(e) {
 	e.preventDefault();
+	 
 	var photo = $("form#add-office-asset-seat-form").find(".dropify-render").find("img").attr("src");
 	var data = jQuery(this).parents('form:first').serialize();
 	if (photo) {
 		data += "&preview_image=" + photo;
 	}
 	$.ajax({
-		url: base_url + '/admin/office/asset/add',
+		url: base_url + '/admin/office/asset/addseat',
 		type: 'post',
 		dataType: 'json',
 		data: data,
