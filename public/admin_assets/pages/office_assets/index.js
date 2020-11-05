@@ -197,7 +197,7 @@ $(document).on("click", ".edit_office_assets_request", function(e) {
 
 			if (response.success) {
 				$('#edit_assets').html(response.html);
-				start(url, $("#new-title").val()); 
+				 
 				var drEvent = $('.dropify-event').dropify();
 				$('#edit_modal').modal('show');
 
@@ -224,6 +224,7 @@ $(document).on("click", ".get_assets", function(e) {
 				$('#office_assets_seats').html(response.html);
 				var drEvent = $('.dropify-event').dropify();
 				$('#assets_seat_modal').modal('show');
+				$("#office_assets_seats").canvasfiles();
 
 			}
 		},
