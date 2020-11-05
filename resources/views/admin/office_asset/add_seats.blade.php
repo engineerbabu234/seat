@@ -22,18 +22,12 @@
             <div class="modal-content">
               <div class="modal-header">
                 <h4 class="modal-title">Add Seat <span class="ml-5" id="change-number"></span></h4>
-                <button type="button" class="close seats_cancel" data-dismiss="modal">&times;</button>
+                <button type="button" class=" seats_cancel" data-dismiss="modal">&times;</button>
               </div>
               <div class="modal-body" >
                   @include("admin/office_asset/addofficeseats")
               </div>
-              <div class="modal-footer">
-                        <div class="container-fluid">
-                            <div class="row">
-                                <button type="button" class="btn btn-danger btn-modal seats_cancel pl-4 pr-4 pt-2 pb-2" data-dismiss="modal" >Cancel</button>
-                            </div>
-                        </div>
-                    </div>
+
             </div>
           </div>
         </div>
