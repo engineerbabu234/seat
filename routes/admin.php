@@ -72,6 +72,11 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
                     'as' => 'office.asset.getoffices',
                     'uses' => 'OfficeAssetController@getoffices',
                 ]);
+
+                Route::get('/getofficeassets/{id}', [
+                    'as' => 'office.asset.getofficeassets',
+                    'uses' => 'OfficeAssetController@getofficeassets',
+                ]);
             });
         });
 

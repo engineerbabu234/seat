@@ -134,37 +134,66 @@
   </div>
 </div>
 
-
+<!-- Start Edit Assets -->
 <div class="modal" id="edit_modal">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-
-      <!-- Modal Header -->
       <div class="modal-header">
         <h4 class="modal-title">Edit Office Assets</h4>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
-
-      <!-- Modal body -->
       <div class="modal-body" id="edit_assets">
 
       </div>
+    </div>
+  </div>
+</div>
+<!-- End display assets -->
 
-      <!-- Modal footer -->
+<!-- Start Display assets -->
 
+<div class="modal" id="assets_seat_modal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Office Assets seats</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" id="office_assets_seats">
 
+      </div>
     </div>
   </div>
 </div>
 
+<!-- End display assets -->
+
 @endsection
 @push('css')
 <link  href="{{asset('admin_assets')}}/css/dropify.min.css" rel="stylesheet">
+
+ <!-- fabric canvas css -->
+
+<link  href="{{asset('admin_assets')}}/css/seat_book/modal.css" rel="stylesheet">
+ <!-- fabric canvas css -->
 @endpush
 @push('js')
+
 <script type="text/javascript" src="{{asset('admin_assets')}}/js/dropify.min.js"></script>
-<script type="text/javascript" src="{{URL::asset('admin_assets/pages')}}/office_assets/index.js"></script>
+
+ <script type="text/javascript" src="{{URL::asset('admin_assets/pages')}}/office_assets/index.js"></script>
+
+
+ <!-- fabric canvas js library -->
+ <script type="text/javascript" src="{{asset('admin_assets')}}/js/seat_book/fabric/fabric.min.js"></script>
+
+ <script src="{{asset('admin_assets')}}/js/seat_book/fabric/centering_guidelines.js"></script>
+ <script type="text/javascript" src="{{asset('admin_assets')}}/js/seat_book/fabric/aligning_guidelines.js"></script>
+ <!--
+<script type="text/javascript" src="{{asset('admin_assets')}}/js/seat_book/canvas.js"></script>
+ -->
 <script type="text/javascript">
+
 
 	$(function() {
 

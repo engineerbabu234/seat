@@ -25,4 +25,7 @@
 
 	{{-- <script src="{{asset('admin_assets')}}/js/sweetalert.min.js"></script> --}}
 	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+
+
 </head>

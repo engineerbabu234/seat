@@ -23,14 +23,8 @@ $(document).ready(function() {
 			data: 'id',
 			name: 'id',
 			render: function(data, type, column, meta) {
-				if(column.total_seats > 0 ){
-					return '<a href="#" target="_blank" data-id="' + column.id + '" class="button accept">'+column.total_seats+'</a>';
-						
-				} else {
-					return '<a href="#"   data-id="' + column.id + '" class="button accept">'+column.total_seats+'</a>';
-					
-				}
-			  }
+ 					return '<a href="#" data-id="' + column.id + '" class="button accept get_assets">'+column.total_seats+'</a>';
+ 			  }
 		}, {
 			data: 'created_at',
 			name: 'created_at'
@@ -203,8 +197,33 @@ $(document).on("click", ".edit_office_assets_request", function(e) {
 
 			if (response.success) {
 				$('#edit_assets').html(response.html);
+				start(url, $("#new-title").val()); 
 				var drEvent = $('.dropify-event').dropify();
 				$('#edit_modal').modal('show');
+
+			}
+		},
+	});
+});
+
+
+$(document).on("click", ".get_assets", function(e) {
+	e.preventDefault();
+	var id = $(this).data('id'); 
+	var aurls = base_url + "/admin/office/asset/getofficeassets/" + id;
+	jQuery.ajax({
+		url: aurls,
+		type: 'get',
+		dataType: 'json',
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		},
+		success: function(response) {
+
+			if (response.success) {
+				$('#office_assets_seats').html(response.html);
+				var drEvent = $('.dropify-event').dropify();
+				$('#assets_seat_modal').modal('show');
 
 			}
 		},
