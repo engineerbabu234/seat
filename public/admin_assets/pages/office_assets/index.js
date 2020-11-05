@@ -230,3 +230,40 @@ $(document).on("click", ".get_assets", function(e) {
 		},
 	});
 });
+
+
+
+
+$(document).on("click", ".add-booking-seat", function(e) {
+	e.preventDefault();
+	var photo = $("form#add-office-asset-seat-form").find(".dropify-render").find("img").attr("src");
+	var data = jQuery(this).parents('form:first').serialize();
+	if (photo) {
+		data += "&preview_image=" + photo;
+	}
+	$.ajax({
+		url: base_url + '/admin/office/asset/add',
+		type: 'post',
+		dataType: 'json',
+		data: data,
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		},
+		error: function(response) {
+			if (response.status == 400) {
+				$.each(response.responseJSON.errors, function(k, v) {
+					$('#' + k + '_error').text(v);
+					$('#' + k + '_error').addClass('text-danger');
+				});
+			}
+		},
+		success: function(response) {
+			if (response.success) {
+				$("form#add-office-asset-seat-form")[0].reset();
+				swal("Success!", response.message, "success"); 
+				$('#changeModal').modal('hide');
+			}
+		},
+	});
+});
+

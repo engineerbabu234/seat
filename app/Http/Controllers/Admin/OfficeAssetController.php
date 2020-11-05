@@ -261,6 +261,9 @@ class OfficeAssetController extends Controller
 
                 $uploadPath = $destinationPath . '/' . $imageName;
 
+                //remove old image
+                $this->remove_office_assets_image($assetId);
+
                 if (file_put_contents($uploadPath, base64_decode($image))) {
                     $preview_image = $imageName;
                 }
@@ -350,4 +353,80 @@ class OfficeAssetController extends Controller
 
         return response()->json($response, 200);
     }
+
+    public function remove_office_assets_image($assets_id)
+    {
+        $OfficeAsset = OfficeAsset::find($assets_id);
+        $destinationPath = ImageHelper::$getOfficeAssetsImagePath;
+        $removepath = $destinationPath . '/' . $OfficeAsset->preview_image;
+        if (file_exists(public_path($removepath))) {
+            unlink(public_path($removepath));
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * [addseat description]
+     * @param Request $request [description]
+     */
+    public function addseat(Request $request)
+    {
+
+        $inputs = $request->all();
+
+        $rules = [
+            'building_id' => 'required',
+            'office_id' => 'required',
+            'title' => 'required',
+            'preview_image' => 'required',
+        ];
+        $messages = [];
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            $response = [
+                'success' => false,
+                'errors' => $validator->errors()->toArray(),
+            ];
+            return response()->json($response, 400);
+        }
+
+        $image_64 = null;
+        $image_64 = $inputs['preview_image'];
+
+        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+        $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+
+        $image = str_replace($replace, '', $image_64);
+
+        $image = str_replace(' ', '+', $image);
+
+        $imageName = str_random('10') . '_' . time() . '.' . $extension;
+        $destinationPath = ImageHelper::$getOfficeAssetsImagePath;
+
+        $uploadPath = $destinationPath . '/' . $imageName;
+
+        if (file_put_contents($uploadPath, base64_decode($image))) {
+            $preview_image = $imageName;
+        }
+
+        $OfficeAsset = new OfficeAsset();
+        $OfficeAsset->building_id = $inputs['building_id'];
+        $OfficeAsset->office_id = $inputs['office_id'];
+        $OfficeAsset->title = $inputs['title'];
+        $OfficeAsset->description = $inputs['description'];
+        $OfficeAsset->preview_image = $preview_image;
+        if ($OfficeAsset->save()) {
+            $response = [
+                'success' => true,
+                'message' => 'Office Asset Added success',
+            ];
+        } else {
+            return back()->with('error', 'Building added failed,please try again');
+        }
+
+        return response()->json($response, 200);
+    }
+
 }

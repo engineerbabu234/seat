@@ -267,6 +267,7 @@
         }));
     }
 
+    saveOfficeAsset($('#asset_id').val());
     // function to re arrange office assets items
     function rearrangeAssets() {
         $("#assets-box").empty();
@@ -329,15 +330,15 @@
 
             editButton.addEventListener("click", function () {
                 hideCircleToolBox();
-                //editButtonClicked(officeAssets[i].id);
+                 editButtonClicked(officeAssets[i].id);
             });
             deleteButton.addEventListener("click", function () {
                 hideCircleToolBox()
-                //deleteButtonClicked(officeAssets[i].id);
+                deleteButtonClicked(officeAssets[i].id);
             });
             saveButton.addEventListener("click", function () {
                 hideCircleToolBox();
-                //saveOfficeAsset(officeAssets[i].id);
+                saveOfficeAsset(officeAssets[i].id);
             });
 
             colEle.appendChild(assetTitle);
@@ -446,7 +447,7 @@
     }
 
     // function to handle to start edit asset
-    function start(url, title) {
+    function start(url, title='') {
         
         clonedCircles.slice(0, clonedCircles.length);
         circleNums = 0;
@@ -478,7 +479,7 @@
             fill: "#000",
             selectable: false
         });
-        canvas.add(titleText);
+        //canvas.add(titleText);
 
         started_flag = true;
     };
@@ -575,7 +576,11 @@
         $(".removeImg").css("display", "none");
         $(".dotsImg").css("display", "none");
     }
+
+    //getcanvas iamge
+
     //loadDataFromStrapi();
+
     // load data from strapi
     function loadDataFromStrapi() {
         showSpinner();
@@ -814,6 +819,7 @@
 
         clonedCircles.map(((value, index) => {
             if (value._objects[1].text === id) {
+
                 if (value._objects[0].fill === circleBC) {
                     $("#btn-available").css("background-color", circleBC);
                     $("#btn-available").text("Blocked");
@@ -821,7 +827,7 @@
                     $("#btn-available").css("background-color", circleAC);
                     $("#btn-available").text("Available");
                 }
-
+                 
                 $("#change-number").text(value._objects[1].text);
                 $("#changeModal").modal("show");
             }

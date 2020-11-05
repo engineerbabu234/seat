@@ -77,6 +77,11 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
                     'as' => 'office.asset.getofficeassets',
                     'uses' => 'OfficeAssetController@getofficeassets',
                 ]);
+
+                Route::post('/addseat', [
+                    'as' => 'office.asset.addseat',
+                    'uses' => 'OfficeAssetController@addseat',
+                ]);
             });
         });
 

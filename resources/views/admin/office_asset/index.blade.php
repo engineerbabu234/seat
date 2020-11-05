@@ -157,8 +157,10 @@
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">Office Assets seats</h4>
-
         <a href="#" class="btn btn-info btn-sm   ml-5" id="img-create" > <i class="fas fa-plus"></i></a>
+        <div id="assets-box">
+        </div>
+        <a href="#" class="btn btn-info btn-sm ml-5" id="btnSave">Save</a>
 
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
@@ -169,6 +171,8 @@
   </div>
 </div>
 
+
+
 <!-- End display assets -->
 
 @endsection
@@ -177,6 +181,7 @@
 
  <!-- fabric canvas css -->
 
+<link  href="{{asset('admin_assets')}}/css/seat_book/main.css" rel="stylesheet">
 <link  href="{{asset('admin_assets')}}/css/seat_book/modal.css" rel="stylesheet">
  <!-- fabric canvas css -->
 @endpush
@@ -200,5 +205,10 @@
 	$(function() {
         var drEvent = $('.dropify-event').dropify();
     });
+
+	$(document).on('click','.seats_cancel',function(){
+        $("#changeModal").modal('hide');
+    });
+
 </script>
 @endpush
