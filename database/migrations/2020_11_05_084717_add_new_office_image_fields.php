@@ -16,6 +16,7 @@ class AddNewOfficeImageFields extends Migration
         Schema::table('office_images', function (Blueprint $table) {
             $table->integer('building_id')->unsigned()->nullable()->after("office_image_id");
             $table->integer('office_asset_id')->unsigned()->nullable()->after("building_id");
+            $table->integer('seat_id')->unsigned()->nullable()->after("office_id");
         });
     }
 
@@ -27,7 +28,7 @@ class AddNewOfficeImageFields extends Migration
     public function down()
     {
         Schema::table('office_images', function (Blueprint $table) {
-            $table->dropColumn(['building_id', 'office_asset_id']);
+            $table->dropColumn(['building_id', 'office_asset_id', 'seat_id']);
         });
     }
 }
