@@ -30,7 +30,7 @@ $(document).ready(function() {
 			data: 'id',
 			name: 'id',
 			render: function(data, type, column, meta) {
-				return '<a href="#" data-id="' + column.id + '" class="button accept get_assets">' + column.total_seats + '</a>';
+				return '<a href="#" data-id="' + column.id + '" class="button accept get_office_assets">' + column.total_seats + '</a>';
 			}
 		}, {
 			data: 'created_at',
@@ -207,7 +207,7 @@ $(document).on("click", ".edit_office_assets_request", function(e) {
 	});
 });
 
-$(document).on("click", ".get_assets", function(e) {
+$(document).on("click", ".get_office_assets", function(e) {
 	e.preventDefault();
 	var id = $(this).data('id');
 	openOfficeAsset(id);
@@ -268,7 +268,7 @@ $(document).on("click", ".add-booking-seat", function(e) {
 				swal("Success!", response.message, "success");
 				$('#changeModal').modal('hide');
 				openOfficeAsset(response.assetId);
-				myThis.find("#" + response.dotsId).addClass(".bookSeat").attr("data-id", response.id);
+				$(".dotsImg").find("#" + response.dotsId).addClass("editSeat").attr("data-id", response.id);
 			}
 		},
 	});
