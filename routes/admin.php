@@ -27,25 +27,12 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
 
         // office
         Route::group(['prefix' => 'office'], function () {
-            Route::get('/', 'OfficeController@index')->name('index');
-            Route::get('add_office', 'OfficeController@create')->name('add_office');
-            Route::post('store', 'OfficeController@store')->name('store');
-            Route::get('office_details/{id?}', 'OfficeController@show')->name('office_details');
-            Route::get('edit_office/{id?}', 'OfficeController@edit')->name('edit_office');
-            Route::post('update/{id?}', 'OfficeController@update')->name('update');
-            Route::get('delete/{id}', 'OfficeController@destroy')->name('destroy');
-            Route::get('delete_seat/{id}', 'OfficeController@deleteSeat')->name('delete_seat');
 
             // office asset
             Route::group(['prefix' => 'asset'], function () {
                 Route::get('/', [
                     'as' => 'office.asset',
                     'uses' => 'OfficeAssetController@index',
-                ]);
-
-                Route::post('/add', [
-                    'as' => 'office.asset.add',
-                    'uses' => 'OfficeAssetController@addAsset',
                 ]);
 
                 Route::post('/save', [
@@ -99,6 +86,15 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
                 ]);
 
             });
+
+            Route::get('/{building_id?}', 'OfficeController@index')->name('index');
+            Route::get('add_office', 'OfficeController@create')->name('add_office');
+            Route::post('store', 'OfficeController@store')->name('store');
+            Route::get('office_details/{id?}', 'OfficeController@show')->name('office_details');
+            Route::get('edit_office/{id?}', 'OfficeController@edit')->name('edit_office');
+            Route::post('update/{id?}', 'OfficeController@update')->name('update');
+            Route::get('delete/{id}', 'OfficeController@destroy')->name('destroy');
+            Route::get('delete_seat/{id}', 'OfficeController@deleteSeat')->name('delete_seat');
         });
 
         // reservation

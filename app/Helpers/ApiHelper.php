@@ -6,6 +6,11 @@ use App;
 
 class ApiHelper
 {
+    /**
+     * [otpGenrator description]
+     * @param  [type] $number [description]
+     * @return [type]         [description]
+     */
     public static function otpGenrator($number)
     {
         $generator = "1357902468";
@@ -16,6 +21,13 @@ class ApiHelper
         return $otp;
     }
 
+    /**
+     * [smsSendFunction description]
+     * @param  [type] $number  [description]
+     * @param  [type] $otp     [description]
+     * @param  [type] $message [description]
+     * @return [type]          [description]
+     */
     public static function smsSendFunction($number, $otp, $message)
     {
         $curl = curl_init();
@@ -48,6 +60,15 @@ class ApiHelper
         }
     }
 
+    /**
+     * [getDistance description]
+     * @param  [type] $lat1 [description]
+     * @param  [type] $lon1 [description]
+     * @param  [type] $lat2 [description]
+     * @param  [type] $lon2 [description]
+     * @param  [type] $unit [description]
+     * @return [type]       [description]
+     */
     public static function getDistance($lat1, $lon1, $lat2, $lon2, $unit)
     {
         $lat1 = (float) $lat1;
@@ -76,6 +97,12 @@ class ApiHelper
         }
     }
 
+    /**
+     * [sendNotificationAndroid description]
+     * @param  [type] $device_token [description]
+     * @param  array  $data         [description]
+     * @return [type]               [description]
+     */
     public static function sendNotificationAndroid($device_token, $data = array())
     {
         $registration_ids = $device_token;

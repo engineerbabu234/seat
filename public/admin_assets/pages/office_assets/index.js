@@ -23,8 +23,8 @@ $(document).ready(function() {
 			data: 'id',
 			name: 'id',
 			render: function(data, type, column, meta) {
- 					return '<a href="#" data-id="' + column.id + '" class="button accept get_assets">'+column.total_seats+'</a>';
- 			  }
+				return '<a href="#" data-id="' + column.id + '" class="button accept get_assets">' + column.total_seats + '</a>';
+			}
 		}, {
 			data: 'created_at',
 			name: 'created_at'
@@ -78,8 +78,6 @@ $(document).ready(function() {
 	});
 });
 
-
-
 $(document).on("click", ".add-office-btn", function(e) {
 	e.preventDefault();
 	var photo = $("form#add-office-asset-form").find(".dropify-render").find("img").attr("src");
@@ -88,7 +86,7 @@ $(document).on("click", ".add-office-btn", function(e) {
 		data += "&preview_image=" + photo;
 	}
 	$.ajax({
-		url: base_url + '/admin/office/asset/add',
+		url: base_url + '/admin/office/asset/save',
 		type: 'post',
 		dataType: 'json',
 		data: data,
@@ -114,8 +112,6 @@ $(document).on("click", ".add-office-btn", function(e) {
 		},
 	});
 });
-
-
 
 $(document).on("click", ".edit-office-btn", function(e) {
 	e.preventDefault();
@@ -197,7 +193,7 @@ $(document).on("click", ".edit_office_assets_request", function(e) {
 
 			if (response.success) {
 				$('#edit_assets').html(response.html);
-				 
+
 				var drEvent = $('.dropify-event').dropify();
 				$('#edit_modal').modal('show');
 
@@ -209,7 +205,7 @@ $(document).on("click", ".edit_office_assets_request", function(e) {
 
 $(document).on("click", ".get_assets", function(e) {
 	e.preventDefault();
-	var id = $(this).data('id'); 
+	var id = $(this).data('id');
 	var aurls = base_url + "/admin/office/asset/getofficeassets/" + id;
 	jQuery.ajax({
 		url: aurls,
@@ -231,15 +227,12 @@ $(document).on("click", ".get_assets", function(e) {
 	});
 });
 
-
-
-
 $(document).on("click", ".add-booking-seat", function(e) {
-	e.preventDefault(); 
+	e.preventDefault();
 	var photo = jQuery(this).parents('form:first').find(".dropify-render").find("img").attr("src");
-	 
+
 	var data = jQuery(this).parents('form:first').serialize();
-	 if (photo) {
+	if (photo) {
 		data += "&preview_seat_image=" + photo;
 	}
 	$.ajax({
@@ -261,8 +254,8 @@ $(document).on("click", ".add-booking-seat", function(e) {
 		success: function(response) {
 			if (response.success) {
 				$("#add-office-asset-seat-form").trigger('reset');
-				$('.dotsImg').data('seat_id',response.id);
-				swal("Success!", response.message, "success"); 
+				$('.dotsImg').data('seat_id', response.id);
+				swal("Success!", response.message, "success");
 				$('#changeModal').modal('hide');
 			}
 		},
@@ -271,11 +264,11 @@ $(document).on("click", ".add-booking-seat", function(e) {
 
 
 $(document).on("click", ".edit-booking-seat", function(e) {
-	e.preventDefault(); 
+	e.preventDefault();
 	var photo = jQuery(this).parents('form:first').find(".dropify-render").find("img").attr("src");
-	 
+
 	var data = jQuery(this).parents('form:first').serialize();
-	 if (photo) {
+	if (photo) {
 		data += "&preview_seat_image=" + photo;
 	}
 	$.ajax({
@@ -297,12 +290,10 @@ $(document).on("click", ".edit-booking-seat", function(e) {
 		success: function(response) {
 			if (response.success) {
 				$("#add-office-asset-seat-form").trigger('reset');
-				 
-				swal("Success!", response.message, "success"); 
+
+				swal("Success!", response.message, "success");
 				$('#changeModal').modal('hide');
 			}
 		},
 	});
 });
-
-
