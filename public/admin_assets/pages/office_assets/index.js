@@ -267,8 +267,14 @@ $(document).on("click", ".add-booking-seat", function(e) {
 				$('.dotsImg').data('seat_id', response.id);
 				swal("Success!", response.message, "success");
 				$('#changeModal').modal('hide');
+<<<<<<< HEAD
 				openOfficeAsset(response.assetId);
 				$(".dotsImg").find("#" + response.dotsId).addClass("editSeat").attr("data-id", response.id);
+=======
+				//openOfficeAsset(response.assetId);
+				$(".dotsImg").find("#" + response.dotsId).addClass(".editSeat").attr("data-id", response.id);
+				//myThis.find("#" + response.dotsId).addClass(".editSeat").attr("data-id", response.id);
+>>>>>>> 4561d8e80fe21bc400356a7ae71edc10013493b2
 			}
 		},
 	});

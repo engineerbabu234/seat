@@ -614,8 +614,8 @@
           var main_image = '';
           var canvas_data = res.data.asset_canvas;
 
-          if (canvas_data !== null) {
-            console.log('start canvas');
+
+          if (canvas_data !== null && canvas_data.length > 0 && canvas_data !== undefined) {
             main_image = res.data.asset_canvas;
             var json = main_image;
             canvas.clear();
@@ -786,8 +786,8 @@
     });
 
     var canvas_images = $('#canvas_image').val();
+
     if (canvas_images == 0) {
-      console.log('start first');
       start($("#main_image").val(), $("#asset_name").val());
     }
 
@@ -868,8 +868,19 @@
           }
 
           $("#change-number").text(value._objects[1].text);
-          $("form#add-office-asset-image-form").find("#dots_id").val(dots);
+          $("form#add-office-asset-image-form").find("#dots_id").val(dots); <<
+          <<
+          << < HEAD
+          $("#changeModal").modal("show"); ===
+          ===
+          =
+
           $("#changeModal").modal("show");
+          // $('#office_assets_seats').html("");
+          // $('#assets_seat_modal').modal('hide');
+          >>>
+          >>>
+          > 4561 d8e80fe21bc400356a7ae71edc10013493b2
         }
       }));
     });
