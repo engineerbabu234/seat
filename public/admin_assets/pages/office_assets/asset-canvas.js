@@ -870,12 +870,7 @@
 
           $("#change-number").text(value._objects[1].text);
           $("form#add-office-asset-image-form").find("#dots_id").val(dots);
-
-            // $("#assets_seat_modal").modal("hide");
-            // $("#assets_seat_modal").on("hidden.bs.modal",function(){
-            //     $("#changeModal").modal("show");
-            // });
-
+ 
               $("#changeModal").modal("show");
               $('#office_assets_seats').html("");
               $('#assets_seat_modal').modal('hide');
