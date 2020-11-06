@@ -267,91 +267,102 @@
         }));
     }
 
-    saveOfficeAsset($('#asset_id').val());
+    //saveOfficeAsset($('#asset_id').val());
+
     // function to re arrange office assets items
     function rearrangeAssets() {
         $("#assets-box").empty();
 
-        for (let i = 0; i < officeAssets.length; i++) {
-            let assetItemEle = document.createElement("div");
-            assetItemEle.className = "row mb-4 p-0 asset-item";
-            let colEle = document.createElement("div");
-            colEle.className = "col-lg-6 col-md-12 col-sm-12 p-1";
-            let assetTitle = document.createElement("h5");
-            assetTitle.className = "text-left";
-            assetTitle.innerText = officeAssets[i].name;
-            let colEle1 = document.createElement("div");
-            colEle1.className = "col-lg-2 col-md-12 col-sm-12 p-1";
-            let editButton = document.createElement("button");
-            if (currentOfficeIndex === officeAssets[i].id) {
-                editButton.className = "btn-assets btn-edit active";
-                editButton.disabled = true;
-            } else {
-                editButton.className = "btn-assets btn-edit";
-                editButton.disabled = false;
-            }
-            editButton.id = "btnEdit_" + officeAssets[i].id.toString();
-            editButton.innerText = "Edit";
-            let colEle2 = document.createElement("div");
-            colEle2.className = "col-lg-2 col-md-12 col-sm-12 p-1";
-            let deleteButton = document.createElement("button");
-            if (currentOfficeIndex === officeAssets[i].id) {
-                deleteButton.className = "btn-assets btn-delete";
-                deleteButton.disabled = false;
-            } else {
-                deleteButton.className = "btn-assets btn-delete active";
-                deleteButton.disabled = true;
-            }
-            deleteButton.id = "btnDelete_" + officeAssets[i].id.toString();
-            deleteButton.innerText = "Delete";
-            let colEle3 = document.createElement("div");
-            colEle3.className = "col-lg-2 col-md-12 col-sm-12 p-1";
-            let saveButton = document.createElement("button");
-            if (currentOfficeIndex === officeAssets[i].id) {
-                if (officeAssets[i].is_saved === true) {
-                    saveButton.className = "btn-assets btn-edit active";
-                    saveButton.innerText = "Saved";
-                    saveButton.disabled = true;
-                } else {
-                    saveButton.className = "btn-assets btn-edit";
-                    saveButton.disabled = false;
-                    saveButton.innerText = "Save";
-                }
-            } else {
-                if (officeAssets[i].is_saved === true) {
-                    saveButton.innerText = "Saved";
-                } else {
-                    saveButton.innerText = "Save";
-                }
-                saveButton.className = "btn-assets btn-edit active";
-                saveButton.disabled = true;
-            }
-            saveButton.id = "btnSave_" + officeAssets[i].id.toString();
-
-            editButton.addEventListener("click", function () {
+         $('#btnSave').on("click", function () {
                 hideCircleToolBox();
-                 editButtonClicked(officeAssets[i].id);
+                saveOfficeAsset($('#asset_id').val());
             });
-            deleteButton.addEventListener("click", function () {
-                hideCircleToolBox()
-                deleteButtonClicked(officeAssets[i].id);
-            });
-            saveButton.addEventListener("click", function () {
-                hideCircleToolBox();
-                saveOfficeAsset(officeAssets[i].id);
-            });
+ 
+        // for (let i = 0; i < officeAssets.length; i++) {
+        //     let assetItemEle = document.createElement("div");
+        //     assetItemEle.className = "row mb-4 p-0 asset-item";
+        //     let colEle = document.createElement("div");
+        //     colEle.className = "col-lg-6 col-md-12 col-sm-12 p-1";
+        //     let assetTitle = document.createElement("h5");
+        //     assetTitle.className = "text-left";
+        //     assetTitle.innerText = officeAssets[i].name;
+        //     let colEle1 = document.createElement("div");
+        //     colEle1.className = "col-lg-2 col-md-12 col-sm-12 p-1";
+        //     let editButton = document.createElement("button");
+        //     if (currentOfficeIndex === officeAssets[i].id) {
+        //         editButton.className = "btn-assets btn-edit active";
+        //         editButton.disabled = true;
+        //     } else {
+        //         editButton.className = "btn-assets btn-edit";
+        //         editButton.disabled = false;
+        //     }
+        //     editButton.id = "btnEdit_" + officeAssets[i].id.toString();
+        //     editButton.innerText = "Edit";
+        //     let colEle2 = document.createElement("div");
+        //     colEle2.className = "col-lg-2 col-md-12 col-sm-12 p-1";
+        //     let deleteButton = document.createElement("button");
+        //     if (currentOfficeIndex === officeAssets[i].id) {
+        //         deleteButton.className = "btn-assets btn-delete";
+        //         deleteButton.disabled = false;
+        //     } else {
+        //         deleteButton.className = "btn-assets btn-delete active";
+        //         deleteButton.disabled = true;
+        //     }
+        //     deleteButton.id = "btnDelete_" + officeAssets[i].id.toString();
+        //     deleteButton.innerText = "Delete";
+        //     let colEle3 = document.createElement("div");
+        //     colEle3.className = "col-lg-2 col-md-12 col-sm-12 p-1";
+        //     let saveButton = document.createElement("button");
+        //     if (currentOfficeIndex === officeAssets[i].id) {
+        //         if (officeAssets[i].is_saved === true) {
+        //             saveButton.className = "btn-assets btn-edit active";
+        //             saveButton.innerText = "Saved";
+        //             saveButton.disabled = true;
+        //         } else {
+        //             saveButton.className = "btn-assets btn-edit";
+        //             saveButton.disabled = false;
+        //             saveButton.innerText = "Save";
+        //         }
+        //     } else {
+        //         if (officeAssets[i].is_saved === true) {
+        //             saveButton.innerText = "Saved";
+        //         } else {
+        //             saveButton.innerText = "Save";
+        //         }
+        //         saveButton.className = "btn-assets btn-edit active";
+        //         saveButton.disabled = true;
+        //     }
+        //     saveButton.id = "btnSave_" + officeAssets[i].id.toString();
+            
+        //     editButton.addEventListener("click", function () {
+        //         hideCircleToolBox();
+        //          editButtonClicked(officeAssets[i].id);
+        //     });
+        //     deleteButton.addEventListener("click", function () {
+        //         hideCircleToolBox()
+        //         deleteButtonClicked(officeAssets[i].id);
+        //     });
+        //     saveButton.addEventListener("click", function () {
+        //         hideCircleToolBox();
+        //         saveOfficeAsset(officeAssets[i].id);
+        //     });
 
-            colEle.appendChild(assetTitle);
-            assetItemEle.appendChild(colEle);
-            colEle1.appendChild(editButton);
-            assetItemEle.appendChild(colEle1);
-            colEle2.appendChild(deleteButton);
-            assetItemEle.appendChild(colEle2);
-            colEle3.appendChild(saveButton);
-            assetItemEle.appendChild(colEle3)
-            $("#assets-box").append(assetItemEle);
-        }
+        //     colEle.appendChild(assetTitle);
+        //     assetItemEle.appendChild(colEle);
+        //     colEle1.appendChild(editButton);
+        //     assetItemEle.appendChild(colEle1);
+        //     colEle2.appendChild(deleteButton);
+        //     assetItemEle.appendChild(colEle2);
+        //     colEle3.appendChild(saveButton);
+        //     assetItemEle.appendChild(colEle3)
+        //     $("#assets-box").append(assetItemEle);
+        // }
     }
+
+    $('#btnSave').on('click',  function(event) {
+        event.preventDefault();
+          saveOfficeAsset($('#asset_id').val());
+    });
 
     // function remove main content
     function removeMainContent() {
@@ -385,20 +396,20 @@
 
     // function to save canvas data
     function saveOfficeAsset(id) {
-        if (officeAssets.length === 0)
-            return;
-
-        showSpinner();
+        if (officeAssets.length === 0){
+            return false;
+        }
+        
+        //showSpinner();
 
         saveOfficeItemCanvasObject(id);
-        $.ajax({
-            url: "http://34.246.156.37:1337/office-assets/?assetId=" + id.toString(),
-            type: "GET",
-            success: function (res) {
-                officeAssets.map(((value, index) => {
+
+         officeAssets.map(((value, index) => {
+                
+                return false;
                     if (Number(value.id) !== Number(id))
                         return;
-
+                    res = 0;
                     if (res.length > 0)  {
                         $.ajax({
                             url: "http://34.246.156.37:1337/office-assets/" + res[0].id.toString(),
@@ -438,6 +449,12 @@
                         });
                     }
                 }));
+        return false;
+        $.ajax({
+            url: "http://34.246.156.37:1337/office-assets/?assetId=" + id.toString(),
+            type: "GET",
+            success: function (res) {
+               
             },
             error: function (err) {
                 hideSpinner();
@@ -579,24 +596,37 @@
 
     //getcanvas iamge
 
-    //loadDataFromStrapi();
+     loadDataFromStrapi($('#asset_id').val());
 
     // load data from strapi
-    function loadDataFromStrapi() {
-        showSpinner();
+    function loadDataFromStrapi(id) {
+       
+       // showSpinner();
         $.ajax({
-            url: "http://34.246.156.37:1337/office-assets",
+            url:base_url + "/admin/office/asset/getofficeassetsinfo/" + id,
             type: "GET",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
             success: function (res) {
-                res.map(((value, index) => {
-                    officeAssets.push({
-                        id: value.assetId,
-                        name: value.name,
-                        description: value.description,
-                        canvas: JSON.parse(value.canvas),
-                        is_saved: true
-                    })
-                }));
+                console.log(res.data.id);
+
+                var main_image = '';
+                if(res.data.asset_canvas == 'NULL'){
+                    main_image = res.assets_image;
+
+                } else{
+                     main_image = res.data.asset_canvas;
+                     var json =  main_image;               
+                        canvas.clear();
+                        canvas.loadFromJSON(json, function() {
+                            canvas.renderAll();
+                        });  
+                }
+                 
+                
+                
+                
                 hideSpinner();
                 rearrangeAssets();
             },
@@ -754,8 +784,12 @@
     $(".img-preview").click(function () {
         $("#file-input").trigger("click");
     });
+    
 
-    start($("#main_image").val(), $("#asset_name").val());
+    if(canvas_image != 1){
+        start($("#main_image").val(), $("#asset_name").val());
+    }
+
     // create new office asset when click save button on modal
     $("#btn-save").click(async function () {
         removeMainContent();
@@ -816,7 +850,8 @@
 
     $(".dotsImg").click(function () {
         let id = $(this).attr("id").split("-")[1];
-
+        let seat_id = $(this).attr("id").split("-")[1];
+        let asset_id = $('#asset_id').val();
         clonedCircles.map(((value, index) => {
             if (value._objects[1].text === id) {
 
@@ -829,10 +864,14 @@
                 }
                  
                 $("#change-number").text(value._objects[1].text);
-                $("#changeModal").modal("show");
+                
+                $("#changeModal").modal("show"); 
+
             }
         }));
     });
+
+
 
     canvas.renderAll();
 
@@ -861,6 +900,7 @@
     });
 
     canvas.on("mouse:move", function (e) {
+        
         if (!started_flag)
             return;
         if (down_flag === false)
@@ -868,7 +908,7 @@
         if (!e.target)
             return;
 
-        setUnSavedStatus(currentOfficeIndex);
+        //setUnSavedStatus(currentOfficeIndex);
 
         rearrangeAssets();
         if (!e.target._objects)
@@ -880,8 +920,34 @@
                 calculate(e);
                 showCircleToolBox(e)
             }
-        }
+        } 
     });
+
+    var imageSaver = document.getElementById('btnSave');
+    imageSaver.addEventListener('click', saveImage, false);
+    function saveImage(e) {
+        var image_json = canvas.toJSON();
+        var asset_id = $('#asset_id').val();
+        console.log(image_json);
+         $.ajax({
+            url: base_url + '/admin/office/asset/updateassets_image/' + asset_id,
+            type: "POST",
+            dataType: 'json',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+             },
+            data: { 
+                canvas: JSON.stringify(image_json)
+            },
+            success: function (res) { 
+               // rearrangeAssets();
+            },
+            error: function (err) { 
+                console.log(err);
+            }
+        });
+        
+    }
 
     canvas.on("mouse:over", function (e) {
         if (!started_flag)
