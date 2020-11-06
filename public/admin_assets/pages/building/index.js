@@ -13,7 +13,7 @@ $(document).ready(function(){
 			{ data: 'building_id', name: 'building_id',
 				render: function (data, type, column, meta) {
 					if(column.office_count > 0 ){
-					return ' <a target="_blank" href="'+base_url+'/admin/building/office_list/'+column.building_id+'" class="button accept">'+column.office_count+'</a>';
+					return ' <a target="_blank" href="'+base_url+'/admin/office/'+column.building_id+'" class="button accept">'+column.office_count+'</a>';
 					 } else{
 					 	return ' <a   href="#" class="button accept">'+column.office_count+'</a>';
 					
