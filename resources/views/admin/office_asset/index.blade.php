@@ -23,7 +23,7 @@
 
 		<div class="custom-table-height">
 			<div class="table-responsive">
-				<table class="table table-striped" id="laravel_datatable">
+				<table class="table table-striped text-center" id="laravel_datatable">
 					<thead>
 						<tr>
 							<th>Assets ID.</th>

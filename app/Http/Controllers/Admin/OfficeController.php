@@ -24,8 +24,9 @@ class OfficeController extends Controller
      * @param  [type]  $buildingId [description]
      * @return [type]              [description]
      */
-    public function index(Request $request, $buildingId = "")
+    public function index(Request $request, $buildingId = null)
     {
+
         if ($request->ajax()) {
 
             $whereStr = '1 = ?';
@@ -40,10 +41,11 @@ class OfficeController extends Controller
 
             $columns = ['offices.office_id', 'offices.created_at', 'offices.office_name as office_name', 'offices.office_number as office_number', 'buildings.building_name as building_name', 'offices.description'];
 
-            $Office = Office::select($columns)->leftJoin("buildings", "buildings.building_id", "offices.building_id")->whereRaw($whereStr, $whereParams);
-
-            if ($buildingId != "") {
-                $Office = $office->where("offices.building_id", $buildingId);
+            if (isset($buildingId) && $buildingId != "") {
+                $Office = Office::select($columns)->leftJoin("buildings", "buildings.building_id", "offices.building_id")->whereRaw($whereStr, $whereParams);
+                $Office = $Office->where("offices.building_id", $buildingId);
+            } else {
+                $Office = Office::select($columns)->leftJoin("buildings", "buildings.building_id", "offices.building_id")->whereRaw($whereStr, $whereParams);
             }
 
             $Office = $Office->orderBy('office_id', 'desc');
