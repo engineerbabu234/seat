@@ -69,7 +69,7 @@ class OfficeAssetController extends Controller
 
             foreach ($officeAssets as $key => $value) {
 
-                $total_seats = OfficeSeat::where('office_id', $value->office_id)->whereNull('deleted_at')->get();
+                $total_seats = OfficeSeat::where('office_asset_id', $value->id)->whereNull('deleted_at')->get();
 
                 $final[$key]['id'] = $value->id;
                 $final[$key]['office_name'] = $value->office_name;

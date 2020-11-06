@@ -20,6 +20,11 @@ class ImageHelper
     Image::make($path.'/'.$fileName)->resize(150, 100)->save($path.'/'.$fileName);
     }*/
 
+    /**
+     * [getProfileImage description]
+     * @param  [type] $image [description]
+     * @return [type]        [description]
+     */
     public static function getProfileImage($image)
     {
         if ($image) {
@@ -30,6 +35,11 @@ class ImageHelper
         return url(static::$userPlaceholderImage);
     }
 
+    /**
+     * [getOfficeImage description]
+     * @param  [type] $image [description]
+     * @return [type]        [description]
+     */
     public static function getOfficeImage($image)
     {
         if ($image) {
@@ -40,6 +50,11 @@ class ImageHelper
         return url(static::$userPlaceholderImage);
     }
 
+    /**
+     * [getSelfieImage description]
+     * @param  [type] $image [description]
+     * @return [type]        [description]
+     */
     public static function getSelfieImage($image)
     {
         if ($image) {
@@ -50,6 +65,11 @@ class ImageHelper
         return url(static::$userPlaceholderImage);
     }
 
+    /**
+     * [getCategoryImage description]
+     * @param  [type] $image [description]
+     * @return [type]        [description]
+     */
     public static function getCategoryImage($image)
     {
         if ($image) {
@@ -60,6 +80,11 @@ class ImageHelper
         return url(static::$userPlaceholderImage);
     }
 
+    /**
+     * [getDriverDocumentImage description]
+     * @param  [type] $image [description]
+     * @return [type]        [description]
+     */
     public static function getDriverDocumentImage($image)
     {
         if ($image) {
@@ -70,6 +95,11 @@ class ImageHelper
         return url(static::$userPlaceholderImage);
     }
 
+    /**
+     * [getVehicleTypeImage description]
+     * @param  [type] $image [description]
+     * @return [type]        [description]
+     */
     public static function getVehicleTypeImage($image)
     {
         if ($image) {
@@ -80,6 +110,11 @@ class ImageHelper
         return url(static::$userPlaceholderImage);
     }
 
+    /**
+     * [getOfficeAssetsImage description]
+     * @param  [type] $image [description]
+     * @return [type]        [description]
+     */
     public static function getOfficeAssetsImage($image)
     {
         if ($image) {
@@ -90,10 +125,19 @@ class ImageHelper
         return url(static::$userPlaceholderImage);
     }
 
+    /**
+     * [getPlaceholderImage description]
+     * @return [type] [description]
+     */
     public static function getPlaceholderImage()
     {
         return url('uploads/others/user_placeholder.png');
     }
+
+    /**
+     * [getProductPlaceholderImage description]
+     * @return [type] [description]
+     */
     public static function getProductPlaceholderImage()
     {
         return url('uploads/others/placeholder.png');
