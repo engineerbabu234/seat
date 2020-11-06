@@ -7,7 +7,7 @@
 			<div class="row">
 				<div class="col-md-6 col-sm-6 col-xs-6">
 					<div class="title">
-						<h2>Office Assets</h2>
+						<h2>Office Assets List</h2>
 					</div>
 				</div>
 				<div class="col-md-6 col-sm-6 col-xs-12">
