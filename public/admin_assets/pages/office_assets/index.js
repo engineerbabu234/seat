@@ -267,8 +267,9 @@ $(document).on("click", ".add-booking-seat", function(e) {
 				$('.dotsImg').data('seat_id', response.id);
 				swal("Success!", response.message, "success");
 				$('#changeModal').modal('hide');
-				openOfficeAsset(response.assetId);
-				myThis.find("#" + response.dotsId).addClass(".bookSeat").attr("data-id", response.id);
+				//openOfficeAsset(response.assetId);
+				$(".dotsImg").find("#" + response.dotsId).addClass(".editSeat").attr("data-id", response.id);
+				//myThis.find("#" + response.dotsId).addClass(".editSeat").attr("data-id", response.id);
 			}
 		},
 	});
