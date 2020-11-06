@@ -221,7 +221,6 @@ $(document).on("click", ".get_assets", function(e) {
 				var drEvent = $('.dropify-event').dropify();
 				$('#assets_seat_modal').modal('show');
 				$("#office_assets_seats").canvasfiles();
-
 			}
 		},
 	});

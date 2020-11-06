@@ -44,7 +44,6 @@
               <div class="modal-body" >
                   @include("admin/office_asset/addofficeseats")
               </div>
-
             </div>
           </div>
         </div>
