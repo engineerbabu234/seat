@@ -277,7 +277,6 @@ $(document).on("click", ".add-booking-seat", function(e) {
 $(document).on("click", ".edit-booking-seat", function(e) {
 	e.preventDefault();
 	var photo = jQuery(this).parents('form:first').find(".dropify-render").find("img").attr("src");
-
 	var data = jQuery(this).parents('form:first').serialize();
 	if (photo) {
 		data += "&preview_seat_image=" + photo;
@@ -301,7 +300,6 @@ $(document).on("click", ".edit-booking-seat", function(e) {
 		success: function(response) {
 			if (response.success) {
 				$("#add-office-asset-seat-form").trigger('reset');
-
 				swal("Success!", response.message, "success");
 				$('#changeModal').modal('hide');
 			}

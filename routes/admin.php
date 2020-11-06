@@ -1,7 +1,6 @@
 <?php
 
 Route::group(['middleware' => ['auth', 'admin']], function () {
-
     Route::group(['prefix' => 'admin'], function () {
 
         Route::get('dashboard', 'HomeController@index')->name('dashboard');
@@ -84,7 +83,6 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
                     'as' => 'office.asset.edit_seats',
                     'uses' => 'OfficeAssetController@edit_seats',
                 ]);
-
             });
 
             Route::get('/{building_id?}', 'OfficeController@index')->name('index');
