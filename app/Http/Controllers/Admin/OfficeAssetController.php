@@ -278,6 +278,7 @@ class OfficeAssetController extends Controller
         $OfficeAsset->description = $inputs['description'];
         if (isset($preview_image)) {
             $OfficeAsset->preview_image = $preview_image;
+            $OfficeAsset->asset_canvas = '';
         }
         if ($OfficeAsset->save()) {
             $response = [
@@ -338,7 +339,7 @@ class OfficeAssetController extends Controller
     public function getofficeassets(Request $request, $assetId)
     {
 
-        $columns = ['office_asset.id', 'buildings.building_id', 'office_asset.preview_image', 'office_asset.office_id', 'office_asset.created_at', 'offices.office_name as office_name', 'buildings.building_name as building_name', 'office_asset.title', 'office_asset.description'];
+        $columns = ['office_asset.id', 'office_asset.asset_canvas', 'buildings.building_id', 'office_asset.preview_image', 'office_asset.office_id', 'office_asset.created_at', 'offices.office_name as office_name', 'buildings.building_name as building_name', 'office_asset.title', 'office_asset.description'];
         $whereStr = '1 = ?';
         $whereParams = [1];
         $whereStr .= ' AND office_asset.id = ' . $assetId;
@@ -384,7 +385,7 @@ class OfficeAssetController extends Controller
             'is_show_user_details' => 'required',
             'is_show_user_details' => 'required',
             'status' => 'required',
-            'preview_image' => 'required',
+            'preview_seat_image' => 'required',
         ];
         $messages = [];
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -398,7 +399,7 @@ class OfficeAssetController extends Controller
         }
 
         $image_64 = null;
-        $image_64 = $inputs['preview_image'];
+        $image_64 = $inputs['preview_seat_image'];
 
         $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
         $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
@@ -427,7 +428,6 @@ class OfficeAssetController extends Controller
         $OfficeSeat->is_show_user_details = $inputs['is_show_user_details'];
         $OfficeSeat->status = $inputs['status'];
         if ($OfficeSeat->save()) {
-
             $OfficeImage = new OfficeImage();
             $OfficeImage->office_id = $inputs['office_id'];
             $OfficeImage->seat_id = $OfficeSeat->seat_id;
@@ -443,6 +443,71 @@ class OfficeAssetController extends Controller
         } else {
             return back()->with('error', 'Office seat failed,please try again');
         }
+
+        return response()->json($response, 200);
+    }
+
+    /**
+     * [getofficeassetsinfo description]
+     * @param  Request $request    [description]
+     * @param  [type]  $assetId [description]
+     * @return [type]              [description]
+     */
+    public function getofficeassetsinfo(Request $request, $assetId)
+    {
+        $officeAsset = OfficeAsset::find($assetId);
+
+        $assets_image = ImageHelper::getOfficeAssetsImage($officeAsset->preview_image);
+
+        $response = [
+            'success' => true,
+            'data' => $officeAsset,
+            'assets_image' => $assets_image,
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    /**
+     * [updateassets_image description]
+     * @param Request $request [description]
+     */
+    public function updateassets_image(Request $request, $asset_id)
+    {
+        $inputs = $request->all();
+
+        $OfficeAsset = OfficeAsset::find($asset_id);
+        $OfficeAsset->asset_canvas = $inputs['canvas'];
+
+        if ($OfficeAsset->save()) {
+            $response = [
+                'success' => true,
+                'message' => 'Office assets image updated success',
+                'id' => $asset_id,
+            ];
+        } else {
+            return back()->with('error', 'Office assets failed,please try again');
+        }
+
+        return response()->json($response, 200);
+    }
+
+    /**
+     * [editOfficeAsset description]
+     * @param  Request $request    [description]
+     * @param  [type]  $assetId [description]
+     * @return [type]              [description]
+     */
+    public function edit_seats(Request $request, $seatid)
+    {
+        $officeseat = OfficeSeat::find($seatid);
+        $officeseat_image = OfficeImage::find($seatid);
+        $seat_image = ImageHelper::getOfficeAssetsImage($officeseat_image->preview_image);
+
+        $response = [
+            'success' => true,
+            'html' => view($this->viewPath . 'editofficeseats', compact('officeseat', 'seat_image'))->render(),
+        ];
 
         return response()->json($response, 200);
     }

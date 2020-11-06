@@ -1,4 +1,4 @@
-<form action="#" enctype="multipart/form-data" method="post" id="add-office-asset-seat-form">
+<form action="#" enctype="multipart/form-data" method="post" id="edit-office-asset-seat-form">
 	@csrf
 	<div class="row">
 		<div class="col-sm-6">
@@ -63,13 +63,13 @@
 		<div class="col-sm-12">
 			<div class="form-group">
 				<h6 class="sub-title">Office Seat Image <span class="text-danger">*</span></h6>
-				<input type="file" required id="preview_seat_image" name="preview_seat_image" class="form-control dropify-event" data-default-file=""   /><br>
-				<span class="error" id="preview_seat_image_error"></span>
+				<input type="file" required id="preview_image" name="preview_image" class="form-control dropify-event" data-default-file="" /><br>
+				<span class="error" id="preview_image_error"></span>
 			</div>
 		</div>
 		<div class="col-sm-12">
 			<div class="add-product-btn text-center">
-				<button class="  btn btn-info add-booking-seat"> Add Seat</button>
+				<button class="  btn btn-info edit-booking-seat"> Add Seat</button>
 			</div>
 		</div>
 	</div>

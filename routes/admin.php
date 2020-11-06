@@ -82,6 +82,22 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
                     'as' => 'office.asset.addseat',
                     'uses' => 'OfficeAssetController@addseat',
                 ]);
+
+                Route::get('/getofficeassetsinfo/{id}', [
+                    'as' => 'office.asset.getofficeassetsinfo',
+                    'uses' => 'OfficeAssetController@getofficeassetsinfo',
+                ]);
+
+                Route::post('/updateassets_image/{asset_id}', [
+                    'as' => 'office.asset.updateassets_image',
+                    'uses' => 'OfficeAssetController@updateassets_image',
+                ]);
+
+                Route::post('/edit_seats/{seat_id}', [
+                    'as' => 'office.asset.edit_seats',
+                    'uses' => 'OfficeAssetController@edit_seats',
+                ]);
+
             });
         });
 

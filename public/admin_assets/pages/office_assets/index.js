@@ -235,12 +235,12 @@ $(document).on("click", ".get_assets", function(e) {
 
 
 $(document).on("click", ".add-booking-seat", function(e) {
-	e.preventDefault();
+	e.preventDefault(); 
+	var photo = jQuery(this).parents('form:first').find(".dropify-render").find("img").attr("src");
 	 
-	var photo = $("form#add-office-asset-seat-form").find(".dropify-render").find("img").attr("src");
 	var data = jQuery(this).parents('form:first').serialize();
-	if (photo) {
-		data += "&preview_image=" + photo;
+	 if (photo) {
+		data += "&preview_seat_image=" + photo;
 	}
 	$.ajax({
 		url: base_url + '/admin/office/asset/addseat',
@@ -260,7 +260,8 @@ $(document).on("click", ".add-booking-seat", function(e) {
 		},
 		success: function(response) {
 			if (response.success) {
-				$("form#add-office-asset-seat-form")[0].reset();
+				$("#add-office-asset-seat-form").trigger('reset');
+				 
 				swal("Success!", response.message, "success"); 
 				$('#changeModal').modal('hide');
 			}
