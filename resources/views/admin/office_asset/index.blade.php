@@ -159,6 +159,7 @@
         <h4 class="modal-title">Office Assets seats</h4>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
+
       <div class="modal-body" id="office_assets_seats">
 
       </div>
