@@ -612,16 +612,21 @@
           console.log(res.data.id);
 
           var main_image = '';
-          if (res.data.asset_canvas == 'NULL') {
-            main_image = res.assets_image;
+          var canvas_data = res.data.asset_canvas;
 
-          } else {
+          if (canvas_data  !== null) {
+            console.log('start canvas');   
             main_image = res.data.asset_canvas;
             var json = main_image;
             canvas.clear();
             canvas.loadFromJSON(json, function() {
               canvas.renderAll();
             });
+           
+          } else {
+             main_image = res.assets_image;
+            console.log('start second');   
+            
           }
 
 
@@ -782,8 +787,9 @@
       $("#file-input").trigger("click");
     });
 
-
-    if (canvas_image != 1) {
+    var canvas_images = $('#canvas_image').val();
+    if (canvas_images == 0) {
+      console.log('start first');
       start($("#main_image").val(), $("#asset_name").val());
     }
 
@@ -864,12 +870,20 @@
 
           $("#change-number").text(value._objects[1].text);
           $("form#add-office-asset-image-form").find("#dots_id").val(dots);
-          $("#changeModal").modal("show");
-          $('#office_assets_seats').html("");
-          $('#assets_seat_modal').modal('hide');
+
+            // $("#assets_seat_modal").modal("hide");
+            // $("#assets_seat_modal").on("hidden.bs.modal",function(){
+            //     $("#changeModal").modal("show");
+            // });
+
+              $("#changeModal").modal("show");
+              $('#office_assets_seats').html("");
+              $('#assets_seat_modal').modal('hide');
         }
       }));
     });
+
+
 
     canvas.renderAll();
 

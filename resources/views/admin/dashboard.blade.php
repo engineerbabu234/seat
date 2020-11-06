@@ -31,7 +31,7 @@
 					@else
 						@foreach($data['buildings'] as $key => $value)
 							<div class="col-md-3 col-sm-4 col-xs-6 col-xs-6">
-								<a href="{{url('admin/building/office_list/'.$value->building_id)}}">
+								<a href="{{url('admin/office/'.$value->building_id)}}">
 									<div class="single-data">
 										<div class="heading">
 											<h3>{{$value->building_name}}</h3>
