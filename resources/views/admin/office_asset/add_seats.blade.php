@@ -22,6 +22,7 @@
           </div>
 
         </div>
+        <input type="hidden" name="dots_id" id="dots_id" value="">
          <input type="hidden" name="building_id" id="building_id" value="{{ $officeAsset->building_id }}">
          <input type="hidden" name="office_id" id="office_id" value="{{ $officeAsset->office_id }}">
          <input type="hidden" id="main_image" value="{{ $assets_image }}">

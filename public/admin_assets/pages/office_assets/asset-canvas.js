@@ -864,9 +864,9 @@
 
           $("#change-number").text(value._objects[1].text);
           $("form#add-office-asset-image-form").find("#dots_id").val(dots);
+          $("#changeModal").modal("show");
           $('#office_assets_seats').html("");
           $('#assets_seat_modal').modal('hide');
-          $("#changeModal").modal("show");
         }
       }));
     });

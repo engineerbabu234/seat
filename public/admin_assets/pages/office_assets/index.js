@@ -1,18 +1,18 @@
 $(document).ready(function() {
 	var url = window.location.pathname;
-		var id = url.substring(url.lastIndexOf('/') + 1);
-		if($.isNumeric(id)){
-			urls = base_url+'/admin/office/asset/'+id;
-		} else {
-			urls = base_url+'/admin/office/asset/';
-		}
+	var id = url.substring(url.lastIndexOf('/') + 1);
+	if ($.isNumeric(id)) {
+		urls = base_url + '/admin/office/asset/' + id;
+	} else {
+		urls = base_url + '/admin/office/asset/';
+	}
 
 	var laravel_datatable = $('#laravel_datatable').DataTable({
 		processing: true,
 		serverSide: true,
 		"ordering": false,
 		destroy: true,
-		ajax:urls,
+		ajax: urls,
 
 		columns: [{
 			data: 'id',
@@ -200,20 +200,21 @@ $(document).on("click", ".edit_office_assets_request", function(e) {
 
 			if (response.success) {
 				$('#edit_assets').html(response.html);
-
 				var drEvent = $('.dropify-event').dropify();
 				$('#edit_modal').modal('show');
-
 			}
 		},
 	});
 });
 
-
 $(document).on("click", ".get_assets", function(e) {
 	e.preventDefault();
 	var id = $(this).data('id');
-	var aurls = base_url + "/admin/office/asset/getofficeassets/" + id;
+	openOfficeAsset(id);
+});
+
+function openOfficeAsset(assetId) {
+	var aurls = base_url + "/admin/office/asset/getofficeassets/" + assetId;
 	jQuery.ajax({
 		url: aurls,
 		type: 'get',
@@ -222,7 +223,6 @@ $(document).on("click", ".get_assets", function(e) {
 			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 		},
 		success: function(response) {
-
 			if (response.success) {
 				$('#office_assets_seats').html(response.html);
 				var drEvent = $('.dropify-event').dropify();
@@ -231,16 +231,20 @@ $(document).on("click", ".get_assets", function(e) {
 			}
 		},
 	});
-});
+}
 
 $(document).on("click", ".add-booking-seat", function(e) {
 	e.preventDefault();
+
 	var photo = jQuery(this).parents('form:first').find(".dropify-render").find("img").attr("src");
 
 	var data = jQuery(this).parents('form:first').serialize();
 	if (photo) {
 		data += "&preview_seat_image=" + photo;
 	}
+
+	var myThis = $(this);
+
 	$.ajax({
 		url: base_url + '/admin/office/asset/addseat',
 		type: 'post',
@@ -263,11 +267,12 @@ $(document).on("click", ".add-booking-seat", function(e) {
 				$('.dotsImg').data('seat_id', response.id);
 				swal("Success!", response.message, "success");
 				$('#changeModal').modal('hide');
+				openOfficeAsset(response.assetId);
+				myThis.find("#" + response.dotsId).addClass(".bookSeat").attr("data-id", response.id);
 			}
 		},
 	});
 });
-
 
 $(document).on("click", ".edit-booking-seat", function(e) {
 	e.preventDefault();

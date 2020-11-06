@@ -194,7 +194,7 @@
  <script src="{{asset('admin_assets')}}/js/seat_book/fabric/centering_guidelines.js"></script>
  <script type="text/javascript" src="{{asset('admin_assets')}}/js/seat_book/fabric/aligning_guidelines.js"></script>
 
-<script type="text/javascript" src="{{asset('admin_assets')}}/js/seat_book/canvas.js"></script>
+<script type="text/javascript" src="{{asset('admin_assets')}}/pages/office_assets/asset-canvas.js"></script>
 
 <script type="text/javascript">
 
