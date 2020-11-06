@@ -91,14 +91,12 @@ class OfficeAssetController extends Controller
     }
 
     /**
-     * [addAsset description]
-     * @param Request $request [description]
+     * [saveOfficeAsset description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
      */
-    public function addAsset(Request $request)
+    public function saveOfficeAsset(Request $request)
     {
-
-        $inputs = $request->all();
-
         $rules = [
             'building_id' => 'required',
             'office_id' => 'required',
@@ -141,52 +139,10 @@ class OfficeAssetController extends Controller
         $OfficeAsset->title = $inputs['title'];
         $OfficeAsset->description = $inputs['description'];
         $OfficeAsset->preview_image = $preview_image;
-        if ($OfficeAsset->save()) {
-            $response = [
-                'success' => true,
-                'message' => 'Office Asset Added success',
-            ];
-        } else {
-            return back()->with('error', 'Building added failed,please try again');
-        }
-
-        return response()->json($response, 200);
-    }
-
-    /**
-     * [saveOfficeAsset description]
-     * @param  Request $request [description]
-     * @return [type]           [description]
-     */
-    public function saveOfficeAsset(Request $request)
-    {
-        $rules = [
-            'office_id' => ['required'],
-            'building_id' => ['required'],
-        ];
-
-        $messages = [];
-
-        $validator = Validator::make($request->all(), $rules, $messages);
-
-        if ($validator->fails()) {
-            $response = [
-                'success' => false,
-                'errors' => $validator->errors()->toArray(),
-            ];
-            return response()->json($response, 400);
-        }
-
-        $officeAsset = new OfficeAsset();
-        $officeAsset->building_id = $request->building_id;
-        $officeAsset->office_id = $request->office_id;
-        $officeAsset->title = $request->title;
-        $officeAsset->description = $request->description;
-        $officeAsset->preview_image = $request->preview_image;
-        $officeAsset->save();
 
         $response = [
             'success' => true,
+            'message' => 'Office Asset Added success',
         ];
 
         return response()->json($response, 200);
@@ -223,7 +179,6 @@ class OfficeAssetController extends Controller
      */
     public function updateOfficeAsset(Request $request, $assetId)
     {
-
         $inputs = $request->all();
 
         $rules = [
@@ -276,10 +231,12 @@ class OfficeAssetController extends Controller
         $OfficeAsset->office_id = $inputs['office_id'];
         $OfficeAsset->title = $inputs['title'];
         $OfficeAsset->description = $inputs['description'];
+
         if (isset($preview_image)) {
             $OfficeAsset->preview_image = $preview_image;
             $OfficeAsset->asset_canvas = '';
         }
+
         if ($OfficeAsset->save()) {
             $response = [
                 'success' => true,
@@ -312,15 +269,14 @@ class OfficeAssetController extends Controller
     }
 
     /**
-     * [get buildings description]
-     * @param  Request $request    [description]
-     * @param  [type]  $assetId [description]
-     * @return [type]              [description]
+     * [getoffices description]
+     * @param  Request $request     [description]
+     * @param  [type]  $building_id [description]
+     * @return [type]               [description]
      */
     public function getoffices(Request $request, $building_id)
     {
-
-        $office = Office::where('building_id', $building_id)->get();
+        $office = Office::select("office_name", "office_id")->where('building_id', $building_id)->get();
 
         $response = [
             'success' => true,
@@ -338,7 +294,6 @@ class OfficeAssetController extends Controller
      */
     public function getofficeassets(Request $request, $assetId)
     {
-
         $columns = ['office_asset.id', 'office_asset.asset_canvas', 'buildings.building_id', 'office_asset.preview_image', 'office_asset.office_id', 'office_asset.created_at', 'offices.office_name as office_name', 'buildings.building_name as building_name', 'office_asset.title', 'office_asset.description'];
         $whereStr = '1 = ?';
         $whereParams = [1];
@@ -356,6 +311,11 @@ class OfficeAssetController extends Controller
         return response()->json($response, 200);
     }
 
+    /**
+     * [remove_office_assets_image description]
+     * @param  [type] $assets_id [description]
+     * @return [type]            [description]
+     */
     public function remove_office_assets_image($assets_id)
     {
         $OfficeAsset = OfficeAsset::find($assets_id);
@@ -374,7 +334,6 @@ class OfficeAssetController extends Controller
      */
     public function addseat(Request $request)
     {
-
         $inputs = $request->all();
 
         $rules = [
@@ -519,7 +478,6 @@ class OfficeAssetController extends Controller
      */
     public function editseat(Request $request, $seatid)
     {
-
         $inputs = $request->all();
 
         $rules = [

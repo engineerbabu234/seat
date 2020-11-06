@@ -35,11 +35,6 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
                     'uses' => 'OfficeAssetController@index',
                 ]);
 
-                Route::post('/add', [
-                    'as' => 'office.asset.add',
-                    'uses' => 'OfficeAssetController@addAsset',
-                ]);
-
                 Route::post('/save', [
                     'as' => 'office.asset.save',
                     'uses' => 'OfficeAssetController@saveOfficeAsset',
