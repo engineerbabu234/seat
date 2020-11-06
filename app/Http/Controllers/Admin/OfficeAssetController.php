@@ -101,6 +101,7 @@ class OfficeAssetController extends Controller
      */
     public function saveOfficeAsset(Request $request)
     {
+        $inputs = $request->all();
         $rules = [
             'building_id' => 'required',
             'office_id' => 'required',
@@ -143,7 +144,7 @@ class OfficeAssetController extends Controller
         $OfficeAsset->title = $inputs['title'];
         $OfficeAsset->description = $inputs['description'];
         $OfficeAsset->preview_image = $preview_image;
-
+        $OfficeAsset->save();
         $response = [
             'success' => true,
             'message' => 'Office Asset Added success',
