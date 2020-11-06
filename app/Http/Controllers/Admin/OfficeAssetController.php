@@ -403,6 +403,8 @@ class OfficeAssetController extends Controller
                 'success' => true,
                 'message' => 'Office seat Added success',
                 'id' => $OfficeSeat->id,
+                'assetId' => $inputs['asset_id'],
+                'dotsId' => $inputs['dots_id'],
             ];
         } else {
             return back()->with('error', 'Office seat failed,please try again');
