@@ -261,6 +261,42 @@ $(document).on("click", ".add-booking-seat", function(e) {
 		success: function(response) {
 			if (response.success) {
 				$("#add-office-asset-seat-form").trigger('reset');
+				$('.dotsImg').data('seat_id',response.id);
+				swal("Success!", response.message, "success"); 
+				$('#changeModal').modal('hide');
+			}
+		},
+	});
+});
+
+
+$(document).on("click", ".edit-booking-seat", function(e) {
+	e.preventDefault(); 
+	var photo = jQuery(this).parents('form:first').find(".dropify-render").find("img").attr("src");
+	 
+	var data = jQuery(this).parents('form:first').serialize();
+	 if (photo) {
+		data += "&preview_seat_image=" + photo;
+	}
+	$.ajax({
+		url: base_url + '/admin/office/asset/addseat',
+		type: 'post',
+		dataType: 'json',
+		data: data,
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		},
+		error: function(response) {
+			if (response.status == 400) {
+				$.each(response.responseJSON.errors, function(k, v) {
+					$('#' + k + '_error').text(v);
+					$('#' + k + '_error').addClass('text-danger');
+				});
+			}
+		},
+		success: function(response) {
+			if (response.success) {
+				$("#add-office-asset-seat-form").trigger('reset');
 				 
 				swal("Success!", response.message, "success"); 
 				$('#changeModal').modal('hide');
@@ -268,4 +304,5 @@ $(document).on("click", ".add-booking-seat", function(e) {
 		},
 	});
 });
+
 

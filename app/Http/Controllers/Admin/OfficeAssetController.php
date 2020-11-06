@@ -430,7 +430,7 @@ class OfficeAssetController extends Controller
         if ($OfficeSeat->save()) {
             $OfficeImage = new OfficeImage();
             $OfficeImage->office_id = $inputs['office_id'];
-            $OfficeImage->seat_id = $OfficeSeat->seat_id;
+            $OfficeImage->seat_id = $OfficeSeat->id;
             $OfficeImage->building_id = $inputs['building_id'];
             $OfficeImage->office_asset_id = $inputs['asset_id'];
             $OfficeImage->image = $preview_image;
@@ -439,6 +439,7 @@ class OfficeAssetController extends Controller
             $response = [
                 'success' => true,
                 'message' => 'Office seat Added success',
+                'id' => $OfficeSeat->id,
             ];
         } else {
             return back()->with('error', 'Office seat failed,please try again');
@@ -508,6 +509,86 @@ class OfficeAssetController extends Controller
             'success' => true,
             'html' => view($this->viewPath . 'editofficeseats', compact('officeseat', 'seat_image'))->render(),
         ];
+
+        return response()->json($response, 200);
+    }
+
+    /**
+     * [addseat description]
+     * @param Request $request [description]
+     */
+    public function editseat(Request $request, $seatid)
+    {
+
+        $inputs = $request->all();
+
+        $rules = [
+            'building_id' => 'required',
+            'seat_no' => 'required',
+            'booking_mode' => 'required',
+            'seat_type' => 'required',
+            'is_show_user_details' => 'required',
+            'is_show_user_details' => 'required',
+            'status' => 'required',
+            'preview_seat_image' => 'required',
+        ];
+        $messages = [];
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            $response = [
+                'success' => false,
+                'errors' => $validator->errors()->toArray(),
+            ];
+            return response()->json($response, 400);
+        }
+
+        $image_64 = null;
+        $image_64 = $inputs['preview_seat_image'];
+
+        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+        $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+
+        $image = str_replace($replace, '', $image_64);
+
+        $image = str_replace(' ', '+', $image);
+
+        $imageName = str_random('10') . '_' . time() . '.' . $extension;
+        $destinationPath = ImageHelper::$getOfficeAssetsImagePath;
+
+        $uploadPath = $destinationPath . '/' . $imageName;
+
+        if (file_put_contents($uploadPath, base64_decode($image))) {
+            $preview_image = $imageName;
+        }
+
+        $OfficeSeat = new OfficeSeat();
+        $OfficeSeat->building_id = $inputs['building_id'];
+        $OfficeSeat->office_asset_id = $inputs['asset_id'];
+        $OfficeSeat->office_id = $inputs['office_id'];
+        $OfficeSeat->seat_no = $inputs['seat_no'];
+        $OfficeSeat->description = $inputs['description'];
+        $OfficeSeat->booking_mode = $inputs['booking_mode'];
+        $OfficeSeat->seat_type = $inputs['seat_type'];
+        $OfficeSeat->is_show_user_details = $inputs['is_show_user_details'];
+        $OfficeSeat->status = $inputs['status'];
+        if ($OfficeSeat->save()) {
+
+            $OfficeImage = new OfficeImage();
+            $OfficeImage->office_id = $inputs['office_id'];
+            $OfficeImage->seat_id = $OfficeSeat->id;
+            $OfficeImage->building_id = $inputs['building_id'];
+            $OfficeImage->office_asset_id = $inputs['asset_id'];
+            $OfficeImage->image = $preview_image;
+            $OfficeImage->save();
+
+            $response = [
+                'success' => true,
+                'message' => 'Office seat Added success',
+            ];
+        } else {
+            return back()->with('error', 'Office seat failed,please try again');
+        }
 
         return response()->json($response, 200);
     }

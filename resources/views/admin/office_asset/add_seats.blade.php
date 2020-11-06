@@ -1,10 +1,18 @@
 <form action="#" enctype="multipart/form-data" method="post" id="add-office-asset-image-form">
 @csrf
 
+    <!-- <div class="seat-status">
+      <h1>Seat Status</h1>
+      <h2 class="ts">Total Seats: 2</h2>
+      <h2 class="as">Available Seat: 2</h2>
+      <h2 class="bs1">Booked Seat: 0</h2>
+      <h2 class="bs">Blocked Seat: 0</h2>
+    </div> -->
+
     <div class="container-fluid" style="height: 100%;">
             <div class="row" style="height: 100%;">
-                <div class="col-lg-12 col-md-12 col-sm-12  " id="main">
-                    <canvas class="content" id="canvas"   ></canvas>
+                <div class="col-lg-12 col-md-12 col-sm-12" id="main">
+                    <canvas class="content" id="canvas"></canvas>
                 </div>
             </div>
             <hr>
