@@ -1,11 +1,18 @@
 $(document).ready(function() {
+	var url = window.location.pathname;
+		var id = url.substring(url.lastIndexOf('/') + 1);
+		if($.isNumeric(id)){
+			urls = base_url+'/admin/office/asset/'+id;
+		} else {
+			urls = base_url+'/admin/office/asset/';
+		}
 
 	var laravel_datatable = $('#laravel_datatable').DataTable({
 		processing: true,
 		serverSide: true,
 		"ordering": false,
 		destroy: true,
-		ajax: base_url + '/admin/office/asset',
+		ajax:urls,
 
 		columns: [{
 			data: 'id',

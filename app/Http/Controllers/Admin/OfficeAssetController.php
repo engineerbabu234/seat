@@ -26,7 +26,7 @@ class OfficeAssetController extends Controller
      * [index description]
      * @return [type] [description]
      */
-    public function index(Request $request)
+    public function index(Request $request, $office_id = null)
     {
         if ($request->ajax()) {
 
@@ -43,6 +43,10 @@ class OfficeAssetController extends Controller
             $columns = ['office_asset.id', 'office_asset.office_id', 'office_asset.created_at', 'offices.office_name as office_name', 'buildings.building_name as building_name', 'office_asset.title', 'office_asset.description'];
 
             $officeAssets = OfficeAsset::select($columns)->leftJoin("offices", "offices.office_id", "office_asset.office_id")->leftJoin("buildings", "buildings.building_id", "office_asset.building_id")->whereRaw($whereStr, $whereParams)->orderBy('id', 'desc');
+
+            if (isset($office_id) && $office_id != "") {
+                $officeAssets = $officeAssets->where("office_asset.office_id", $office_id);
+            }
 
             if ($officeAssets) {
                 $total = $officeAssets->get();

@@ -30,7 +30,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
 
             // office asset
             Route::group(['prefix' => 'asset'], function () {
-                Route::get('/', [
+                Route::get('/{id?}', [
                     'as' => 'office.asset',
                     'uses' => 'OfficeAssetController@index',
                 ]);

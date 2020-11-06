@@ -24,7 +24,7 @@
 
 		<div class="custom-table-height">
 			<div class="table-responsive">
-				<table class="table table-striped" id="laravel_datatable">
+				<table class="table table-striped text-center" id="laravel_datatable">
 					<thead>
 						<tr>
 							<th>Office ID.</th>
@@ -153,12 +153,21 @@
 @push('js')
   <script type="text/javascript" src="{{asset('public')}}/js/sweetalert.min.js"></script>
  <script type="text/javascript">
+ 		var url = window.location.pathname;
+		var id = url.substring(url.lastIndexOf('/') + 1);
+		if($.isNumeric(id)){
+			urls = base_url+'/admin/office/'+id;
+		} else {
+			urls = base_url+'/admin/office/';
+		}
+
+
  		var asset_datatable =$('#laravel_datatable').DataTable({
 			processing: true,
 			serverSide: true,
 			"ordering": false,
 			destroy: true,
-			ajax: base_url+'/admin/office',
+			ajax:urls ,
 
 			columns: [
 				{ data: 'office_id', name: 'office_id' },
@@ -168,7 +177,7 @@
 				{ data: 'office_id', name: 'office_id',
 					render: function (data, type, column, meta) {
 						if(column.seats > 0 ){
-							return '<a href="'+base_url+'/admin/office/office_details/'+column.office_id+'" target="_blank" class="button accept">'+column.seats+'</a>';
+							return '<a href="'+base_url+'/admin/office/asset/'+column.office_id+'" target="_blank" class="button accept">'+column.seats+'</a>';
 						} else{
 						return '<a href="#"  class="button accept">'+column.seats+'</a>';
 						}
