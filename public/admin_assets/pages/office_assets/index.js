@@ -269,8 +269,10 @@ $(document).on("click", ".add-booking-seat", function(e) {
 				swal("Success!", response.message, "success"); 
 				//openOfficeAsset(response.assetId);
 				//myThis.find("#" + response.dotsId).addClass(".editSeat").attr("data-id", response.id);
-				alert(response.id);
+				 
 				$("#" + response.dotsId).addClass("editSeat").attr("data-id", response.id);
+				 
+				 $('#seat_ids').val(response.id);
 				$('#btnSave').click();
 				$('#changeModal').modal('hide');
  

@@ -22,6 +22,7 @@
           </div>
 
         </div>
+        <input type="hidden" name="seat_ids" id="seat_ids" value="">
         <input type="hidden" name="is_edit" id="is_edit" value="">
         <input type="hidden" name="dots_id" id="dots_id" value="">
          <input type="hidden" name="building_id" id="building_id" value="{{ $officeAsset->building_id }}">

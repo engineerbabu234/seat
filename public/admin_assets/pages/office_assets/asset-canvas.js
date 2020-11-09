@@ -151,6 +151,7 @@
       }));
     }
 
+ 
 
     // function to load canvas json object into canvas
     function loadOfficeItemCanvasObject(id) {
@@ -306,6 +307,7 @@
 
     $('#btnSave').on('click', function(event) {
         event.preventDefault();
+
         saveImage(event);
     });
 
@@ -418,15 +420,18 @@
 
     // function to handle click event of circle a
     // clone new next circle from circle a
-    function cloneCircleA() {
-
-      circleNums++;
+    function cloneCircleA(seat_id = '') {
+      if(seat_id){
+            set_seat_id(seat_id);
+      }   else{
+         circleNums++;
       let newCircle = new fabric.Circle({
         radius: circleR,
         stroke: strokeCircleAC,
         fill: circleAC,
         selectable: false,
-      });
+      });  
+
       let newText = new fabric.Text(circleNums.toString(), {
         top: circleR,
         left: circleR,
@@ -437,7 +442,60 @@
         originY: "center",
         fill: "#fff"
       });
+
       let newGroup = new fabric.Group([newCircle, newText], {
+        top: canvas.getHeight() / 2 - circleR,
+        left: canvas.getWidth() / 2 - circleR,
+        lockRotation: true,
+        lockScalingX: true,
+        lockScalingY: true,
+        originX: "center",
+        originY: "center",
+        hasControls: false,
+        hasBorders: false
+      });
+
+      clonedCircles.push(newGroup);
+      canvas.add(newGroup);
+      canvas.renderAll();
+      }
+     
+    }
+
+
+    function set_seat_id(seat_id){
+
+        circleNums++;
+        let newCircle = new fabric.Circle({
+        radius: circleR,
+        stroke: strokeCircleAC,
+        fill: circleAC,
+        selectable: false,
+      });  
+
+      let newText = new fabric.Text(circleNums.toString(), {
+        top: circleR,
+        left: circleR,
+        fontSize: circleF,
+        selectable: false,
+        textAlign: "center",
+        originX: "center",
+        originY: "center",
+        fill: "#fff"
+      });
+
+       let SeatId = new fabric.SeatId(seat_id, {
+        top: circleR,
+        left: circleR,
+        fontSize: circleF,
+        selectable: false,
+        textAlign: "center",
+        originX: "center",
+        originY: "center",
+        fill: "#fff"
+      });
+
+      let newGroup = new fabric.Group([newCircle, newText,SeatId], {
         top: canvas.getHeight() / 2 - circleR,
         left: canvas.getWidth() / 2 - circleR,
         lockRotation: true,
@@ -454,9 +512,12 @@
       canvas.renderAll();
     }
 
+
+
     // show circle tool box
     function showCircleToolBox(e) {
-      console.log($('#is_edit').val());
+      console.log($('#is_edit').val()); 
+      console.log(e.target._objects[1].SeatId);
       $(".removeImg").attr("id", "remove-" + e.target._objects[1].text);
       $(".removeImg").css("left", e.target.left + $("#main").position().left + 25);
       $(".removeImg").css("top", e.target.top + 25);
@@ -532,8 +593,10 @@
 
         if (value.left === e.target.left) {
           drawVertical(value.left, value.top, e.target.top);
+          console.log('vertical');
         } else if (value.top === e.target.top) {
           drawHorizontal(value.top, value.left, e.target.left);
+          console.log('horizontal');
         }
       }))
     }
@@ -548,7 +611,7 @@
         left = left2 - left1;
         leftOrigin = left1
       }
-
+      console.log('new added object'+left.toFixed(2).toString());
       let ruler = new fabric.Text(left.toFixed(2).toString(), {
         top: top,
         left: leftOrigin + left / 2 - circleR / 2,
@@ -629,39 +692,7 @@
         $("#changeModal").modal("hide");
        canvas.renderAll();
     });
-
-    // handler to load image from open file window
-    $("#file-input").change(function(e) {
-      if (e.target.files.length < 1)
-        return;
-
-      let file = e.target.files[0];
-      let url = URL.createObjectURL(file);
-      let fr = new FileReader();
-      fr.addEventListener("load", function(e) {
-        document.getElementById("img-preview").src = e.target.result;
-      });
-      fr.readAsDataURL(file);
-
-      if ($("#new-title").val() !== "") {
-        $("#btn-save").prop("disabled", false);
-      } else {
-        $("#btn-save").prop("disabled", true);
-      }
-    });
-
-    $("#new-title").keyup(function() {
-      if ($(this).val() === "") {
-        $("#btn-save").prop("disabled", true);
-      } else {
-        if ($("#img-preview").attr("src") === "") {
-          $("#btn-save").prop("disabled", true);
-        } else {
-          $("#btn-save").prop("disabled", false);
-        }
-      }
-    });
-
+ 
     // trigger click event of input type file tag when image preview is clicked
     $(".img-preview").click(function() {
       $("#file-input").trigger("click");
@@ -680,6 +711,19 @@
       // if (edit_flag === false)
       //   return;
       cloneCircleA();
+    });
+
+     
+
+    $('.add-booking-seat').on('click', function(event) {
+        event.preventDefault();
+        var seat_id = $('#seat_ids').val();
+        clonedCircles.map(((value, index) => { 
+            if (seat_id) { 
+                value._objects[0].set("SeatId", circleAC);  
+            }
+        }));
+        
     });
 
     // handler for delete icon click event
@@ -868,6 +912,8 @@
       // hideCircleToolBox()
     });
   };
+
+  
 
   function delete_object(){
      swal({
