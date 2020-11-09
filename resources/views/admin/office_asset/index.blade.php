@@ -157,7 +157,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">Office Assets seats</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <button type="button" class="close closeOfficeAssetModal" data-dismiss="modal">&times;</button>
       </div>
 
       <div class="modal-body" id="office_assets_seats">
@@ -203,6 +203,10 @@
     });
 
 	$(document).on('click','.seats_cancel',function(){
+        $('#changeModal').modal('hide');
+    });
+
+    $(document).on('click','.closeOfficeAssetModal',function(){
         $('#changeModal').modal('hide');
     });
 

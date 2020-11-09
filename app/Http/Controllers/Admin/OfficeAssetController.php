@@ -395,7 +395,7 @@ class OfficeAssetController extends Controller
         if ($OfficeSeat->save()) {
             $OfficeImage = new OfficeImage();
             $OfficeImage->office_id = $inputs['office_id'];
-            $OfficeImage->seat_id = $OfficeSeat->id;
+            $OfficeImage->seat_id = $OfficeSeat->seat_id;
             $OfficeImage->building_id = $inputs['building_id'];
             $OfficeImage->office_asset_id = $inputs['asset_id'];
             $OfficeImage->image = $preview_image;
@@ -404,7 +404,7 @@ class OfficeAssetController extends Controller
             $response = [
                 'success' => true,
                 'message' => 'Office seat Added success',
-                'id' => $OfficeSeat->id,
+                'id' => $OfficeSeat->seat_id,
                 'assetId' => $inputs['asset_id'],
                 'dotsId' => $inputs['dots_id'],
             ];
@@ -468,8 +468,10 @@ class OfficeAssetController extends Controller
      */
     public function edit_seats(Request $request, $seatid)
     {
-        $officeseat = OfficeSeat::find($seatid);
-        $officeseat_image = OfficeImage::find($seatid);
+
+        $officeseat = OfficeSeat::where('seat_id', $seatid)->first();
+        $officeseat_image = OfficeImage::where('seat_id', $seatid)->where('office_id', $officeseat->office_id)->first();
+
         $seat_image = ImageHelper::getOfficeAssetsImage($officeseat_image->preview_image);
 
         $response = [
@@ -484,12 +486,11 @@ class OfficeAssetController extends Controller
      * [addseat description]
      * @param Request $request [description]
      */
-    public function editseat(Request $request, $seatid)
+    public function updateSeat(Request $request, $seatid)
     {
         $inputs = $request->all();
 
         $rules = [
-            'building_id' => 'required',
             'seat_no' => 'required',
             'booking_mode' => 'required',
             'seat_type' => 'required',
@@ -523,14 +524,14 @@ class OfficeAssetController extends Controller
         $destinationPath = ImageHelper::$getOfficeAssetsImagePath;
 
         $uploadPath = $destinationPath . '/' . $imageName;
-
         if (file_put_contents($uploadPath, base64_decode($image))) {
             $preview_image = $imageName;
+
         }
 
-        $OfficeSeat = new OfficeSeat();
+        $OfficeSeat = OfficeSeat::where('seat_id', $seatid)->first();
         $OfficeSeat->building_id = $inputs['building_id'];
-        $OfficeSeat->office_asset_id = $inputs['asset_id'];
+        $OfficeSeat->office_asset_id = $inputs['office_asset_id'];
         $OfficeSeat->office_id = $inputs['office_id'];
         $OfficeSeat->seat_no = $inputs['seat_no'];
         $OfficeSeat->description = $inputs['description'];
@@ -540,20 +541,16 @@ class OfficeAssetController extends Controller
         $OfficeSeat->status = $inputs['status'];
         if ($OfficeSeat->save()) {
 
-            $OfficeImage = new OfficeImage();
-            $OfficeImage->office_id = $inputs['office_id'];
-            $OfficeImage->seat_id = $OfficeSeat->id;
-            $OfficeImage->building_id = $inputs['building_id'];
-            $OfficeImage->office_asset_id = $inputs['asset_id'];
+            $OfficeImage = OfficeImage::where('office_id', $inputs['office_id'])->where('seat_id', $seatid)->first();
             $OfficeImage->image = $preview_image;
             $OfficeImage->save();
 
             $response = [
                 'success' => true,
-                'message' => 'Office seat Added success',
+                'message' => 'Office seat Updated success',
             ];
         } else {
-            return back()->with('error', 'Office seat failed,please try again');
+            return back()->with('error', 'Office seat updated failed,please try again');
         }
 
         return response()->json($response, 200);

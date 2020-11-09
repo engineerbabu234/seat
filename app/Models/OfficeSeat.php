@@ -9,5 +9,5 @@ class OfficeSeat extends Model
 {
     use SoftDeletes;
     protected $table = 'seats';
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'seat_id';
 }

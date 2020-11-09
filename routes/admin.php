@@ -83,6 +83,11 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
                     'as' => 'office.asset.edit_seats',
                     'uses' => 'OfficeAssetController@edit_seats',
                 ]);
+
+                Route::post('/updateSeat/{seat_id}', [
+                    'as' => 'office.asset.updateSeat',
+                    'uses' => 'OfficeAssetController@updateSeat',
+                ]);
             });
 
             Route::get('/{building_id?}', 'OfficeController@index')->name('index');

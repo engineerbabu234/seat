@@ -22,6 +22,7 @@
           </div>
 
         </div>
+        <input type="hidden" name="is_edit" id="is_edit" value="">
         <input type="hidden" name="dots_id" id="dots_id" value="">
          <input type="hidden" name="building_id" id="building_id" value="{{ $officeAsset->building_id }}">
          <input type="hidden" name="office_id" id="office_id" value="{{ $officeAsset->office_id }}">
@@ -29,8 +30,12 @@
          <input type="hidden" id="canvas_image" value="{{ isset($officeAsset->asset_canvas) ? 1 : 0 }}">
          <input type="hidden" name="asset_id" id="asset_id" value="{{ $officeAsset->id }}">
          <input type="file" id="file-input" style="display: none" />
-         <img src="{{asset('admin_assets')}}/images/seat_book/remove.png" class="removeImg" height="30">
+
+
+        <img src="{{asset('admin_assets')}}/images/seat_book/remove.png" class="removeImg" height="30">
         <img src="{{asset('admin_assets')}}/images/seat_book/dots.png" class="dotsImg" height="30">
+
+
         <div class="spinner-border text-warning" id="spinner"></div>
 
 

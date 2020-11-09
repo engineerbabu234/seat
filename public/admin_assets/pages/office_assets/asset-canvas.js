@@ -95,14 +95,7 @@
 
     canvas.setWidth(contentW);
     canvas.setHeight(contentH);
-
-    // function to handle click event of create new asset button
-    function createButtonClicked() {
-      if (currentOfficeIndex > -1)
-        saveOfficeItemCanvasObject(currentOfficeIndex);
-
-      $("#myModal").modal("show")
-    }
+ 
 
     function setSavedStatus(id) {
       officeAssets.map(((value, index) => {
@@ -138,53 +131,7 @@
       }));
     }
 
-    // function to handle click event of delete asset item button
-    function deleteButtonClicked(id) {
-      showSpinner();
-      $.ajax({
-        url: "http://34.246.156.37:1337/office-assets?assetId=" + id,
-        type: "GET",
-        success: function(res) {
-          if (res.length > 0) {
-            $.ajax({
-              url: "http://34.246.156.37:1337/office-assets/" + res[0].id,
-              type: "DELETE",
-              success: function(res) {
-                officeAssets.map(((value, index) => {
-                  if (Number(value.id) === Number(id)) {
-                    officeAssets.splice(index, 1);
-                    edit_flag = true;
-                    hideSpinner();
-                    canvas.clear();
-                    rearrangeAssets();
-                  }
-                }));
-              },
-              error: function(err) {
-                hideSpinner();
-                console.log(err)
-              }
-            });
-          } else {
-            officeAssets.map(((value, index) => {
-              if (Number(value.id) === Number(id)) {
-                officeAssets.splice(index, 1);
-                canvas.clear();
-                edit_flag = true;
-                hideSpinner();
-                rearrangeAssets();
-              }
-            }));
-          }
-        },
-        error: function(err) {
-          hideSpinner();
-          console.log(err)
-        }
-      })
-
-
-    }
+    
 
     // function to save canvas json data of office item
     function saveOfficeItemCanvasObject(id) {
@@ -204,14 +151,16 @@
       }));
     }
 
+
     // function to load canvas json object into canvas
     function loadOfficeItemCanvasObject(id) {
+        console.log('cloned circle');
       clonedCircles.splice(0, clonedCircles.length);
-      circleNums = 0;
-      officeAssets.map(((value, index) => {
-        if (id === value.id) {
+      circleNums = 0; 
+        console.log(canvas);
           canvas.clear();
-          canvas.loadFromJSON(officeAssets[index].canvas, canvas.renderAll.bind(canvas), function(o, object) {
+         
+          canvas.loadFromJSON(canvas, canvas.renderAll.bind(canvas), function(o, object) {
             if (object._objects) {
               if (object._objects.length === 2) {
                 if (object._objects[0].type === "circle") {
@@ -223,9 +172,8 @@
               }
             }
           });
-          canvas.renderAll();
-        }
-      }));
+          canvas.renderAll(); 
+      
     }
 
     // function to set disable on edit button and delete button
@@ -273,10 +221,7 @@
     function rearrangeAssets() {
       $("#assets-box").empty();
 
-      $('#btnSave').on("click", function() {
-        hideCircleToolBox();
-        saveOfficeAsset($('#asset_id').val());
-      });
+      
 
       // for (let i = 0; i < officeAssets.length; i++) {
       //     let assetItemEle = document.createElement("div");
@@ -360,8 +305,8 @@
     }
 
     $('#btnSave').on('click', function(event) {
-      event.preventDefault();
-      saveOfficeAsset($('#asset_id').val());
+        event.preventDefault();
+        saveImage(event);
     });
 
     // function remove main content
@@ -394,75 +339,7 @@
       $("#spinner").hide();
     }
 
-    // function to save canvas data
-    function saveOfficeAsset(id) {
-      if (officeAssets.length === 0) {
-        return false;
-      }
-
-      //showSpinner();
-
-      saveOfficeItemCanvasObject(id);
-
-      officeAssets.map(((value, index) => {
-
-        return false;
-        if (Number(value.id) !== Number(id))
-          return;
-        res = 0;
-        if (res.length > 0) {
-          $.ajax({
-            url: "http://34.246.156.37:1337/office-assets/" + res[0].id.toString(),
-            type: "PUT",
-            data: {
-              canvas: JSON.stringify(value.canvas)
-            },
-            success: function(res) {
-              setSavedStatus(value.id);
-              hideSpinner();
-              rearrangeAssets();
-            },
-            error: function(err) {
-              hideSpinner()
-              console.log(err);
-            }
-          });
-        } else {
-          $.ajax({
-            url: "http://34.246.156.37:1337/office-assets",
-            type: "POST",
-            data: {
-              assetId: value.id,
-              name: value.name,
-              description: value.description,
-              canvas: JSON.stringify(value.canvas)
-            },
-            success: function(res) {
-              officeAssets[index].is_saved = true;
-              hideSpinner();
-              rearrangeAssets();
-            },
-            error: function(err) {
-              hideSpinner();
-              console.log(err);
-            }
-          });
-        }
-      }));
-      return false;
-      $.ajax({
-        url: "http://34.246.156.37:1337/office-assets/?assetId=" + id.toString(),
-        type: "GET",
-        success: function(res) {
-
-        },
-        error: function(err) {
-          hideSpinner();
-          console.log(err)
-        }
-      });
-    }
-
+    
     // function to handle to start edit asset
     function start(url, title = '') {
 
@@ -542,6 +419,7 @@
     // function to handle click event of circle a
     // clone new next circle from circle a
     function cloneCircleA() {
+
       circleNums++;
       let newCircle = new fabric.Circle({
         radius: circleR,
@@ -578,6 +456,7 @@
 
     // show circle tool box
     function showCircleToolBox(e) {
+      console.log($('#is_edit').val());
       $(".removeImg").attr("id", "remove-" + e.target._objects[1].text);
       $(".removeImg").css("left", e.target.left + $("#main").position().left + 25);
       $(".removeImg").css("top", e.target.top + 25);
@@ -609,24 +488,31 @@
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         success: function(res) {
-          console.log(res.data.id);
-
+           
           var main_image = '';
           var canvas_data = res.data.asset_canvas;
+         
+           
 
+          if (canvas_data !== null && canvas_data.length > 0 && canvas_data !== undefined ) {
+              var candata = jQuery.parseJSON(canvas_data );
+              if( candata.objects.length !== 0 ){
+              main_image = res.data.asset_canvas;
+              var json = main_image;
+               
+              canvas.clear();
+              canvas.loadFromJSON(json, function() { 
+                canvas.renderAll();
+              });
 
-          if (canvas_data !== null && canvas_data.length > 0 && canvas_data !== undefined) {
-            main_image = res.data.asset_canvas;
-            var json = main_image;
-            canvas.clear();
-            canvas.loadFromJSON(json, function() {
-              canvas.renderAll();
-            });
-
+              loadOfficeItemCanvasObject(0);
+              $('#is_edit').val('yes');
+            } else {
+                 start($("#main_image").val(), $("#asset_name").val());
+            }
           } else {
             main_image = res.assets_image;
-            console.log('start second');
-
+            start($("#main_image").val(), $("#asset_name").val());
           }
 
           hideSpinner();
@@ -696,7 +582,7 @@
     }
 
     // function to remove rulers on canvas
-    function removeRulers() {
+    function removeRulers() { 
       rulers.map(((value, index) => {
         canvas.remove(rulers[index])
       }));
@@ -720,11 +606,7 @@
       }));
     }
 
-    // function to handle click event of create new asset button
-    $("#btnCreate").click(function() {
-      createButtonClicked();
-    });
-
+  
     // handler for click event of status change button
     $("#btn-change").click(function() {
       let num = $("#change-number").text();
@@ -744,8 +626,8 @@
         }
       }));
 
-      $("#changeModal").modal("hide");
-      canvas.renderAll();
+        $("#changeModal").modal("hide");
+       canvas.renderAll();
     });
 
     // handler to load image from open file window
@@ -790,63 +672,63 @@
     if (canvas_images == 0) {
       start($("#main_image").val(), $("#asset_name").val());
     }
-
-    // create new office asset when click save button on modal
-    $("#btn-save").click(async function() {
-      removeMainContent();
-      canvas.clear();
-
-      let url = document.getElementById("img-preview").src;
-
-      $("#myModal").modal("hide");
-
-      currentOfficeIndex = getOfficeNextIndex();
-      officeAssets.push({
-        id: getOfficeNextIndex(),
-        name: $("#new-title").val(),
-        description: $("#new-description").val(),
-        url: url,
-        is_saved: false
-      });
-
-      edit_flag = true;
-      rearrangeAssets();
-      start(url, $("#new-title").val());
-
-      document.getElementById("new-title").value = "";
-      document.getElementById("img-preview").src = "";
-      document.getElementById("new-description").value = "";
-      document.getElementById("btn-save").setAttribute("disabled", "true");
-    });
-
-    $("#img-create").mouseover(function() {
-      hideCircleToolBox()
-      $(this).attr("src", "assets/images/green-seat.png");
-    });
-
-    $("#img-create").mouseleave(function() {
-      hideCircleToolBox()
-      $(this).attr("src", "assets/images/seat-grey.png");
-    });
-
+ 
     // clone new circle from circle a when click circle a
     $("#img-create").click(function() {
-      hideCircleToolBox()
-      if (edit_flag === false)
-        return;
+      hideCircleToolBox();
+        console.log('clone user');
+      // if (edit_flag === false)
+      //   return;
       cloneCircleA();
     });
 
     // handler for delete icon click event
     $(".removeImg").click(function() {
       let id = $(this).attr("id").split("-")[1];
+     
+       swal({
+          title: "Are you sure you want to delete?",
+          //text: "Once deleted, you will not be able to recover this office data!",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true,
+         })
+         .then((willDelete) => {
+            if(!willDelete){
+                return false;
+            }
+               clonedCircles.map(((value, index) => { 
+                if (value._objects[1].text === id) {
+                  canvas.remove(clonedCircles[index])
+                  hideCircleToolBox();
+                }
+              }));
+              swal("Success!",'Seat Removed', "success");
 
-      clonedCircles.map(((value, index) => {
-        if (value._objects[1].text === id) {
-          canvas.remove(clonedCircles[index])
-          hideCircleToolBox();
-        }
-      }));
+                // $.ajax({
+                //     "headers":{
+                //     'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
+                // },
+                //     'type':'get',
+                //     'url' : url,
+                // beforeSend: function() {
+                // },
+                // 'success' : function(response){
+                //     if(response.status == 'success'){
+                      
+                        
+                //     }
+                //     if(response.status == 'failed'){
+                //         swal("Failed!",response.message, "error");
+                //     }
+                // },
+                // 'error' : function(error){
+                // },
+                // complete: function() {
+                // },
+                // });
+         });
+     
     });
 
     $(".dotsImg").click(function() {
@@ -854,8 +736,7 @@
       let id = $(this).attr("id").split("-")[1];
       let dots = $(this).attr("id");
       let seat_id = $(this).attr("id").split("-")[1];
-      let asset_id = $('#asset_id').val();
-
+      let asset_id = $('#asset_id').val(); 
       clonedCircles.map(((value, index) => {
         if (value._objects[1].text === id) {
 
@@ -868,19 +749,14 @@
           }
 
           $("#change-number").text(value._objects[1].text);
-          $("form#add-office-asset-image-form").find("#dots_id").val(dots); <<
-          <<
-          << < HEAD
-          $("#changeModal").modal("show"); ===
-          ===
-          =
-
-          $("#changeModal").modal("show");
+          $("form#add-office-asset-image-form").find("#dots_id").val(dots);  
+            var edit_seat = $('.dotsImg').hasClass('editSeat');
+          
+            $("#changeModal").modal("show");
+          
           // $('#office_assets_seats').html("");
           // $('#assets_seat_modal').modal('hide');
-          >>>
-          >>>
-          > 4561 d8e80fe21bc400356a7ae71edc10013493b2
+            
         }
       }));
     });
@@ -891,6 +767,8 @@
 
     // add listener for click event on canvas
     canvas.on("mouse:down", function(e) {
+      console.log('mouse down');
+      console.log(started_flag);
       if (!started_flag)
         return;
       hideCircleToolBox();
@@ -914,21 +792,22 @@
     });
 
     canvas.on("mouse:move", function(e) {
-
-      if (!started_flag)
-        return;
-      if (down_flag === false)
-        return;
-      if (!e.target)
-        return;
-
+       
+      // if (!started_flag)
+      //   return;
+      // if (down_flag === false)
+      //   return;
+      // if (!e.target)
+      //   return;
+      
       //setUnSavedStatus(currentOfficeIndex);
+      
 
-      rearrangeAssets();
-      if (!e.target._objects)
+    if (!e.target._objects)
         return;
       if (e.target._objects.length === 2) {
         if (e.target._objects[0].type === "circle") {
+            ;
           $("#changeModal").modal("hide");
           removeRulers();
           calculate(e);
@@ -965,6 +844,7 @@
     }
 
     canvas.on("mouse:over", function(e) {
+
       if (!started_flag)
         return;
 
@@ -988,3 +868,48 @@
       // hideCircleToolBox()
     });
   };
+
+  function delete_object(){
+     swal({
+          title: "Are you sure you want to delete?",
+          //text: "Once deleted, you will not be able to recover this office data!",
+          icon: "warning",
+          buttons: true,
+          dangerMode: true,
+         })
+         .then((willDelete) => {
+            if(!willDelete){
+                return false;
+            }
+               clonedCircles.map(((value, index) => { 
+                if (value._objects[1].text === id) {
+                  canvas.remove(clonedCircles[index])
+                  hideCircleToolBox();
+                }
+              }));
+              swal("Success!",'Seat Removed', "success");
+
+                // $.ajax({
+                //     "headers":{
+                //     'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
+                // },
+                //     'type':'get',
+                //     'url' : url,
+                // beforeSend: function() {
+                // },
+                // 'success' : function(response){
+                //     if(response.status == 'success'){
+                      
+                        
+                //     }
+                //     if(response.status == 'failed'){
+                //         swal("Failed!",response.message, "error");
+                //     }
+                // },
+                // 'error' : function(error){
+                // },
+                // complete: function() {
+                // },
+                // });
+         });
+  }
