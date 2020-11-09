@@ -6,7 +6,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: seatreservation:2.0
+    image: pforan/dailyseat_new:latest
     container_name: app
     restart: unless-stopped
     tty: true
