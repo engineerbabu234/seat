@@ -24,6 +24,16 @@ docker-compose build
 docker-compose up -d -V
 ```
 
+Build the Vewndor folder the first time
+```
+docker exec -it app composer install
+```
+
+Build the Vewndor folder the second time
+```
+docker exec -it app composer update
+```
+
 ## Helper scripts
 Running `composer`, `php artisan` or `phpunit` against the `php` container with helper scripts in the main directory:
 
