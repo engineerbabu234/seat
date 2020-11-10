@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Mail\NotifyMail;
 use App\Models\Building;
 use App\Models\Office;
+use App\Models\OfficeAsset;
 use App\Models\OfficeImage;
 use App\Models\ReserveSeat;
 use App\Models\Seat;
@@ -70,13 +71,40 @@ class HomeController extends Controller
         }
     }
 
+    public function AssetsList(Request $request)
+    {
+        $data['assets'] = OfficeAsset::where('office_id', $request->office_id)->whereNull('deleted_at')->first();
+
+        return view('assets_list', compact('data'));
+    }
+
+    public function getAssetsList(Request $request)
+    {
+        $inputs = $request->all();
+        $office_id = $inputs['office_id'];
+        $OfficeAsset = OfficeAsset::whereNull('deleted_at')
+            ->where(function ($query) use ($inputs) {
+                if (!empty($inputs['search_name'])) {
+                    $query->whereRaw('LOWER(title) like ?', '%' . strtolower($inputs['search_name']) . '%');
+                }
+            })
+            ->where('office_id', $office_id)
+            ->get();
+        if ($OfficeAsset->toArray()) {
+            return response(['status' => true, 'message' => 'Record found', 'data' => $OfficeAsset]);
+        } else {
+            return response(['status' => false, 'message' => 'Record not found']);
+        }
+    }
+
     public function reserveSeat(Request $request)
     {
         $inputs = $request->all();
         $data['offices'] = DB::table('offices as o')
-            ->select('o.*', 'b.building_name', 'b.building_address')
+            ->select('o.*', 'oa.title', 'oa.description', 'oa.preview_image', 'oa.asset_canvas', 'b.building_name', 'b.building_address')
             ->leftJoin('buildings as b', 'b.building_id', '=', 'o.building_id')
-            ->where('o.office_id', $inputs['office_id'])
+            ->leftJoin('office_asset as oa', 'oa.office_id', '=', 'o.office_id')
+            ->where('oa.id', $inputs['assets_id'])
             ->whereNull('o.deleted_at')
             ->first();
 

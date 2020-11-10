@@ -4,31 +4,11 @@
     <section class="reaserve-seat reaserve-seat-page">
         <div class="container">
             <div class="building-office-list">
-                <div class="heading">
-                    <h1>Feel All Details To Reserve Your Seat</h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Lorem ipsum dolor sit amet, consectetur consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Lorem ipsum dolor sit amet, consectetur</p>
-                </div>
+
 
                 <div class="single-list">
                     <div class="slider-box">
-                        <div class="owl-carousel">
-                            @if($data['offices']->office_image->isEmpty())
-                                <h1>No</h1>
-                            @else
-                            @foreach($data['offices']->office_image as $key1 => $value1)
-                                <div class="item">
-                                    <div class="img-txt">
-                                   <div class="img">
-                                     <img src="{{$value1->image}}" class="img-fluid">
-                                   </div>
-                                   <div class="txt">
-                                      <p>{{$value1->description}}</p>
-                                   </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                            @endif
-                        </div>
+
                     </div>
                     <div class="building-office-details">
                         {{-- <div class="img">
@@ -38,6 +18,8 @@
                         <p><span>Address:</span>{{$data['offices']->building_address}}</p>
                         <h3><span>Office:</span> {{$data['offices']->office_name}}</h3>
                         <p><span>Office Number:</span>{{$data['offices']->office_number}}</p>
+                          <h3><span>Assets:</span> {{$data['offices']->title}}</h3>
+                        <p><span>Assets Description:</span>{{$data['offices']->description}}</p>
                     </div>
 
                     <div class="seat-status">
@@ -126,11 +108,21 @@
 @endsection
 @push('css')
 <link rel="stylesheet" type="text/css" href="{{asset('front_end')}}/css/jquery-ui.css">
+
+<link  href="{{asset('admin_assets')}}/css/seat_book/main.css" rel="stylesheet">
+<link  href="{{asset('admin_assets')}}/css/seat_book/modal.css" rel="stylesheet">
 @endpush
 @push('js')
 <script src="{{asset('front_end')}}/js/jquery-ui.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script type="text/javascript" src="{{asset('admin_assets')}}/js/seat_book/fabric/fabric.min.js"></script>
+
+ <script src="{{asset('admin_assets')}}/js/seat_book/fabric/centering_guidelines.js"></script>
+ <script type="text/javascript" src="{{asset('admin_assets')}}/js/seat_book/fabric/aligning_guidelines.js"></script>
+
+<script type="text/javascript" src="{{asset('admin_assets')}}/pages/office_assets/asset-canvas.js"></script>
 <script>
+
 $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip();
 });
