@@ -271,6 +271,7 @@ $(document).on("click", ".add-booking-seat", function(e) {
 				//myThis.find("#" + response.dotsId).addClass(".editSeat").attr("data-id", response.id);
 				 
 				$("#" + response.dotsId).addClass("editSeat").attr("data-id", response.id);
+				$("#" + response.dotsId).addClass("removeImg").attr("data-id", response.id);
 				 
 				 $('#seat_ids').val(response.id);
 				$('#btnSave').click();

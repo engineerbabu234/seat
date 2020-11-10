@@ -585,13 +585,19 @@ class OfficeAssetController extends Controller
         } else {
             $counts = 1;
         }
-
+        $seatid = '';
         $OfficeSeatid = OfficeSeat::where('office_asset_id', $assets_id)->orderBy('seat_id', 'desc')->first();
+
+        if ($OfficeSeatid->seat_id == '') {
+            $seatid = 1;
+        } else {
+            $seatid = ($OfficeSeatid->seat_id + 1);
+        }
 
         $response = [
             'success' => true,
             'seat_count' => $counts,
-            'last_id' => $OfficeSeatid->seat_id,
+            'last_id' => $seatid,
         ];
 
         return response()->json($response, 200);

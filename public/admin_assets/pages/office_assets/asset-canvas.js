@@ -222,89 +222,8 @@
 
     // function to re arrange office assets items
     function rearrangeAssets() {
-      $("#assets-box").empty();
-
-      
-
-      // for (let i = 0; i < officeAssets.length; i++) {
-      //     let assetItemEle = document.createElement("div");
-      //     assetItemEle.className = "row mb-4 p-0 asset-item";
-      //     let colEle = document.createElement("div");
-      //     colEle.className = "col-lg-6 col-md-12 col-sm-12 p-1";
-      //     let assetTitle = document.createElement("h5");
-      //     assetTitle.className = "text-left";
-      //     assetTitle.innerText = officeAssets[i].name;
-      //     let colEle1 = document.createElement("div");
-      //     colEle1.className = "col-lg-2 col-md-12 col-sm-12 p-1";
-      //     let editButton = document.createElement("button");
-      //     if (currentOfficeIndex === officeAssets[i].id) {
-      //         editButton.className = "btn-assets btn-edit active";
-      //         editButton.disabled = true;
-      //     } else {
-      //         editButton.className = "btn-assets btn-edit";
-      //         editButton.disabled = false;
-      //     }
-      //     editButton.id = "btnEdit_" + officeAssets[i].id.toString();
-      //     editButton.innerText = "Edit";
-      //     let colEle2 = document.createElement("div");
-      //     colEle2.className = "col-lg-2 col-md-12 col-sm-12 p-1";
-      //     let deleteButton = document.createElement("button");
-      //     if (currentOfficeIndex === officeAssets[i].id) {
-      //         deleteButton.className = "btn-assets btn-delete";
-      //         deleteButton.disabled = false;
-      //     } else {
-      //         deleteButton.className = "btn-assets btn-delete active";
-      //         deleteButton.disabled = true;
-      //     }
-      //     deleteButton.id = "btnDelete_" + officeAssets[i].id.toString();
-      //     deleteButton.innerText = "Delete";
-      //     let colEle3 = document.createElement("div");
-      //     colEle3.className = "col-lg-2 col-md-12 col-sm-12 p-1";
-      //     let saveButton = document.createElement("button");
-      //     if (currentOfficeIndex === officeAssets[i].id) {
-      //         if (officeAssets[i].is_saved === true) {
-      //             saveButton.className = "btn-assets btn-edit active";
-      //             saveButton.innerText = "Saved";
-      //             saveButton.disabled = true;
-      //         } else {
-      //             saveButton.className = "btn-assets btn-edit";
-      //             saveButton.disabled = false;
-      //             saveButton.innerText = "Save";
-      //         }
-      //     } else {
-      //         if (officeAssets[i].is_saved === true) {
-      //             saveButton.innerText = "Saved";
-      //         } else {
-      //             saveButton.innerText = "Save";
-      //         }
-      //         saveButton.className = "btn-assets btn-edit active";
-      //         saveButton.disabled = true;
-      //     }
-      //     saveButton.id = "btnSave_" + officeAssets[i].id.toString();
-
-      //     editButton.addEventListener("click", function () {
-      //         hideCircleToolBox();
-      //          editButtonClicked(officeAssets[i].id);
-      //     });
-      //     deleteButton.addEventListener("click", function () {
-      //         hideCircleToolBox()
-      //         deleteButtonClicked(officeAssets[i].id);
-      //     });
-      //     saveButton.addEventListener("click", function () {
-      //         hideCircleToolBox();
-      //         saveOfficeAsset(officeAssets[i].id);
-      //     });
-
-      //     colEle.appendChild(assetTitle);
-      //     assetItemEle.appendChild(colEle);
-      //     colEle1.appendChild(editButton);
-      //     assetItemEle.appendChild(colEle1);
-      //     colEle2.appendChild(deleteButton);
-      //     assetItemEle.appendChild(colEle2);
-      //     colEle3.appendChild(saveButton);
-      //     assetItemEle.appendChild(colEle3)
-      //     $("#assets-box").append(assetItemEle);
-      // }
+      $("#assets-box").empty(); 
+ 
     }
 
     $('#btnSave').on('click', function(event) {
@@ -381,77 +300,37 @@
 
       started_flag = true;
     };
-
-    // function to handle click event of circle b
-    // clone new next circle from circle b
-    function cloneCircleB() {
-      circleNums++;
-      let newCircle = new fabric.Circle({
-        radius: circleR,
-        stroke: strokeCircleBC,
-        fill: circleBC,
-        selectable: false,
-      });
-      let newText = new fabric.Text(circleNums.toString(), {
-        top: circleR,
-        left: circleR,
-        fontSize: circleF,
-        selectable: false,
-        textAlign: "center",
-        originX: "center",
-        originY: "center",
-        fill: "#fff"
-      });
-      let newGroup = new fabric.Group([newCircle, newText], {
-        top: canvas.getHeight() / 2 - circleR,
-        left: canvas.getWidth() / 2 - circleR,
-        lockRotation: true,
-        lockScalingX: true,
-        lockScalingY: true,
-        originX: "center",
-        originY: "center",
-        hasControls: false,
-        hasBorders: false
-      });
-
-      clonedCircles.push(newGroup);
-
-      canvas.add(newGroup);
-      canvas.renderAll();
-    }
+ 
 
     // function to handle click event of circle a
     // clone new next circle from circle a
     function cloneCircleA() {
        circleNums++;
-      // var last_id = $('#last_id').val();
-      // var total_count = $('#total_count').val();
-      //   if(total_count > 0){
-      //       circleNums1 = total_count + circleNums;
-            
-      //   }  else {
-      //       circleNums1 = circleNums; 
-      //   }
 
-      let newCircle = new fabric.Circle({
+      var last_id = $('#last_id').val();
+    
+      let newCircle = new fabric.Circle({ 
+     
         radius: circleR,
         stroke: strokeCircleAC,
         fill: circleAC,
-        selectable: false,
-        name: last_id
+        selectable: false,  
       });  
-
-      let newText = new fabric.Text(circleNums.toString(), {
+     
+      let newText = new fabric.Text(circleNums.toString(), { 
         top: circleR,
         left: circleR,
         fontSize: circleF,
-        selectable: false,
+        selectable: true,
         textAlign: "center",
         originX: "center",
         originY: "center",
-        fill: "#fff"
-      });
+        fill: "#fff",   
+        subscript:{'seatid':54}
+      });   
 
+      
+ 
       let newGroup = new fabric.Group([newCircle, newText], {
         top: canvas.getHeight() / 2 - circleR,
         left: canvas.getWidth() / 2 - circleR,
@@ -461,27 +340,29 @@
         originX: "center",
         originY: "center",
         hasControls: false,
-        hasBorders: false
+        hasBorders: false, 
+       
       });
+
+
 
       clonedCircles.push(newGroup);
       canvas.add(newGroup);
-      canvas.renderAll();
-      
-     
+      canvas.renderAll(); 
     }
-
-
-    
-
+ 
 
     // show circle tool box
-    function showCircleToolBox(e) { 
+    function showCircleToolBox(e) {
+    console.log(e.target._objects[1]);
       $(".removeImg").attr("id", "remove-" + e.target._objects[1].text);
+      $(".removeImg").data("id",  e.target._objects[1].group.seatid);
       $(".removeImg").css("left", e.target.left + $("#main").position().left + 25);
       $(".removeImg").css("top", e.target.top + 25);
       $(".removeImg").css("display", "block");
-      $(".dotsImg").attr("id", "dots-" + e.target._objects[1].text);
+      $(".dotsImg").attr("id", "dots-4" );
+      //$(".dotsImg").attr("id", "dots-" + e.target._objects[1].text);
+      $(".dotsImg").data("id", e.target._objects[1].group.seatid);
       $(".dotsImg").css("left", e.target.left + $("#main").position().left - 20);
       $(".dotsImg").css("top", e.target.top + 25);
       $(".dotsImg").css("display", "block");
@@ -568,7 +449,7 @@
         left = left2 - left1;
         leftOrigin = left1
       }
-      console.log('new added object'+left.toFixed(2).toString());
+     
       let ruler = new fabric.Text(left.toFixed(2).toString(), {
         top: top,
         left: leftOrigin + left / 2 - circleR / 2,
@@ -795,8 +676,8 @@
       }
     });
 
-    var imageSaver = document.getElementById('btnSave');
-    imageSaver.addEventListener('click', saveImage, false);
+    // var imageSaver = document.getElementById('btnSave');
+    // imageSaver.addEventListener('click', saveImage, false);
 
     function saveImage(e) {
       var image_json = canvas.toJSON();

@@ -140,7 +140,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">Edit Office Assets</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <button type="button" class="close_new colse_edit_modal" >&times;</button>
       </div>
       <div class="modal-body" id="edit_assets">
 
@@ -157,7 +157,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">Office Assets seats</h4>
-        <button type="button" class="close_new  closeOfficeAssetModal" data-dismiss="modal">&times;</button>
+        <button type="button" class="close_new  closeOfficeAssetModal"  >&times;</button>
       </div>
 
       <div class="modal-body" id="office_assets_seats">
@@ -212,8 +212,22 @@
         $('#changeModal').modal('hide');
     });
 
+    $(document).on('click','.colse_edit_modal',function(){
+        $('#edit_modal').modal('hide');
+    });
+
+    $(document).on('click','.colse_edit_modal',function(){
+        $('#edit_modal').modal('hide');
+    });
+
+    $(document).on('click','.seats_update_cancel',function(){
+        $('#updateseatsModal').modal('hide');
+    });
+
     $(document).on('click','.closeOfficeAssetModal',function(){
         $('#assets_seat_modal').modal('hide');
+        var redrawtable = jQuery('#laravel_datatable').dataTable();
+				redrawtable.fnDraw();
     });
 
 </script>
