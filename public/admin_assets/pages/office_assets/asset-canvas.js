@@ -158,11 +158,13 @@
         console.log('cloned circle');
       clonedCircles.splice(0, clonedCircles.length);
       circleNums = 0; 
-        console.log(canvas);
+          
           canvas.clear();
          
           canvas.loadFromJSON(canvas, canvas.renderAll.bind(canvas), function(o, object) {
+            
             if (object._objects) {
+                console.log(bject._objects[1].name);
               if (object._objects.length === 2) {
                 if (object._objects[0].type === "circle") {
                   if (object._objects[1].text !== "B" && object._objects[1].text !== "A") {
@@ -420,16 +422,23 @@
 
     // function to handle click event of circle a
     // clone new next circle from circle a
-    function cloneCircleA(seat_id = '') {
-      if(seat_id){
-            set_seat_id(seat_id);
-      }   else{
-         circleNums++;
+    function cloneCircleA() {
+       circleNums++;
+      // var last_id = $('#last_id').val();
+      // var total_count = $('#total_count').val();
+      //   if(total_count > 0){
+      //       circleNums1 = total_count + circleNums;
+            
+      //   }  else {
+      //       circleNums1 = circleNums; 
+      //   }
+
       let newCircle = new fabric.Circle({
         radius: circleR,
         stroke: strokeCircleAC,
         fill: circleAC,
         selectable: false,
+        name: last_id
       });  
 
       let newText = new fabric.Text(circleNums.toString(), {
@@ -458,66 +467,16 @@
       clonedCircles.push(newGroup);
       canvas.add(newGroup);
       canvas.renderAll();
-      }
+      
      
     }
 
 
-    function set_seat_id(seat_id){
-
-        circleNums++;
-        let newCircle = new fabric.Circle({
-        radius: circleR,
-        stroke: strokeCircleAC,
-        fill: circleAC,
-        selectable: false,
-      });  
-
-      let newText = new fabric.Text(circleNums.toString(), {
-        top: circleR,
-        left: circleR,
-        fontSize: circleF,
-        selectable: false,
-        textAlign: "center",
-        originX: "center",
-        originY: "center",
-        fill: "#fff"
-      });
-
-       let SeatId = new fabric.SeatId(seat_id, {
-        top: circleR,
-        left: circleR,
-        fontSize: circleF,
-        selectable: false,
-        textAlign: "center",
-        originX: "center",
-        originY: "center",
-        fill: "#fff"
-      });
-
-      let newGroup = new fabric.Group([newCircle, newText,SeatId], {
-        top: canvas.getHeight() / 2 - circleR,
-        left: canvas.getWidth() / 2 - circleR,
-        lockRotation: true,
-        lockScalingX: true,
-        lockScalingY: true,
-        originX: "center",
-        originY: "center",
-        hasControls: false,
-        hasBorders: false
-      });
-
-      clonedCircles.push(newGroup);
-      canvas.add(newGroup);
-      canvas.renderAll();
-    }
-
+    
 
 
     // show circle tool box
-    function showCircleToolBox(e) {
-      console.log($('#is_edit').val()); 
-      console.log(e.target._objects[1].SeatId);
+    function showCircleToolBox(e) { 
       $(".removeImg").attr("id", "remove-" + e.target._objects[1].text);
       $(".removeImg").css("left", e.target.left + $("#main").position().left + 25);
       $(".removeImg").css("top", e.target.top + 25);
@@ -551,9 +510,7 @@
         success: function(res) {
            
           var main_image = '';
-          var canvas_data = res.data.asset_canvas;
-         
-           
+          var canvas_data = res.data.asset_canvas; 
 
           if (canvas_data !== null && canvas_data.length > 0 && canvas_data !== undefined ) {
               var candata = jQuery.parseJSON(canvas_data );
@@ -710,70 +667,48 @@
         console.log('clone user');
       // if (edit_flag === false)
       //   return;
-      cloneCircleA();
+        getlastdata($('#asset_id').val()); 
+        setTimeout(function() {
+            cloneCircleA();
+        }, 1000);
+         
     });
 
      
 
     $('.add-booking-seat').on('click', function(event) {
-        event.preventDefault();
-        var seat_id = $('#seat_ids').val();
-        clonedCircles.map(((value, index) => { 
-            if (seat_id) { 
-                value._objects[0].set("SeatId", circleAC);  
-            }
-        }));
+        event.preventDefault();  
+        setTimeout(function() { 
+           
+        }, 2000);
+        
         
     });
 
     // handler for delete icon click event
     $(".removeImg").click(function() {
-      let id = $(this).attr("id").split("-")[1];
-     
-       swal({
-          title: "Are you sure you want to delete?",
-          //text: "Once deleted, you will not be able to recover this office data!",
-          icon: "warning",
-          buttons: true,
-          dangerMode: true,
-         })
-         .then((willDelete) => {
-            if(!willDelete){
-                return false;
-            }
-               clonedCircles.map(((value, index) => { 
+
+
+      let id = $(this).attr("id").split("-")[1]; 
+      clonedCircles.map(((value, index) => { 
                 if (value._objects[1].text === id) {
                   canvas.remove(clonedCircles[index])
                   hideCircleToolBox();
                 }
               }));
-              swal("Success!",'Seat Removed', "success");
 
-                // $.ajax({
-                //     "headers":{
-                //     'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
-                // },
-                //     'type':'get',
-                //     'url' : url,
-                // beforeSend: function() {
-                // },
-                // 'success' : function(response){
-                //     if(response.status == 'success'){
-                      
-                        
-                //     }
-                //     if(response.status == 'failed'){
-                //         swal("Failed!",response.message, "error");
-                //     }
-                // },
-                // 'error' : function(error){
-                // },
-                // complete: function() {
-                // },
-                // });
-         });
+      
      
     });
+
+    function remove_objects(id){
+        clonedCircles.map(((value, index) => { 
+                if (value._objects[1].text === id) {
+                  canvas.remove(clonedCircles[index])
+                  hideCircleToolBox();
+                }
+              }));
+    }
 
     $(".dotsImg").click(function() {
 
@@ -791,7 +726,7 @@
             $("#btn-available").css("background-color", circleAC);
             $("#btn-available").text("Available");
           }
-
+           
           $("#change-number").text(value._objects[1].text);
           $("form#add-office-asset-image-form").find("#dots_id").val(dots);  
             var edit_seat = $('.dotsImg').hasClass('editSeat');
@@ -866,7 +801,7 @@
     function saveImage(e) {
       var image_json = canvas.toJSON();
       var asset_id = $('#asset_id').val();
-      console.log(image_json);
+      
       $.ajax({
         url: base_url + '/admin/office/asset/updateassets_image/' + asset_id,
         type: "POST",
@@ -915,7 +850,7 @@
 
   
 
-  function delete_object(){
+  function delete_object(){ 
      swal({
           title: "Are you sure you want to delete?",
           //text: "Once deleted, you will not be able to recover this office data!",
@@ -927,12 +862,7 @@
             if(!willDelete){
                 return false;
             }
-               clonedCircles.map(((value, index) => { 
-                if (value._objects[1].text === id) {
-                  canvas.remove(clonedCircles[index])
-                  hideCircleToolBox();
-                }
-              }));
+              
               swal("Success!",'Seat Removed', "success");
 
                 // $.ajax({
@@ -959,3 +889,28 @@
                 // });
          });
   }
+
+
+   // load data from strapi
+    function getlastdata(id) {
+
+      // showSpinner();
+        $.ajax({
+        url: base_url + "/admin/office/asset/getAssetsSeats/" + id,
+        type: "GET",
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(res) {
+           
+            $('#total_count').val(res.seat_count);
+            $('#last_id').val(res.last_id);
+          
+        },
+        error: function(err) {
+          console.log(err); 
+        }
+      });
+
+     
+    }

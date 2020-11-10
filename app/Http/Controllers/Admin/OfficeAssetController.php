@@ -556,4 +556,45 @@ class OfficeAssetController extends Controller
         return response()->json($response, 200);
     }
 
+    /**
+     * [deleteAsset description]
+     * @param  Request $request    [description]
+     * @param  [type]  $assetId [description]
+     * @return [type]              [description]
+     */
+    public function deleteSeat(Request $request, $SeatId)
+    {
+        $OfficeSeat = OfficeSeat::find($SeatId);
+        $OfficeSeat->delete();
+
+        $response = [
+            'success' => true,
+            'message' => 'Office seat Removed success',
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    public function getAssetsSeats($assets_id)
+    {
+
+        $OfficeSeat = OfficeSeat::where('office_asset_id', $assets_id)->whereNull('deleted_at')->get();
+        $seat_count = $OfficeSeat->count();
+        if ($seat_count > 0) {
+            $counts = $seat_count;
+        } else {
+            $counts = 1;
+        }
+
+        $OfficeSeatid = OfficeSeat::where('office_asset_id', $assets_id)->orderBy('seat_id', 'desc')->first();
+
+        $response = [
+            'success' => true,
+            'seat_count' => $counts,
+            'last_id' => $OfficeSeatid->seat_id,
+        ];
+
+        return response()->json($response, 200);
+    }
+
 }
