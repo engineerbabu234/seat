@@ -354,13 +354,14 @@
 
     // show circle tool box
     function showCircleToolBox(e) {
-    console.log(e.target._objects[1]);
+     
       $(".removeImg").attr("id", "remove-" + e.target._objects[1].text);
       $(".removeImg").data("id",  e.target._objects[1].group.seatid);
       $(".removeImg").css("left", e.target.left + $("#main").position().left + 25);
       $(".removeImg").css("top", e.target.top + 25);
-      $(".removeImg").css("display", "block"); 
-      $(".dotsImg").attr("id", "dots-" + e.target._objects[1].text);
+      $(".removeImg").css("display", "block");
+      $(".dotsImg").attr("id", "dots-4" );
+      //$(".dotsImg").attr("id", "dots-" + e.target._objects[1].text);
       $(".dotsImg").data("id", e.target._objects[1].group.seatid);
       $(".dotsImg").css("left", e.target.left + $("#main").position().left - 20);
       $(".dotsImg").css("top", e.target.top + 25);
@@ -382,7 +383,7 @@
 
       // showSpinner();
       $.ajax({
-        url: base_url + "/admin/office/asset/getofficeassetsinfo/" + id,
+        url: base_url + "/getofficeassetsinfo/" + id,
         type: "GET",
         headers: {
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -390,8 +391,7 @@
         success: function(res) {
            
           var main_image = '';
-          var canvas_data = res.data.asset_canvas; 
-
+          var canvas_data = res.data.asset_canvas;   
           if (canvas_data !== null && canvas_data.length > 0 && canvas_data !== undefined ) {
               var candata = jQuery.parseJSON(canvas_data );
               if( candata.objects.length !== 0 ){
@@ -510,11 +510,10 @@
     // handler for click event of status change button
     $("#btn-change").click(function() {
       let num = $("#change-number").text();
-
+      
       clonedCircles.map(((value, index) => {
         if (value._objects.length < 2)
-          return;
-
+          return; 
         if (value._objects[1].text === num) {
           if (value._objects[0].fill === circleBC) {
             value._objects[0].set("fill", circleAC);
@@ -526,7 +525,7 @@
         }
       }));
 
-        $("#changeModal").modal("hide");
+        $("#bookseatModal").modal("hide");
        canvas.renderAll();
     });
  
@@ -611,8 +610,8 @@
           $("form#add-office-asset-image-form").find("#dots_id").val(dots);  
             var edit_seat = $('.dotsImg').hasClass('editSeat');
           
-            $("#changeModal").modal("show");
           
+            $("#bookseatModal").modal("show");
           // $('#office_assets_seats').html("");
           // $('#assets_seat_modal').modal('hide');
             
@@ -624,10 +623,10 @@
 
     canvas.renderAll();
 
+    
     // add listener for click event on canvas
     canvas.on("mouse:down", function(e) {
-      console.log('mouse down');
-      console.log(started_flag);
+       
       if (!started_flag)
         return;
       hideCircleToolBox();
@@ -647,6 +646,14 @@
 
     canvas.on("mouse:up", function(e) {
       down_flag = false;
+      if (e.target) {
+        //clicked on object 
+         console.log(e.target._objects[0]);
+         getassetsdetails();
+      }else{
+        //add rectangle
+        
+      }
       removeRulers();
     });
 
@@ -702,8 +709,15 @@
 
     }
 
-    canvas.on("mouse:over", function(e) {
 
+    function bookseats(){
+      
+      
+    }
+
+
+    canvas.on("mouse:over", function(e) {
+     
       if (!started_flag)
         return;
 
@@ -717,6 +731,7 @@
       if (e.target._objects.length === 2) {
         if (e.target._objects[0].type === "circle") {
           $("#changeModal").modal("hide");
+          
           showCircleToolBox(e)
         }
       }
@@ -786,6 +801,30 @@
             $('#total_count').val(res.seat_count);
             $('#last_id').val(res.last_id);
           
+        },
+        error: function(err) {
+          console.log(err); 
+        }
+      });
+
+     
+    }
+
+
+     function getassetsdetails() {
+
+        let asset_id = $('#asset_id').val();
+        $.ajax({
+        url: base_url + "/getassetsdetails/" + asset_id,
+        type: "GET",
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(res) {
+            $("#bookseatModal").modal("show");  
+            $('#building_name').text(res.data.building_name);
+            $('#office_name').text(res.data.office_name);
+            $('#asset_name').text(res.data.title); 
         },
         error: function(err) {
           console.log(err); 

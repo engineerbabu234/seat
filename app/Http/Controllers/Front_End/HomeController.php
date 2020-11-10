@@ -18,6 +18,7 @@ use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Response;
+use Validator;
 
 class HomeController extends Controller
 {
@@ -123,14 +124,16 @@ class HomeController extends Controller
             $data['offices']->reserved_seat = $reserved_seat;
             $data['offices']->available_seat = $available_seat;
             $data['offices']->office_image = $office_image;
-            $Seats = Seat::where('office_id', $data['offices']->office_id)->orderBy('seat_type', 'asc')->orderBy('status', 'asc')->get();
 
+            $Seats = Seat::where('office_id', $data['offices']->office_id)->orderBy('seat_type', 'asc')->orderBy('status', 'asc')->get();
+            $officeAsset = OfficeAsset::find($inputs['assets_id']);
+            $assets_image = ImageHelper::getOfficeAssetsImage($officeAsset->preview_image);
             $data['offices']->seats = $Seats;
             // print_r($data['offices']);
             //die;
         }
 
-        return view('reserve_seat', compact('data'));
+        return view('reserve_seat', compact('data', 'officeAsset', 'assets_image'));
     }
 
     public function seatReservation(Request $request)
@@ -473,6 +476,93 @@ class HomeController extends Controller
         } else {
             return response(['status' => false, 'message' => 'Record not found']);
         }
+    }
+
+    /**
+     * [getofficeassetsinfo description]
+     * @param  Request $request    [description]
+     * @param  [type]  $assetId [description]
+     * @return [type]              [description]
+     */
+    public function getofficeassetsinfo(Request $request, $assetId)
+    {
+        $officeAsset = OfficeAsset::find($assetId);
+
+        $assets_image = ImageHelper::getOfficeAssetsImage($officeAsset->preview_image);
+
+        $response = [
+            'success' => true,
+            'data' => $officeAsset,
+            'assets_image' => $assets_image,
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    /**
+     * [getassetsdetails description]
+     * @param  Request $request    [description]
+     * @param  [type]  $assetId [description]
+     * @return [type]              [description]
+     */
+    public function getassetsdetails(Request $request, $assetId)
+    {
+        $whereStr = '1 = ?';
+        $whereParams = [1];
+        $columns = ['offices.office_name as office_name', 'buildings.building_name as building_name', 'office_asset.title', 'office_asset.description'];
+
+        $officeAssets = OfficeAsset::select($columns)->leftJoin("offices", "offices.office_id", "office_asset.office_id")->leftJoin("buildings", "buildings.building_id", "office_asset.building_id")->whereRaw($whereStr, $whereParams)->orderBy('id', 'desc');
+        if (isset($assetId) && $assetId != "") {
+            $officeAssets = $officeAssets->where("office_asset.id", $assetId);
+        }
+        $officeAsset = $officeAssets->first();
+        $response = [
+            'success' => true,
+            'data' => $officeAsset,
+
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    /**
+     * [bookofficeSeats description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function bookOfficeSeats(Request $request)
+    {
+        $inputs = $request->all();
+
+        $rules = [
+            // 'seat_id' => 'required',
+            'booking_date' => 'required',
+
+        ];
+        $messages = [];
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            $response = [
+                'success' => false,
+                'errors' => $validator->errors()->toArray(),
+            ];
+            return response()->json($response, 400);
+        }
+
+        // $OfficeAsset = new OfficeAsset();
+        // $OfficeAsset->building_id = $inputs['building_id'];
+        // $OfficeAsset->office_id = $inputs['office_id'];
+        // $OfficeAsset->title = $inputs['title'];
+        // $OfficeAsset->description = $inputs['description'];
+        // $OfficeAsset->preview_image = $preview_image;
+
+        $response = [
+            'success' => true,
+            'message' => 'Office Asset Added success',
+        ];
+
+        return response()->json($response, 200);
     }
 
 }

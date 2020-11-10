@@ -145,11 +145,14 @@ class OfficeAssetController extends Controller
         $OfficeAsset->title = $inputs['title'];
         $OfficeAsset->description = $inputs['description'];
         $OfficeAsset->preview_image = $preview_image;
-
-        $response = [
-            'success' => true,
-            'message' => 'Office Asset Added success',
-        ];
+        if ($OfficeAsset->save()) {
+            $response = [
+                'success' => true,
+                'message' => 'Office Asset Added success',
+            ];
+        } else {
+            return back()->with('error', 'Office Assets Added failed,please try again');
+        }
 
         return response()->json($response, 200);
     }

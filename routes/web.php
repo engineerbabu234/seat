@@ -28,4 +28,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/get_seat_list', 'Front_End\HomeController@getSeatList');
     Route::get('/assets_list', 'Front_End\HomeController@AssetsList');
     Route::get('/get_assets_list', 'Front_End\HomeController@getAssetsList');
+    Route::get('/getofficeassetsinfo/{id}', 'Front_End\HomeController@getofficeassetsinfo');
+    Route::get('/getassetsdetails/{id}', 'Front_End\HomeController@getassetsdetails');
+    Route::post('/bookOfficeSeats', 'Front_End\HomeController@bookOfficeSeats');
+
 });
