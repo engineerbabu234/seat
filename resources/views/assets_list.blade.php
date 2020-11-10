@@ -4,8 +4,6 @@
     <section class="banner">
         <div class="container">
             <div class="text">
-                <h3>Lorem Ipsum is simply Of the printing and typesetting</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Lorem ipsum dolor sit amet, consectetur</p>
             </div>
         </div>
     </section>
@@ -16,8 +14,8 @@
         <div class="container">
             <div class="building-office-list">
                 <div class="heading">
-                    <h1>Office List</h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Lorem ipsum dolor sit amet, consectetur consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Lorem ipsum dolor sit amet, consectetur</p>
+                    <h1>Assets List</h1>
+
                 </div>
                 <div class="search-box">
                     <i class="fas fa-search"></i>
@@ -29,22 +27,22 @@
                 </div>
             </div>
         </div>
-    </section><!--END building office-->
+    </section><!--END building office assets-->
 @endsection
 @push('js')
     <script type="text/javascript">
         $(document).ready(function(){
-            var building_id ='{{$data['building']->building_id}}';
-            console.log(building_id);
+            var office_id ='{{$data['assets']->office_id}}';
+            console.log(office_id);
             $.ajax({
                 "headers":{
                     'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
                 },
                 method: 'get',
-                url: base_url+'/get_office_list',
+                url: base_url+'/get_assets_list',
 
                 data: {
-                    "building_id" : building_id,
+                    "office_id" : office_id,
                     "search_name" : '',
                 },
                 'beforeSend': function() {
@@ -58,10 +56,9 @@
                         $.each(response.data, function( key , value ) {
                             html+='<div class="col-md-6 col-xs-12 col-sm-12">';
                             html+='<div class="single-list">';
-                            html+='<h2><span>Office:</span>'+value.office_name+'</h2>';
-                            html+='<p><span>Office Number:</span>'+value.office_number+'</p>';
-                            //html+='<a href="'+base_url+'/reserve_seat?office_id='+value.office_id+'"> See Office</a>';
-                            html+='<a href="'+base_url+'/assets_list?office_id='+value.office_id+'"> See Assets</a>';
+                            html+='<h2><span>Assets Name :</span>'+value.title+'</h2>';
+                            html+='<p><span>Description :</span>'+value.description+'</p>';
+                            html+='<a href="'+base_url+'/reserve_seat?assets_id='+value.id+'"> See All Seats</a>';
                             html+='</div>';
                             html+='</div>';
 
@@ -88,10 +85,10 @@
                         'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
                     },
                     method: 'get',
-                    url: base_url+'/get_office_list',
+                    url: base_url+'/get_assets_list',
 
                     data: {
-                        "building_id" : building_id,
+                        "office_id" : office_id,
                         "search_name": search_name,
                     },
                     'beforeSend': function() {
@@ -107,10 +104,9 @@
                                 $.each(response.data, function( key , value ) {
                                     html+='<div class="col-md-6 col-xs-12 col-sm-12">';
                                     html+='<div class="single-list">';
-                                    html+='<h2><span>Office:</span>'+value.office_name+'</h2>';
-                                    html+='<p><span>Office Number:</span>'+value.office_number+'</p>';
-                                    //html+='<a href="'+base_url+'/reserve_seat?office_id='+value.office_id+'"> See Office</a>';
-                                     html+='<a href="'+base_url+'/assets_list?office_id='+value.office_id+'"> See Assets</a>';
+                                    html+='<h2><span>Assets Name :</span>'+value.title+'</h2>';
+                                    html+='<p><span>Description :</span>'+value.office_number+'</p>';
+                                    html+='<a href="'+base_url+'/reserve_seat?assets_id='+value.id+'"> See All Seats</a>';
                                     html+='</div>';
                                     html+='</div>';
 

@@ -4,31 +4,10 @@
     <section class="reaserve-seat reaserve-seat-page">
         <div class="container">
             <div class="building-office-list">
-                <div class="heading">
-                    <h1>Feel All Details To Reserve Your Seat</h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Lorem ipsum dolor sit amet, consectetur consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Lorem ipsum dolor sit amet, consectetur</p>
-                </div>
 
                 <div class="single-list">
                     <div class="slider-box">
-                        <div class="owl-carousel">
-                            @if($data['offices']->office_image->isEmpty())
-                                <h1>No</h1>
-                            @else
-                            @foreach($data['offices']->office_image as $key1 => $value1)
-                                <div class="item">
-                                    <div class="img-txt">
-                                   <div class="img">
-                                     <img src="{{$value1->image}}" class="img-fluid">
-                                   </div>
-                                   <div class="txt">
-                                      <p>{{$value1->description}}</p>
-                                   </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                            @endif
-                        </div>
+
                     </div>
                     <div class="building-office-details">
                         {{-- <div class="img">
@@ -38,6 +17,8 @@
                         <p><span>Address:</span>{{$data['offices']->building_address}}</p>
                         <h3><span>Office:</span> {{$data['offices']->office_name}}</h3>
                         <p><span>Office Number:</span>{{$data['offices']->office_number}}</p>
+                          <h3><span>Assets:</span> {{$data['offices']->title}}</h3>
+                        <p><span>Assets Description:</span>{{$data['offices']->description}}</p>
                     </div>
 
                     <div class="seat-status">
@@ -59,8 +40,28 @@
                         <input type="hidden" name="office_id" value="{{$data['offices']->office_id}}">
                         <div class="input-feilds">
                             <h4><img src="{{asset('front_end')}}/images/seat.png"> Select Your Seat</h4>
+                            <div class="container-fluid" style="height: 100%;">
+                         <input type="hidden"  id="total_count" value="">
+                        <input type="hidden"  id="last_id" value="">
+                        <input type="hidden" name="seat_ids" id="seat_ids" value="">
+                        <input type="hidden" name="is_edit" id="is_edit" value="">
+                        <input type="hidden" name="dots_id" id="dots_id" value="">
+                         <input type="hidden" name="building_id" id="building_id" value="{{ $officeAsset->building_id }}">
+                         <input type="hidden" name="office_id" id="office_id" value="{{ $officeAsset->office_id }}">
+                         <input type="hidden" id="main_image" value="{{ $assets_image }}">
+                         <input type="hidden" id="canvas_image" value="{{ isset($officeAsset->asset_canvas) ? 1 : 0 }}">
+                         <input type="hidden" name="asset_id" id="asset_id" value="{{ $officeAsset->id }}">
+                         <input type="file" id="file-input" style="display: none" />
+                        <div class="row" style="height: 100%;">
+                            <div class="col-lg-12 col-md-12 col-sm-12" id="main">
+                                <canvas class="content" id="canvas"></canvas>
+                            </div>
+                        </div>
+                        <hr>
 
-                            <div class="input-details">
+
+                    </div>
+                            <div class="input-details hidden" style="display: none;">
                                 <div class="select-seat">
                                     <div class="clearfix seats-list">
                                         {{-- @if($data['offices']->seats->isEmpty())
@@ -109,11 +110,11 @@
                                     @enderror
                                 </div>
                             </div>
-                            @if (!Auth::guest())
+                            <!-- @if (!Auth::guest())
                                 <button type="submit"> <i class="fas fa-chair"></i> Reserve Seat</button>
                             @else
                                 <a href="{{url('login')}}"><button> <i class="fas fa-chair"></i> Reserve Seat</button></a>
-                            @endif
+                            @endif -->
                         </div>
                     </form>
 
@@ -122,21 +123,95 @@
                 </div>
             </div>
         </div>
+
+         <div class="modal" id="bookseatModal">
+          <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h4 class="modal-title">Book Your Seat</span></h4>
+                <button type="button" class="close_new close_book_seat_modal" >&times;</button>
+              </div>
+              <div class="modal-body" >
+                <form action="#"  method="post" id="add-office-asset-seat-booking-form">
+                 <div class="row">
+                     <div class="col-sm-3">
+                        <h5>Building</h5>
+                    </div>
+                    <div class="col-sm-9">
+                         <span id="building_name"></span>
+                    </div>
+                     <div class="col-sm-3">
+                        <h5>Office</h5>
+                    </div>
+                    <div class="col-sm-9">
+                         <span id="office_name"></span>
+                    </div>
+                     <div class="col-sm-3">
+                        <h5>Office Asset</h5>
+                    </div>
+                    <div class="col-sm-9">
+                         <span id="asset_name"></span>
+                    </div>
+                    <div class="col-sm-3">
+                        <h5>Date</h5>
+                    </div>
+                    <div class="col-sm-9">
+                        <input type="text" class="form-control datepicker" value="{{ date('d-m-Y') }}" placeholder="Select Book date" name="booking_date" id="booking_date">
+                    </div>
+
+                </div><br>
+                <hr>
+                 <div class="row">
+                    <div class="col-sm-12">
+                        <div class="add-product-btn text-center">
+                            <button class="  btn btn-info booking-seat"> Book Seat</button>
+                        </div>
+                    </div>
+                    </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+
     </section><!--END building office-->
 @endsection
 @push('css')
+<style type="text/css">
+    .close_new{
+        background-color: transparent;
+        border: 0;
+        font-size: 26px;
+    }
+</style>
+
 <link rel="stylesheet" type="text/css" href="{{asset('front_end')}}/css/jquery-ui.css">
+
+<link  href="{{asset('admin_assets')}}/css/seat_book/main.css" rel="stylesheet">
+<link  href="{{asset('admin_assets')}}/css/seat_book/modal.css" rel="stylesheet">
 @endpush
 @push('js')
 <script src="{{asset('front_end')}}/js/jquery-ui.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+<script type="text/javascript" src="{{asset('admin_assets')}}/js/seat_book/fabric/fabric.min.js"></script>
+
+ <script src="{{asset('admin_assets')}}/js/seat_book/fabric/centering_guidelines.js"></script>
+ <script type="text/javascript" src="{{asset('admin_assets')}}/js/seat_book/fabric/aligning_guidelines.js"></script>
+
+<script type="text/javascript" src="{{asset('front_end')}}/js/asset-canvas.js"></script>
 <script>
+
 $(document).ready(function(){
   $('[data-toggle="tooltip"]').tooltip();
 });
 </script>
 <script type="text/javascript">
+        $("#main").canvasfiles();
     $(document).ready(function(){
+
+
         var office_id ='{{$data['offices']->office_id}}';
         var reserve_date = $('#datepicker').val();
         $.ajax({
@@ -358,12 +433,9 @@ $(document).ready(function(){
 </script>
 <script language="javascript">
     $(function() {
-       $("#datepicker").datepicker({
-            showOn: "button",
-            buttonImage: "{{asset('front_end')}}/images/calendar.gif",
-            buttonImageOnly: true,
-            buttonText: "Select date",
-            dateFormat: 'dd/mm/yy',
+       $("#booking_date").datepicker({
+
+            dateFormat: 'dd-mm-yy',
             changeYear: true,
             changeMonth: true,
             minDate:0,
@@ -400,5 +472,45 @@ $(document).ready(function(){
             });
         }
     @endif
+
+ $(document).on('click','.close_book_seat_modal',function(){
+        $('#bookseatModal').modal('hide');
+    });
+
+
+
+$(document).on("click", ".booking-seat", function(e) {
+    e.preventDefault();
+    var data = jQuery(this).parents('form:first').serialize();
+
+    var myThis = $(this);
+
+    $.ajax({
+        url: base_url + '/bookOfficeSeats',
+        type: 'post',
+        dataType: 'json',
+        data: data,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        error: function(response) {
+            if (response.status == 400) {
+                $.each(response.responseJSON.errors, function(k, v) {
+                    $('#' + k + '_error').text(v);
+                    $('#' + k + '_error').addClass('text-danger');
+                });
+            }
+        },
+        success: function(response) {
+            if (response.success) {
+                $("#add-office-asset-seat-booking-form").trigger('reset');
+                $('#bookseatModal').modal('hide');
+                swal("Success!", response.message, "success");
+
+            }
+        },
+    });
+});
+
 </script>
 @endpush

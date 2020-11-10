@@ -88,6 +88,17 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
                     'as' => 'office.asset.updateSeat',
                     'uses' => 'OfficeAssetController@updateSeat',
                 ]);
+
+                Route::post('/deleteSeat/{seat_id}', [
+                    'as' => 'office.asset.deleteSeat',
+                    'uses' => 'OfficeAssetController@deleteSeat',
+                ]);
+
+                Route::get('/getAssetsSeats/{asset_id}', [
+                    'as' => 'office.asset.getAssetsSeats',
+                    'uses' => 'OfficeAssetController@getAssetsSeats',
+                ]);
+
             });
 
             Route::get('/{building_id?}', 'OfficeController@index')->name('index');

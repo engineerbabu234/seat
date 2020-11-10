@@ -22,6 +22,8 @@
           </div>
 
         </div>
+        <input type="hidden"  id="total_count" value="">
+        <input type="hidden"  id="last_id" value="">
         <input type="hidden" name="seat_ids" id="seat_ids" value="">
         <input type="hidden" name="is_edit" id="is_edit" value="">
         <input type="hidden" name="dots_id" id="dots_id" value="">
@@ -46,7 +48,7 @@
             <div class="modal-content">
               <div class="modal-header">
                 <h4 class="modal-title">Add Seat <span class="ml-5" id="change-number"></span></h4>
-                <button type="button" class="close seats_cancel" data-dismiss="modal">&times;</button>
+                <button type="button" class="close_new seats_cancel"  >&times;</button>
               </div>
               <div class="modal-body" >
                   @include("admin/office_asset/addofficeseats")
@@ -60,7 +62,7 @@
             <div class="modal-content">
               <div class="modal-header">
                 <h4 class="modal-title">Update Seat <span class="ml-5" id="change-number"></span></h4>
-                <button type="button" class="close seats_update_cancel" data-dismiss="modal">&times;</button>
+                <button type="button" class="close_new seats_update_cancel" >&times;</button>
               </div>
               <div class="modal-body" id="edit_office_seats" >
               </div>

@@ -145,11 +145,14 @@ class OfficeAssetController extends Controller
         $OfficeAsset->title = $inputs['title'];
         $OfficeAsset->description = $inputs['description'];
         $OfficeAsset->preview_image = $preview_image;
-
-        $response = [
-            'success' => true,
-            'message' => 'Office Asset Added success',
-        ];
+        if ($OfficeAsset->save()) {
+            $response = [
+                'success' => true,
+                'message' => 'Office Asset Added success',
+            ];
+        } else {
+            return back()->with('error', 'Office Assets Added failed,please try again');
+        }
 
         return response()->json($response, 200);
     }
@@ -552,6 +555,53 @@ class OfficeAssetController extends Controller
         } else {
             return back()->with('error', 'Office seat updated failed,please try again');
         }
+
+        return response()->json($response, 200);
+    }
+
+    /**
+     * [deleteAsset description]
+     * @param  Request $request    [description]
+     * @param  [type]  $assetId [description]
+     * @return [type]              [description]
+     */
+    public function deleteSeat(Request $request, $SeatId)
+    {
+        $OfficeSeat = OfficeSeat::find($SeatId);
+        $OfficeSeat->delete();
+
+        $response = [
+            'success' => true,
+            'message' => 'Office seat Removed success',
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    public function getAssetsSeats($assets_id)
+    {
+
+        $OfficeSeat = OfficeSeat::where('office_asset_id', $assets_id)->whereNull('deleted_at')->get();
+        $seat_count = $OfficeSeat->count();
+        if ($seat_count > 0) {
+            $counts = $seat_count;
+        } else {
+            $counts = 1;
+        }
+        $seatid = '';
+        $OfficeSeatid = OfficeSeat::where('office_asset_id', $assets_id)->orderBy('seat_id', 'desc')->first();
+
+        if ($OfficeSeatid->seat_id == '') {
+            $seatid = 1;
+        } else {
+            $seatid = ($OfficeSeatid->seat_id + 1);
+        }
+
+        $response = [
+            'success' => true,
+            'seat_count' => $counts,
+            'last_id' => $seatid,
+        ];
 
         return response()->json($response, 200);
     }

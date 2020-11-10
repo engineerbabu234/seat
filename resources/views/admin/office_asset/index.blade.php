@@ -140,7 +140,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">Edit Office Assets</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <button type="button" class="close_new colse_edit_modal" >&times;</button>
       </div>
       <div class="modal-body" id="edit_assets">
 
@@ -157,7 +157,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">Office Assets seats</h4>
-        <button type="button" class="close closeOfficeAssetModal" data-dismiss="modal">&times;</button>
+        <button type="button" class="close_new  closeOfficeAssetModal"  >&times;</button>
       </div>
 
       <div class="modal-body" id="office_assets_seats">
@@ -174,7 +174,13 @@
 @endsection
 @push('css')
 <link  href="{{asset('admin_assets')}}/css/dropify.min.css" rel="stylesheet">
-
+<style type="text/css">
+	.close_new{
+	    background-color: transparent;
+	    border: 0;
+	    font-size: 26px;
+	}
+</style>
  <!-- fabric canvas css -->
 
 <link  href="{{asset('admin_assets')}}/css/seat_book/main.css" rel="stylesheet">
@@ -206,8 +212,22 @@
         $('#changeModal').modal('hide');
     });
 
+    $(document).on('click','.colse_edit_modal',function(){
+        $('#edit_modal').modal('hide');
+    });
+
+    $(document).on('click','.colse_edit_modal',function(){
+        $('#edit_modal').modal('hide');
+    });
+
+    $(document).on('click','.seats_update_cancel',function(){
+        $('#updateseatsModal').modal('hide');
+    });
+
     $(document).on('click','.closeOfficeAssetModal',function(){
-        $('#changeModal').modal('hide');
+        $('#assets_seat_modal').modal('hide');
+        var redrawtable = jQuery('#laravel_datatable').dataTable();
+				redrawtable.fnDraw();
     });
 
 </script>
