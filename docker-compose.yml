@@ -1,37 +1,23 @@
-version: '3'
+version: '3.5'
 services:
 
   #PHP Service
   app:
     build:
-      context: .
-      dockerfile: Dockerfile
-    image: pforan/dailyseat_new:latest
+      context: '.'
+      args:
+        uid: ${UID}
     container_name: app
     restart: unless-stopped
-    tty: true
     environment:
-      SERVICE_NAME: app
-      SERVICE_TAGS: dev
-    working_dir: /var/www
+      - APACHE_RUN_USER=#${UID}
+      - APACHE_RUN_GROUP=#${UID}
+    env_file:
+      - .env
     volumes:
-      - ./:/var/www
-      - ./php/local.ini:/usr/local/etc/php/conf.d/local.ini
-    networks:
-      - app-network
-
-  #Nginx Service
-  webserver:
-    image: nginx:alpine
-    container_name: webserver
-    restart: unless-stopped
-    tty: true
+      - .:/var/www/html
     ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - ./:/var/www
-      - ./nginx/conf.d/:/etc/nginx/conf.d/
+      - 80:80
     networks:
       - app-network
 
@@ -50,7 +36,8 @@ services:
       SERVICE_NAME: mysql
     volumes:
       - dbdata:/var/lib/mysql/
-      - ./mysql/my.cnf:/etc/mysql/my.cnf
+     # - ./mysql/my.cnf:/etc/mysql/my.cnf
+      - ./SQLScripts/seat_reservation.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - app-network
 
