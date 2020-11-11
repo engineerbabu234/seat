@@ -234,12 +234,6 @@ class QuestionsController extends Controller
     public function save_question_logic(Request $request)
     {
         $inputs = $request->all();
-        $values = array();
-        foreach ($inputs['logic'] as $key => $value) {
-            if ($value != '') {
-                $values[] .= $value;
-            }
-        }
 
         $rules = [
             'logic' => 'required',
@@ -255,6 +249,13 @@ class QuestionsController extends Controller
                 'errors' => $validator->errors()->toArray(),
             ];
             return response()->json($response, 400);
+        }
+
+        $values = array();
+        foreach ($inputs['logic'] as $key => $value) {
+            if ($value != '') {
+                $values[] .= $value;
+            }
         }
 
         $question_logic = User::find(Auth::id());

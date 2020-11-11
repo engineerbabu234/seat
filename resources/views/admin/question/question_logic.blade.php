@@ -20,7 +20,7 @@
 											<tr>
 												<td class="choice" id="{{$question->id}}">{{$question->id}}</td>
 												<td>{{$question->question}}</td>
-											    <td>Yes,No</td>
+											    <td>Yes, No</td>
 												<td>{{@$logic_ans[$question->correct_answer]}}</td>
 											</tr> <!--end-->
 											@endforeach
@@ -29,7 +29,7 @@
 								</div>
 							</div>
 
-
+								<h5>Logic Builder</h5>
 								<div class="row">
 						       	<div class="col-sm-1"><div class="btn btn-warning choice" id="&&">&&</div></div>
 						       	<div class="col-sm-1"><div class="btn btn-info choice" id="OR">OR</div></div>
@@ -37,14 +37,15 @@
 						       	<div class="col-sm-1"><div class="btn btn-success choice"  id=")">)</div></div>
 						       </div>
 						   <div class="row">
-						 	<div class="col-sm-6">
+						 	<div class="col-sm-6"><br>
 							    <fieldset>
-							        <legend>Overall Pass Logic</legend>
+							        <h6>Overall Pass Logic</h6>
 							        <div id="answers">
 
 							            <div class="answerContainer emptyAnswerContainer ">&nbsp;</div>
 
 							        </div>
+							        <span class="error" id="logic_error"></span>
 							    </fieldset>
 								   </div>
 								    	<div class="col-sm-6 text-right">
