@@ -21,7 +21,7 @@
 												<td class="choice" id="{{$question->id}}">{{$question->id}}</td>
 												<td>{{$question->question}}</td>
 											    <td>Yes,No</td>
-												<td>{{$question->correct_answer}}</td>
+												<td>{{@$logic_ans[$question->correct_answer]}}</td>
 											</tr> <!--end-->
 											@endforeach
 										</tbody>
@@ -36,24 +36,28 @@
 						       	<div class="col-sm-1">	<button class="btn choice" style="background-color:#63339C" id="(">(</button></div>
 						       	<div class="col-sm-1"><button class="btn btn-success choice"  id=")">)</button></div>
 						       </div>
-
-						    <fieldset>
-						        <legend>Logic</legend>
-						        <div id="answers">
-						            <div class="answerContainer emptyAnswerContainer ">&nbsp;</div>
-						        </div>
-						    </fieldset>
-						</div>
+						   <div class="row">
+						 	<div class="col-sm-6">
+							    <fieldset>
+							        <legend>Logic</legend>
+							        <div id="answers">
+							            <div class="answerContainer emptyAnswerContainer ">&nbsp;</div>
+							        </div>
+							    </fieldset>
+								   </div>
+								    	<div class="col-sm-6 text-right">
+											<div class="add-product-btn  pt-5  ">
+												<button class="btn btn-info edit_question" type="submit"> Save Logic</button>
+											</div>
+										 </div>
+								</div>
+							</div>
 						<div class="clearfix"></div>
 
 
 						</div>
 
-						<div class="col-sm-12">
-						<div class="add-product-btn text-center">
-							<button class="btn btn-info edit_question" type="submit"> Save Logic</button>
-						</div>
-					 </div>
+
 					 </div>
 
 

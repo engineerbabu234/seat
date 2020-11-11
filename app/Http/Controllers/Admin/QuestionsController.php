@@ -215,10 +215,10 @@ class QuestionsController extends Controller
     public function question_logic()
     {
         $question = Question::where('user_id', Auth::id())->get();
-
+        $logic_ans = $answer = array('0' => 'No', '1' => 'Yes');
         $response = [
             'success' => true,
-            'html' => view('admin.question.question_logic', compact('question'))->render(),
+            'html' => view('admin.question.question_logic', compact('question', 'logic_ans'))->render(),
         ];
 
         return response()->json($response, 200);
