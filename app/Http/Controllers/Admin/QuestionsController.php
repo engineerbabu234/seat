@@ -206,4 +206,23 @@ class QuestionsController extends Controller
             return ['status' => 'failed', 'message' => 'Failed delete Question'];
         }
     }
+
+    /**
+     * [edit description]
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
+    public function question_logic()
+    {
+        $question = Question::where('user_id', Auth::id())->get();
+
+        $response = [
+            'success' => true,
+            'html' => view('admin.question.question_logic', compact('question'))->render(),
+        ];
+
+        return response()->json($response, 200);
+
+    }
+
 }

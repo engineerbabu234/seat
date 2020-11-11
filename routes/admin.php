@@ -121,6 +121,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
             Route::get('edit_question/{id?}', 'QuestionsController@edit')->name('edit_question');
             Route::post('update/{id?}', 'QuestionsController@update')->name('update');
             Route::get('delete/{id}', 'QuestionsController@destroy')->name('destroy');
+            Route::get('question_logic', 'QuestionsController@question_logic')->name('question_logic');
 
         });
 

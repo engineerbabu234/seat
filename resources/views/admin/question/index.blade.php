@@ -10,11 +10,18 @@
 						<h2>Question List</h2>
 					</div>
 				</div>
-				<div class="col-md-6 col-sm-6 col-xs-12">
+				<div class="col-md-2 col-sm-2 col-xs-12">
+
+					<div class="btns">
+						<a href="#" class="add-asset btn btn-info question_logic_modal" title="Add Question Logic"  >Add Logic</a>
+					</div>
+				</div>
+				<div class="col-md-4 col-sm-4 col-xs-12">
 					<div class="btns">
 						<a href="#" class="add-asset btn btn-info"  data-toggle="modal" data-target="#add_question"><i class="fas fa-plus"></i></a>
 					</div>
 				</div>
+
 			</div>
 		</div><!--END header-->
 		<!--my tenders-->
@@ -120,11 +127,59 @@
 
 
 
+<div class="modal" id="question_logic_modal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Question Logic</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body" id="question_logic_info">
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 @endsection
 @push('css')
+<style type="text/css">
+	#choices {
+    min-width: 200px;
+    min-height: 60px;
+}
+.choice {
+    float: left;
+    border: 2px solid gray;
+    margin: 5px;
+    padding: 5px;
+    cursor: pointer;
+}
+.questionContainer, .answerContainer {
+    border: 2px solid gray;
+    float: left;
+    margin: 5px;
+    width: 400px;
+    height: 80px;
+    padding: 10px;
+}
+.answerContainer {
+    border-style: dashed;
+}
+.clearfix {
+    clear: both;
+}
+</style>
 @endpush
 @push('js')
   <script type="text/javascript" src="{{asset('public')}}/js/sweetalert.min.js"></script>
+   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
  <script type="text/javascript">
 
 		 urls = base_url+'/admin/question/';
@@ -152,10 +207,7 @@
 
  	$(function(e){
 
-
-
-
-  	    	 // Departmetn remove confirmation modal
+  	 // Departmetn remove confirmation modal
   	 $('body').on('click','.btn-delete',function(e){
 	 	  var url = $(this).attr('data-url');
   	 	 swal({
@@ -293,5 +345,88 @@ $(document).on("click", ".edit_question_request", function(e) {
 		},
 	});
 });
+
+
+
+$(document).on("click", ".question_logic_modal", function(e) {
+	e.preventDefault();
+	var id = $(this).data('id');
+
+	var aurls = base_url + "/admin/question/question_logic/";
+	jQuery.ajax({
+		url: aurls,
+		type: 'get',
+		dataType: 'json',
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		},
+		success: function(response) {
+
+			if (response.success) {
+				$('#question_logic_info').html(response.html);
+				draganddrop();
+				$('#question_logic_modal').modal('show');
+
+			}
+		},
+	});
+});
+
+// add logic for questins
+function draganddrop(){
+ $(function() {
+
+  var draggableOptions = {
+    appendTo: "body",
+    helper: "clone",
+    cursor: 'move'
+  };
+
+  var draggableOptions1 = {
+    appendTo: "body",
+    helper: "clone",
+    cursor: 'copy'
+
+  };
+
+  $('.choice').draggable(draggableOptions);
+  $('.choicelogic').draggable(draggableOptions1);
+
+  $('#choices')
+    .sortable()
+    .droppable({
+      activeClass: 'ui-state-default',
+      hoverClass: 'ui-state-hover',
+       accept: '.choice, .choicelogic',
+      drop: function(evt, ui) {
+        $('<div></div>')
+          .addClass('choice')
+          .text(ui.draggable.text())
+          .draggable(draggableOptions)
+          .appendTo(this);
+        $(ui.draggable).hide();
+      }
+    });
+
+  $('.answerContainer').droppable({
+    activeClass: 'ui-state-default',
+    hoverClass: 'ui-state-hover',
+    //accept: ":not(.ui-sortable-helper)",
+    drop: function(event, ui) {
+      //$(this).find(".placeholder").remove();
+
+
+      $('<div></div>')
+        .addClass('choice')
+        .text(ui.draggable.text())
+        .attr('id',ui.draggable.attr("id"))
+        .draggable(draggableOptions)
+        .appendTo(this);
+      $(ui.draggable).hide();
+    }
+  });
+});
+}
+
  </script>
 @endpush
