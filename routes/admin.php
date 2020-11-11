@@ -111,6 +111,19 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
             Route::get('delete_seat/{id}', 'OfficeController@deleteSeat')->name('delete_seat');
         });
 
+        // office
+        Route::group(['prefix' => 'question'], function () {
+
+            Route::get('/', 'QuestionsController@index')->name('index');
+            Route::get('add_question', 'QuestionsController@create')->name('add_question');
+            Route::post('store', 'QuestionsController@store')->name('store');
+            Route::get('question_details/{id?}', 'QuestionsController@show')->name('question_details');
+            Route::get('edit_question/{id?}', 'QuestionsController@edit')->name('edit_question');
+            Route::post('update/{id?}', 'QuestionsController@update')->name('update');
+            Route::get('delete/{id}', 'QuestionsController@destroy')->name('destroy');
+
+        });
+
         // reservation
         Route::group(['prefix' => 'reservation'], function () {
             Route::get('reservation_request', 'ReservationController@reservationRequest')->name('reservation_request');

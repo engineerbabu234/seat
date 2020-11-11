@@ -102,6 +102,17 @@
 							 <span class="error" id="title_error"></span>
 						</div>
 				</div>
+
+				<div class="col-sm-6">
+						<div class="form-group">
+							<h6 class="sub-title">Is Covide Test</h6>
+							 <select class="form-control" name="is_covid_test" id="is_covid_test">
+							 	<option value="0" selected>No</option>
+							 	<option value="1">Yes</option>
+							 </select>
+							 <span class="error" id="is_covid_test_error"></span>
+						</div>
+				</div>
 				<div class="col-sm-6">
 						<div class="form-group">
 							<h6 class="sub-title">Description</h6>
@@ -109,7 +120,8 @@
 							 <span class="error" id="description_error"></span>
 						</div>
 				</div>
-				<div class="col-sm-12">
+
+				<div class="col-sm-6">
 						<div class="form-group">
 							<h6 class="sub-title">Preview Image <span class="text-danger">*</span></h6>
 							<input type="file" required id="preview_image" name="preview_image" class="form-control dropify-event" data-default-file="" /><br>

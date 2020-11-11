@@ -40,7 +40,7 @@ class OfficeAssetController extends Controller
                 $whereStr .= " OR buildings.building_name like '%{$search}%'";
             }
 
-            $columns = ['office_asset.id', 'office_asset.office_id', 'office_asset.created_at', 'offices.office_name as office_name', 'buildings.building_name as building_name', 'office_asset.title', 'office_asset.description'];
+            $columns = ['office_asset.id', 'office_asset.is_covid_test', 'office_asset.office_id', 'office_asset.created_at', 'offices.office_name as office_name', 'buildings.building_name as building_name', 'office_asset.title', 'office_asset.description'];
 
             $officeAssets = OfficeAsset::select($columns)->leftJoin("offices", "offices.office_id", "office_asset.office_id")->leftJoin("buildings", "buildings.building_id", "office_asset.building_id")->whereRaw($whereStr, $whereParams)->orderBy('id', 'desc');
 
@@ -80,6 +80,7 @@ class OfficeAssetController extends Controller
                 $final[$key]['building_name'] = $value->building_name;
                 $final[$key]['title'] = $value->title;
                 $final[$key]['total_seats'] = count($total_seats);
+                $final[$key]['is_covid_test'] = $value->is_covid_test;
                 $final[$key]['created_at'] = date('d-m-Y H:i:s', strtotime($value->created_at));
             }
 
@@ -108,6 +109,7 @@ class OfficeAssetController extends Controller
             'office_id' => 'required',
             'title' => 'required',
             'preview_image' => 'required',
+            'is_covid_test' => 'required',
         ];
         $messages = [];
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -144,6 +146,7 @@ class OfficeAssetController extends Controller
         $OfficeAsset->office_id = $inputs['office_id'];
         $OfficeAsset->title = $inputs['title'];
         $OfficeAsset->description = $inputs['description'];
+        $OfficeAsset->is_covid_test = $inputs['is_covid_test'];
         $OfficeAsset->preview_image = $preview_image;
         if ($OfficeAsset->save()) {
             $response = [
@@ -195,6 +198,7 @@ class OfficeAssetController extends Controller
             'office_id' => 'required',
             'title' => 'required',
             'preview_image' => 'required',
+            'is_covid_test' => 'required',
         ];
         $messages = [];
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -239,6 +243,7 @@ class OfficeAssetController extends Controller
         $OfficeAsset->building_id = $inputs['building_id'];
         $OfficeAsset->office_id = $inputs['office_id'];
         $OfficeAsset->title = $inputs['title'];
+        $OfficeAsset->is_covid_test = $inputs['is_covid_test'];
         $OfficeAsset->description = $inputs['description'];
 
         if (isset($preview_image)) {

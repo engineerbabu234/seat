@@ -46,12 +46,23 @@
 				</div>
 				<div class="col-sm-6">
 						<div class="form-group">
+							<h6 class="sub-title">Is Covide Test</h6>
+							 <select class="form-control" name="is_covid_test" id="is_covid_test">
+							 	<option @if($officeAsset->is_covid_test == 0) {{'selected'}}  @endif value="0">No</option>
+							 	<option @if($officeAsset->is_covid_test == 1) {{'selected'}}  @endif value="1">Yes</option>
+							 </select>
+							 <span class="error" id="edit_is_covid_test_error"></span>
+						</div>
+				</div>
+				<div class="col-sm-6">
+						<div class="form-group">
 							<h6 class="sub-title">Description</h6>
 							<textarea rows="4"  class="form-control" placeholder="Write here..." name="description">{{ $officeAsset->description }}</textarea>
 							 <span class="error" id="edit_description_error"></span>
 						</div>
 				</div>
-				<div class="col-sm-12">
+
+				<div class="col-sm-6">
 						<div class="form-group">
 							<h6 class="sub-title">Preview Image <span class="text-danger">*</span></h6>
 							<input type="file" required id="preview_image" name="preview_image" class="form-control dropify-event" data-default-file="{{ $assets_image }}" /><br>
