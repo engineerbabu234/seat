@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Question;
+use App\Models\User;
 use Auth;
 use Illuminate\Http\Request;
 use Validator;
@@ -220,6 +221,52 @@ class QuestionsController extends Controller
             'success' => true,
             'html' => view('admin.question.question_logic', compact('question', 'logic_ans'))->render(),
         ];
+
+        return response()->json($response, 200);
+
+    }
+
+    /**
+     * [save_question_logic description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function save_question_logic(Request $request)
+    {
+        $inputs = $request->all();
+        $values = array();
+        foreach ($inputs['logic'] as $key => $value) {
+            if ($value != '') {
+                $values[] .= $value;
+            }
+        }
+
+        $rules = [
+            'logic' => 'required',
+
+        ];
+
+        $messages = [];
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            $response = [
+                'success' => false,
+                'errors' => $validator->errors()->toArray(),
+            ];
+            return response()->json($response, 400);
+        }
+
+        $question_logic = User::find(Auth::id());
+        $question_logic->covid_logic = json_encode($values);
+        if ($question_logic->save()) {
+            $response = [
+                'success' => true,
+                'message' => 'Question Logic Added successfull',
+            ];
+        } else {
+            return back()->with('error', 'Question Logic added failed,please try again');
+        }
 
         return response()->json($response, 200);
 

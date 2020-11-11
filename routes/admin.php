@@ -122,6 +122,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
             Route::post('update/{id?}', 'QuestionsController@update')->name('update');
             Route::get('delete/{id}', 'QuestionsController@destroy')->name('destroy');
             Route::get('question_logic', 'QuestionsController@question_logic')->name('question_logic');
+            Route::post('save_question_logic', 'QuestionsController@save_question_logic')->name('save_question_logic');
 
         });
 

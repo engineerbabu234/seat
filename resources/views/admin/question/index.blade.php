@@ -179,7 +179,7 @@
 @endpush
 @push('js')
   <script type="text/javascript" src="{{asset('public')}}/js/sweetalert.min.js"></script>
-   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+   <script src="{{asset('admin_assets/')}}/js/jquery-ui.js"></script>
  <script type="text/javascript">
 
 		 urls = base_url+'/admin/question/';
@@ -404,9 +404,10 @@ function draganddrop(){
           .text(ui.draggable.text())
           .draggable(draggableOptions)
           .appendTo(this);
-        $(ui.draggable).hide();
+        //$(ui.draggable).hide();
       }
     });
+
 
   $('.answerContainer').droppable({
     activeClass: 'ui-state-default',
@@ -419,14 +420,57 @@ function draganddrop(){
       $('<div></div>')
         .addClass('choice')
         .text(ui.draggable.text())
-        .attr('id',ui.draggable.attr("id"))
+        .attr('data-id',ui.draggable.attr("id"))
         .draggable(draggableOptions)
         .appendTo(this);
-      $(ui.draggable).hide();
+      //$(ui.draggable).hide();
+
     }
   });
+
+
 });
 }
+
+
+
+$(document).on("click", ".save_question_logic", function(e) {
+	e.preventDefault();
+	var logic_data = [];
+	$('.choice').each(function(n) {
+		if($(this).attr('data-id')){
+	  		logic_data[n] = $(this).attr('data-id');
+		}
+	});
+
+	console.log(logic_data);
+
+	$.ajax({
+		url: base_url + '/admin/question/save_question_logic',
+		type: 'post',
+		dataType: 'json',
+		data: {'logic':logic_data},
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		},
+		error: function(response) {
+			if (response.status == 400) {
+				$.each(response.responseJSON.errors, function(k, v) {
+					$('#' + k + '_error').text(v);
+					$('#' + k + '_error').addClass('text-danger');
+				});
+			}
+		},
+		success: function(response) {
+			if (response.success) {
+				$("form#question-logic")[0].reset();
+				swal("Success!", response.message, "success");
+				$('.error').removeClass('text-danger');
+				$('#question_logic_modal').modal('hide');
+			}
+		},
+	});
+});
 
  </script>
 @endpush
