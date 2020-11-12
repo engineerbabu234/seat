@@ -1,14 +1,6 @@
 <form action="#" enctype="multipart/form-data" method="post" id="add-office-asset-image-form">
 @csrf
 
-    <!-- <div class="seat-status">
-      <h1>Seat Status</h1>
-      <h2 class="ts">Total Seats: 2</h2>
-      <h2 class="as">Available Seat: 2</h2>
-      <h2 class="bs1">Booked Seat: 0</h2>
-      <h2 class="bs">Blocked Seat: 0</h2>
-    </div> -->
-
     <div class="container-fluid" style="height: 100%;">
             <div class="row" style="height: 100%;">
                 <div class="col-lg-12 col-md-12 col-sm-12" id="main">
@@ -35,8 +27,8 @@
          <input type="file" id="file-input" style="display: none" />
 
 
-        <img src="{{asset('admin_assets')}}/images/seat_book/remove.png" class="removeImg" height="30">
-        <img src="{{asset('admin_assets')}}/images/seat_book/dots.png" class="dotsImg" height="30">
+        <img src="{{asset('admin_assets')}}/images/seat_book/remove.png" class="removeImg" height="30" data-asset="{{ $officeAsset->id }}">
+        <img src="{{asset('admin_assets')}}/images/seat_book/dots.png" class="dotsImg" height="30" data-asset="{{ $officeAsset->id }}">
 
 
         <div class="spinner-border text-warning" id="spinner"></div>

@@ -150,6 +150,7 @@ class OfficeAssetController extends Controller
         $OfficeAsset->office_id = $inputs['office_id'];
         $OfficeAsset->title = $inputs['title'];
         $OfficeAsset->description = $inputs['description'];
+
         $OfficeAsset->is_covid_test = $inputs['is_covid_test'];
         $OfficeAsset->preview_image = $preview_image;
         if ($OfficeAsset->save()) {
@@ -248,6 +249,7 @@ class OfficeAssetController extends Controller
         $OfficeAsset->building_id = $inputs['building_id'];
         $OfficeAsset->office_id = $inputs['office_id'];
         $OfficeAsset->title = $inputs['title'];
+
         $OfficeAsset->is_covid_test = $inputs['is_covid_test'];
         $OfficeAsset->description = $inputs['description'];
 
@@ -405,6 +407,8 @@ class OfficeAssetController extends Controller
         $OfficeSeat->seat_type = $inputs['seat_type'];
         $OfficeSeat->is_show_user_details = $inputs['is_show_user_details'];
         $OfficeSeat->status = $inputs['status'];
+        $OfficeSeat->dots_id = $inputs['dots_id'];
+
         if ($OfficeSeat->save()) {
             $OfficeImage = new OfficeImage();
             $OfficeImage->office_id = $inputs['office_id'];
