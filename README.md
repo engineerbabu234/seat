@@ -34,6 +34,11 @@ Build the Vewndor folder the second time
 docker exec -it app composer update
 ```
 
+Migrate Database Changes
+```
+docker exec -it app php artisan migrate
+```
+
 ## Helper scripts
 Running `composer`, `php artisan` or `phpunit` against the `php` container with helper scripts in the main directory:
 
