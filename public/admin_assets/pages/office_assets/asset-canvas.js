@@ -330,7 +330,7 @@
       });   
 
       
- 
+    console.log(newCircle);
       let newGroup = new fabric.Group([newCircle, newText], {
         top: canvas.getHeight() / 2 - circleR,
         left: canvas.getWidth() / 2 - circleR,
@@ -341,10 +341,16 @@
         originY: "center",
         hasControls: false,
         hasBorders: false, 
+        id: 'g1',
+        name: 'g_one'
        
       });
 
+      // canvas.on('object:modified', function (e) {                             
+      //     alert(e.target.id);
+      //     alert(e.target.name);
 
+      // });
 
       clonedCircles.push(newGroup);
       canvas.add(newGroup);
@@ -360,8 +366,7 @@
       $(".removeImg").css("left", e.target.left + $("#main").position().left + 25);
       $(".removeImg").css("top", e.target.top + 25);
       $(".removeImg").css("display", "block"); 
-      $(".dotsImg").attr("id", "dots-" + e.target._objects[1].text);
-      $(".dotsImg").data("id", e.target._objects[1].group.seatid);
+      $(".dotsImg").attr("id", "dots-" + e.target._objects[1].text); 
       $(".dotsImg").css("left", e.target.left + $("#main").position().left - 20);
       $(".dotsImg").css("top", e.target.top + 25);
       $(".dotsImg").css("display", "block");
