@@ -10,6 +10,7 @@ use App\Models\OfficeAsset;
 use App\Models\OfficeImage;
 use App\Models\OfficeSeat;
 use Auth;
+use DB;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -444,10 +445,20 @@ class OfficeAssetController extends Controller
 
         $assets_image = ImageHelper::getOfficeAssetsImage($officeAsset->preview_image);
 
+        $seatid = '';
+        $assets_count = OfficeSeat::where('office_asset_id', $assetId)->orderBy('seat_id', 'desc')->count();
+
+        if ($assets_count > 0) {
+            $seatid = ($assets_count + 1);
+        } else {
+            $seatid = 1;
+        }
+
         $response = [
             'success' => true,
             'data' => $officeAsset,
             'assets_image' => $assets_image,
+            'last_id' => $seatid,
         ];
 
         return response()->json($response, 200);
@@ -487,9 +498,9 @@ class OfficeAssetController extends Controller
     {
 
         $officeseat = OfficeSeat::where('seat_id', $seatid)->first();
-        $officeseat_image = OfficeImage::where('seat_id', $seatid)->where('office_id', $officeseat->office_id)->first();
+        $officeseat_image = DB::table('office_images')->where('seat_id', $seatid)->where('office_id', $officeseat->office_id)->first();
 
-        $seat_image = ImageHelper::getOfficeAssetsImage($officeseat_image->preview_image);
+        $seat_image = ImageHelper::getOfficeAssetsImage($officeseat_image->image);
 
         $response = [
             'success' => true,
@@ -592,29 +603,27 @@ class OfficeAssetController extends Controller
         return response()->json($response, 200);
     }
 
-    public function getAssetsSeats($assets_id)
+    public function getAssetsSeats($assets_id, $dots_id)
     {
 
-        $OfficeSeat = OfficeSeat::where('office_asset_id', $assets_id)->whereNull('deleted_at')->get();
-        $seat_count = $OfficeSeat->count();
-        if ($seat_count > 0) {
-            $counts = $seat_count;
-        } else {
-            $counts = 1;
-        }
-        $seatid = '';
-        $OfficeSeatid = OfficeSeat::where('office_asset_id', $assets_id)->orderBy('seat_id', 'desc')->first();
+        $OfficeSeat = OfficeSeat::where('office_asset_id', $assets_id)->where('dots_id', $dots_id)->whereNull('deleted_at')->first();
 
-        if ($OfficeSeatid->seat_id == '') {
-            $seatid = 1;
-        } else {
-            $seatid = ($OfficeSeatid->seat_id + 1);
+        $seat_id = '';
+        if (isset($OfficeSeat)) {
+            $seat_count = $OfficeSeat->count();
+            if ($seat_count > 0) {
+                $counts = true;
+                $seat_id = $OfficeSeat->seat_id;
+            } else {
+                $counts = false;
+            }
         }
 
         $response = [
             'success' => true,
             'seat_count' => $counts,
-            'last_id' => $seatid,
+            'seat_id' => $seat_id,
+
         ];
 
         return response()->json($response, 200);

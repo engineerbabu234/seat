@@ -66,7 +66,7 @@
 		<div class="col-sm-12">
 			<div class="form-group">
 				<h6 class="sub-title">Office Seat Image <span class="text-danger">*</span></h6>
-				<input type="file" required id="preview_image" name="preview_image" class="form-control dropify-event" data-default-file="{{ $seat_image }}" /><br>
+				<input type="file" required id="preview_seat_image" name="preview_seat_image" class="form-control dropify-event" data-default-file="{{ $seat_image }}" /><br>
 				<span class="error" id="edit_preview_image_error"></span>
 			</div>
 		</div>

@@ -94,7 +94,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
                     'uses' => 'OfficeAssetController@deleteSeat',
                 ]);
 
-                Route::get('/getAssetsSeats/{asset_id}', [
+                Route::get('/getAssetsSeats/{asset_id}/{dots_id}', [
                     'as' => 'office.asset.getAssetsSeats',
                     'uses' => 'OfficeAssetController@getAssetsSeats',
                 ]);
