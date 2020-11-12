@@ -9,6 +9,7 @@ use App\Models\Office;
 use App\Models\OfficeAsset;
 use App\Models\ReserveSeat;
 use App\Models\Seat;
+use Auth;
 use Datatables;
 use DB;
 use Illuminate\Http\Request;
@@ -44,8 +45,10 @@ class OfficeController extends Controller
             if (isset($buildingId) && $buildingId != "") {
                 $Office = Office::select($columns)->leftJoin("buildings", "buildings.building_id", "offices.building_id")->whereRaw($whereStr, $whereParams);
                 $Office = $Office->where("offices.building_id", $buildingId);
+                $Office = $Office->where("offices.user_id", Auth::id());
             } else {
                 $Office = Office::select($columns)->leftJoin("buildings", "buildings.building_id", "offices.building_id")->whereRaw($whereStr, $whereParams);
+                $Office = $Office->where("offices.user_id", Auth::id());
             }
 
             $Office = $Office->orderBy('office_id', 'desc');
@@ -212,6 +215,7 @@ class OfficeController extends Controller
         }
 
         $Office = new Office();
+        $Office->user_id = Auth::id();
         $Office->building_id = $inputs['building_id'];
         $Office->office_name = $inputs['office_name'];
         $Office->office_number = $inputs['office_number'];
@@ -354,6 +358,7 @@ class OfficeController extends Controller
                 foreach ($inputs['seat_no'] as $key => $value) {
                     $temp = array();
                     $temp['office_id'] = $office_id;
+
                     $temp['seat_no'] = $inputs['seat_no'][$key];
                     $temp['description'] = $inputs['description'][$key];
                     $temp['booking_mode'] = $inputs['booking_mode'][$key];
@@ -460,6 +465,7 @@ class OfficeController extends Controller
         }
 
         $Office = Office::find($id);
+        $Office->user_id = Auth::id();
         $Office->building_id = $inputs['building_id'];
         $Office->office_name = $inputs['office_name'];
         $Office->office_number = $inputs['office_number'];

@@ -9,6 +9,7 @@ use App\Models\Office;
 use App\Models\OfficeAsset;
 use App\Models\OfficeImage;
 use App\Models\OfficeSeat;
+use Auth;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -46,7 +47,9 @@ class OfficeAssetController extends Controller
 
             if (isset($office_id) && $office_id != "") {
                 $officeAssets = $officeAssets->where("office_asset.office_id", $office_id);
+
             }
+            $officeAssets = $officeAssets->where("office_asset.user_id", Auth::id());
 
             if ($officeAssets) {
                 $total = $officeAssets->get();
@@ -142,6 +145,7 @@ class OfficeAssetController extends Controller
         }
 
         $OfficeAsset = new OfficeAsset();
+        $OfficeAsset->user_id = Auth::id();
         $OfficeAsset->building_id = $inputs['building_id'];
         $OfficeAsset->office_id = $inputs['office_id'];
         $OfficeAsset->title = $inputs['title'];
@@ -240,6 +244,7 @@ class OfficeAssetController extends Controller
         }
 
         $OfficeAsset = OfficeAsset::find($assetId);
+        $OfficeAsset->user_id = Auth::id();
         $OfficeAsset->building_id = $inputs['building_id'];
         $OfficeAsset->office_id = $inputs['office_id'];
         $OfficeAsset->title = $inputs['title'];
