@@ -19,7 +19,7 @@ class QuestionsController extends Controller
      * @param  [type]  $buildingId [description]
      * @return [type]              [description]
      */
-    public function index(Request $request)
+    public function index(Request $request, $quesionaire_id = null)
     {
 
         if ($request->ajax()) {
@@ -34,9 +34,15 @@ class QuestionsController extends Controller
 
             $columns = ['questions.id', 'questions.question', 'questions.correct_answer', 'quesionaire.title', 'questions.created_at'];
 
-            $Question = Question::select($columns)->leftJoin("quesionaire", "quesionaire.id", "questions.quesionaire_id")->whereRaw($whereStr, $whereParams);
-            $Question = $Question->orderBy('questions.id', 'desc');
+            if (isset($quesionaire_id) && $quesionaire_id != "") {
+                $Question = Question::select($columns)->leftJoin("quesionaire", "quesionaire.id", "questions.quesionaire_id")->whereRaw($whereStr, $whereParams);
+                $Question = $Question->where("questions.quesionaire_id", $quesionaire_id);
 
+            } else {
+
+                $Question = Question::select($columns)->leftJoin("quesionaire", "quesionaire.id", "questions.quesionaire_id")->whereRaw($whereStr, $whereParams);
+            }
+            $Question = $Question->orderBy('questions.id', 'desc');
             if ($Question) {
                 $total = $Question->get();
             }

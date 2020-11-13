@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Quesionaire;
+use App\Models\Question;
 use Auth;
 use Illuminate\Http\Request;
 use Validator;
@@ -59,12 +60,19 @@ class QuesionaireController extends Controller
             $final = [];
             $restriction = array('0' => 'No', '1' => 'Yes');
             foreach ($Quesionaire as $key => $value) {
+                $questions = Question::where('quesionaire_id', $value->id)->count();
+                if ($questions > 0) {
+                    $questions_total = $questions;
+                } else {
+                    $questions_total = 0;
+                }
 
                 $final[$key]['id'] = $value->id;
                 $final[$key]['title'] = $value->title;
                 $final[$key]['description'] = $value->description;
                 $final[$key]['expired_option'] = $value->expired_option;
                 $final[$key]['expired_value'] = $value->expired_value;
+                $final[$key]['questions'] = $questions_total;
                 $final[$key]['start_date'] = date('d-m-Y', strtotime($value->start_date));
                 $final[$key]['expired_date'] = date('d-m-Y', strtotime($value->expired_date));
                 $final[$key]['created_at'] = date('d-m-Y H:i:s', strtotime($value->created_at));

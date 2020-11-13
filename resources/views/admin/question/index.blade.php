@@ -198,9 +198,15 @@
    <script src="{{asset('admin_assets/')}}/js/select2.js"></script>
  <script type="text/javascript">
 
+ 		var url = window.location.pathname;
+		var id = url.substring(url.lastIndexOf('/') + 1);
+		if($.isNumeric(id)){
+			urls = base_url+'/admin/question/'+id;
+		} else {
+			urls = base_url+'/admin/question/';
+		}
 
 
-		 urls = base_url+'/admin/question/';
 
  		var laravel_datatable =$('#laravel_datatable').DataTable({
 			processing: true,

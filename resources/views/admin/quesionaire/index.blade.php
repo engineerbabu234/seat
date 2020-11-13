@@ -35,6 +35,7 @@
 							<th>Expired Value</th>
 							<th>Expired Date</th>
 							<th>Restriction</th>
+							<th>Quetions</th>
 							<th nowrap>Action</th>
 						</tr>
 					</thead>
@@ -184,6 +185,14 @@
 				{ data: 'expired_value', name: 'expired_value' },
 				{ data: 'expired_date', name: 'expired_date' },
 				{ data: 'restriction', name: 'restriction' },
+				{ data: 'id', name: 'id',
+					render: function (data, type, column, meta) {
+						if(column.questions > 0 ){
+							return '<a href="'+base_url+'/admin/question/'+column.id+'" target="_blank" class="button accept">'+column.questions+'</a>';
+						} else{
+						return '<a href="#"  class="button accept">'+column.questions+'</a>';
+						}
+					} },
 				{ data: 'id', name: 'id' ,
 					render: function (data, type, column, meta) {
 						return '<a  href="#" data-id="'+column.id+'" class="button accept edit_quesionaire_request">Edit</a>'+

@@ -114,7 +114,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         // office
         Route::group(['prefix' => 'question'], function () {
 
-            Route::get('/', 'QuestionsController@index')->name('index');
+            Route::get('/{quesionaire_id?}', 'QuestionsController@index')->name('index');
             Route::get('add_question', 'QuestionsController@create')->name('add_question');
             Route::post('store', 'QuestionsController@store')->name('store');
             Route::get('question_details/{id?}', 'QuestionsController@show')->name('question_details');
