@@ -31,14 +31,14 @@ class BuildingController extends Controller
                 ->get();
             $number_key = 1;
             foreach ($buildings as $key => $value) {
-                $value->number_key = $number_key;
-                $office_count = DB::table('offices as o')->where('o.building_id', $value->building_id)->whereNull('o.deleted_at')->count();
+                $value->number_key   = $number_key;
+                $office_count        = DB::table('offices as o')->where('o.building_id', $value->building_id)->whereNull('o.deleted_at')->count();
                 $value->office_count = $office_count;
                 $number_key++;
             }
             return datatables()->of($buildings)->make(true);
         }
-        $data['js'] = ['building/index.js'];
+        $data['js']             = ['building/index.js'];
         $data['building_count'] = DB::table('buildings as b')->whereNull('deleted_at')->count();
         return view('admin.building.index', compact('data'));
     }
@@ -60,34 +60,34 @@ class BuildingController extends Controller
     public function store(Request $request)
     {
         $inputs = $request->all();
-        $rules = [
-            'building_name' => 'required',
+        $rules  = [
+            'building_name'    => 'required',
             'building_address' => 'required',
-            'description' => 'required',
+            'description'      => 'required',
         ];
 
-        $messages = [];
+        $messages  = [];
         $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
             $response = [
                 'success' => false,
-                'errors' => $validator->errors()->toArray(),
+                'errors'  => $validator->errors()->toArray(),
             ];
             return response()->json($response, 400);
         }
 
-        $BuildingCount = Building::whereNull('deleted_at')->count();
+        $BuildingCount       = Building::whereNull('deleted_at')->count();
         $TOTAL_MAX_BUILDINGS = env('TOTAL_MAX_BUILDINGS');
         if (isset($TOTAL_MAX_BUILDINGS) && $BuildingCount >= $TOTAL_MAX_BUILDINGS) {
             return back()->with('error', 'You can add only ' . $TOTAL_MAX_BUILDINGS . ' buildings');
         }
 
-        $Building = new Building();
-        $Building->user_id = Auth::id();
-        $Building->building_name = $inputs['building_name'];
+        $Building                   = new Building();
+        $Building->user_id          = Auth::id();
+        $Building->building_name    = $inputs['building_name'];
         $Building->building_address = $inputs['building_address'];
-        $Building->description = $inputs['description'];
+        $Building->description      = $inputs['description'];
         if ($Building->save()) {
             $response = [
                 'success' => true,
@@ -117,8 +117,8 @@ class BuildingController extends Controller
                 ->get();
             $number_key = 1;
             foreach ($offices as $key => $value) {
-                $value->number_key = $number_key;
-                $seats_count = DB::table('seats as s')->where('s.office_id', $value->office_id)->whereNull('s.deleted_at')->count();
+                $value->number_key  = $number_key;
+                $seats_count        = DB::table('seats as s')->where('s.office_id', $value->office_id)->whereNull('s.deleted_at')->count();
                 $value->seats_count = $seats_count;
                 $number_key++;
             }
@@ -126,8 +126,8 @@ class BuildingController extends Controller
             return datatables()->of($offices)->make(true);
         }
         $data['office_count'] = DB::table('offices as o')->where('o.building_id', $id)->whereNull('o.deleted_at')->count();
-        $data['building_id'] = $id;
-        $data['js'] = ['building/office_list.js'];
+        $data['building_id']  = $id;
+        $data['js']           = ['building/office_list.js'];
         return view('admin.building.office_list', compact('data'));
     }
 
@@ -153,7 +153,7 @@ class BuildingController extends Controller
 
         $response = [
             'success' => true,
-            'html' => view('admin.building.edit', compact('building'))->render(),
+            'html'    => view('admin.building.edit', compact('building'))->render(),
         ];
 
         return response()->json($response, 200);
@@ -168,28 +168,28 @@ class BuildingController extends Controller
     public function update(Request $request, $id)
     {
         $inputs = $request->all();
-        $rules = [
-            'building_name' => 'required',
+        $rules  = [
+            'building_name'    => 'required',
             'building_address' => 'required',
-            'description' => 'required',
+            'description'      => 'required',
         ];
 
-        $messages = [];
+        $messages  = [];
         $validator = Validator::make($request->all(), $rules, $messages);
 
         if ($validator->fails()) {
             $response = [
                 'success' => false,
-                'errors' => $validator->errors()->toArray(),
+                'errors'  => $validator->errors()->toArray(),
             ];
             return response()->json($response, 400);
         }
 
-        $Building = Building::find($id);
-        $Building->user_id = Auth::id();
-        $Building->building_name = $inputs['building_name'];
+        $Building                   = Building::find($id);
+        $Building->user_id          = Auth::id();
+        $Building->building_name    = $inputs['building_name'];
         $Building->building_address = $inputs['building_address'];
-        $Building->description = $inputs['description'];
+        $Building->description      = $inputs['description'];
         if ($Building->save()) {
             $response = [
                 'success' => true,
