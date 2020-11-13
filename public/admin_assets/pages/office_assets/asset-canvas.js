@@ -457,10 +457,7 @@
       $(".img-preview").click(function() {
           $("#file-input").trigger("click");
       });
-      var canvas_images = $('#canvas_image').val();
-      if (canvas_images == 0) {
-          start($("#main_image").val(), $("#asset_name").val());
-      }
+      
       // clone new circle from circle a when click circle a
       $("#img-create").click(function() {
           hideCircleToolBox()
@@ -499,6 +496,7 @@
               if (value._objects[1].text === id) {
                   canvas.remove(clonedCircles[index])
                   hideCircleToolBox();
+                  delete_object(assets_id,id);
               }
           }));
       });
@@ -506,10 +504,25 @@
      
 
       function remove_objects(assets_id,id) {
+             
+             let activeObjects = canvas.getActiveObjects();
+            if (activeObjects.length) {
+                    if (confirm('Do you want to delete the selected item??')) {           
         
-            canvas.on('mouse:down', (options)=>{
-          console.log('on canvas mousedown', options.target ? options.target.text : '');
-      });
+                        activeObjects.forEach(function (object) {
+                           
+                           if(object._objects[1].text == id){
+                                canvas.remove(object);
+                                $('#remove-'+id).hide();
+                                $('#dots-'+id).hide();
+                                delete_object(assets_id,id);
+                           }
+                            
+                        });
+
+                    }
+                
+            }
             
       }
 
@@ -600,9 +613,9 @@
           if (e.target) {
             console.log('click');
             
-             if(e.target._objects[1].text != ''){
-                    delete_object(e);
-             }
+             // if(e.target._objects[1].text != ''){
+             //        delete_object(e);
+             // }
               
           }else{
             //add rectangle
@@ -644,48 +657,49 @@
 
  
 
-  function delete_object(e) {
-    
+  function delete_object(assets_id,id) {
 
+     // let activeObjects = canvas.getActiveObjects();
+     //    if (activeObjects.length) {                        
+     //            activeObjects.forEach(function (object) {
+     //                 alert(object._objects[1].text);
+     //               if(object._objects[1].text == id){
+     //                   canvas.remove(object);
+     //                    swal("Success!", 'Seat Removed', "success");
+     //               } else {
+     //                 swal("Failed!",'Please select seat', "error");
+     //               }
+                    
+     //            });
+            
+     //    }
+         let urls =  base_url + '/admin/office/asset/deleteSeat/'+ assets_id+ '/'+ id;
+       $.ajax({
+              "headers":{
+              'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
+                },
+              'type':'post',
+              'url' : urls, 
+          'success' : function(response){
+              if(response.status == 'success'){
+                
+                    
 
-      let dots_id = e.target._objects[1].text;
-      let asset_id = $('#asset_id').val();
-      swal({
-          title: "Are you sure you want to delete?",
-          text: "Once deleted, you will not be able to recover this seat data!",
-          icon: "warning",
-          buttons: true,
-          dangerMode: true,
-      }).then((willDelete) => {
-          if (!willDelete) {
-              return false;
-          }
-          //canvas.remove(e.target._objects[1]);
-          swal("Success!", 'Seat Removed', "success");
-
-          // $.ajax({
-          //     "headers":{
-          //     'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
-          //       },
-          //     'type':'post',
-          //     'url' : url,
-          //      data:{'asset_id':asset_id,'dots_id':dots_id}, 
-          // 'success' : function(response){
-          //     if(response.status == 'success'){
-
-
-          //     }
-          //     if(response.status == 'failed'){
-          //         swal("Failed!",response.message, "error");
-          //     }
-          // },
-          // 'error' : function(error){
-          // },
-          // complete: function() {
-          // },
-          // });
-      });
+              }
+              if(response.status == 'failed'){
+                  swal("Failed!",response.message, "error");
+              }
+          },
+          'error' : function(error){
+          },
+          complete: function() {
+          },
+          });
+     
+      
   }
+
+
   // load data from strapi
   function getlastdata(assets_id,dots_id) {
        

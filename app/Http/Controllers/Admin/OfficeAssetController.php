@@ -9,6 +9,7 @@ use App\Models\Office;
 use App\Models\OfficeAsset;
 use App\Models\OfficeImage;
 use App\Models\OfficeSeat;
+use App\Models\Quesionaire;
 use Auth;
 use DB;
 use Illuminate\Http\Request;
@@ -590,9 +591,9 @@ class OfficeAssetController extends Controller
      * @param  [type]  $assetId [description]
      * @return [type]              [description]
      */
-    public function deleteSeat(Request $request, $SeatId)
+    public function deleteSeat(Request $request, $assets_id, $dots_id)
     {
-        $OfficeSeat = OfficeSeat::find($SeatId);
+        $OfficeSeat = OfficeSeat::where('office_asset_id', $assets_id)->where('dots_id', $dots_id);
         $OfficeSeat->delete();
 
         $response = [
@@ -609,6 +610,7 @@ class OfficeAssetController extends Controller
         $OfficeSeat = OfficeSeat::where('office_asset_id', $assets_id)->where('dots_id', $dots_id)->whereNull('deleted_at')->first();
 
         $seat_id = '';
+        $counts = '';
         if (isset($OfficeSeat)) {
             $seat_count = $OfficeSeat->count();
             if ($seat_count > 0) {
@@ -636,11 +638,13 @@ class OfficeAssetController extends Controller
      */
     public function question_logic()
     {
-        $question = Question::where('user_id', Auth::id())->get();
+        ;
+        $question = Question::get();
+        $quesionaire = Quesionaire::get();
         $logic_ans = $answer = array('0' => 'No', '1' => 'Yes');
         $response = [
             'success' => true,
-            'html' => view($this->viewPath . 'question_logic', compact('question', 'logic_ans'))->render(),
+            'html' => view($this->viewPath . 'question_logic', compact('question', 'logic_ans', 'quesionaire'))->render(),
         ];
 
         return response()->json($response, 200);

@@ -34,7 +34,7 @@ $(document).ready(function() {
                 if(column.total_questionarie > 0 ){
                 return '<a href="#" data-id="' + column.id + '" class="button accept question_logic_modal">' + column.total_questionarie + '</a>';
                 }else{
-                        return '<a href="#"  class="button accept">0</a>';
+                        return '<a href="#" data-id="' + column.id + '" class="button accept question_logic_modal">0</a>';
                         }
             }
         }, {

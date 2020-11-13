@@ -99,8 +99,20 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
                     'uses' => 'OfficeAssetController@getAssetsSeats',
                 ]);
 
-                Route::get('question_logic', 'OfficeAssetControllerQuestionsController@question_logic')->name('question_logic');
-                Route::post('save_question_logic', 'OfficeAssetController@save_question_logic')->name('save_question_logic');
+                Route::get('/question_logic/', [
+                    'as' => 'office.asset.question_logic',
+                    'uses' => 'OfficeAssetController@question_logic',
+                ]);
+
+                Route::post('/save_question_logic/', [
+                    'as' => 'office.asset.deleteSeat',
+                    'uses' => 'OfficeAssetController@save_question_logic',
+                ]);
+
+                Route::post('/deleteSeat/{asset_id}/{dots_id}', [
+                    'as' => 'office.asset.deleteSeat',
+                    'uses' => 'OfficeAssetController@deleteSeat',
+                ]);
 
             });
 

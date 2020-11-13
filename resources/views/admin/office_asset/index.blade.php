@@ -175,7 +175,7 @@
 
 
 
-<div class="modal"  tabindex="-1"  id="question_logic_modal">
+<div class="modal"   id="question_logic_modal">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
 
@@ -274,11 +274,16 @@
         $('#updateseatsModal').modal('hide');
     });
 
+
+
     $(document).on('click','.closeOfficeAssetModal',function(){
         $('#assets_seat_modal').modal('hide');
         var redrawtable = jQuery('#laravel_datatable').dataTable();
 				redrawtable.fnDraw();
     });
+
+
+
 
 </script>
 @endpush
