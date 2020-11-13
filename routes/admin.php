@@ -30,72 +30,72 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
             // office asset
             Route::group(['prefix' => 'asset'], function () {
                 Route::get('/{id?}', [
-                    'as' => 'office.asset',
+                    'as'   => 'office.asset',
                     'uses' => 'OfficeAssetController@index',
                 ]);
 
                 Route::post('/save', [
-                    'as' => 'office.asset.save',
+                    'as'   => 'office.asset.save',
                     'uses' => 'OfficeAssetController@saveOfficeAsset',
                 ]);
 
                 Route::post('/edit/{asset_id}', [
-                    'as' => 'office.asset.edit',
+                    'as'   => 'office.asset.edit',
                     'uses' => 'OfficeAssetController@editOfficeAsset',
                 ]);
 
                 Route::post('/update/{asset_id}', [
-                    'as' => 'office.asset.update',
+                    'as'   => 'office.asset.update',
                     'uses' => 'OfficeAssetController@updateOfficeAsset',
                 ]);
 
                 Route::post('/delete/{asset_id}', [
-                    'as' => 'office.asset.delete',
+                    'as'   => 'office.asset.delete',
                     'uses' => 'OfficeAssetController@deleteAsset',
                 ]);
 
                 Route::get('/getoffice/{id}', [
-                    'as' => 'office.asset.getoffices',
+                    'as'   => 'office.asset.getoffices',
                     'uses' => 'OfficeAssetController@getoffices',
                 ]);
 
                 Route::get('/getofficeassets/{id}', [
-                    'as' => 'office.asset.getofficeassets',
+                    'as'   => 'office.asset.getofficeassets',
                     'uses' => 'OfficeAssetController@getofficeassets',
                 ]);
 
                 Route::post('/addseat', [
-                    'as' => 'office.asset.addseat',
+                    'as'   => 'office.asset.addseat',
                     'uses' => 'OfficeAssetController@addseat',
                 ]);
 
                 Route::get('/getofficeassetsinfo/{id}', [
-                    'as' => 'office.asset.getofficeassetsinfo',
+                    'as'   => 'office.asset.getofficeassetsinfo',
                     'uses' => 'OfficeAssetController@getofficeassetsinfo',
                 ]);
 
                 Route::post('/updateassets_image/{asset_id}', [
-                    'as' => 'office.asset.updateassets_image',
+                    'as'   => 'office.asset.updateassets_image',
                     'uses' => 'OfficeAssetController@updateassets_image',
                 ]);
 
                 Route::post('/edit_seats/{seat_id}', [
-                    'as' => 'office.asset.edit_seats',
+                    'as'   => 'office.asset.edit_seats',
                     'uses' => 'OfficeAssetController@edit_seats',
                 ]);
 
                 Route::post('/updateSeat/{seat_id}', [
-                    'as' => 'office.asset.updateSeat',
+                    'as'   => 'office.asset.updateSeat',
                     'uses' => 'OfficeAssetController@updateSeat',
                 ]);
 
                 Route::post('/deleteSeat/{seat_id}', [
-                    'as' => 'office.asset.deleteSeat',
+                    'as'   => 'office.asset.deleteSeat',
                     'uses' => 'OfficeAssetController@deleteSeat',
                 ]);
 
                 Route::get('/getAssetsSeats/{asset_id}/{dots_id}', [
-                    'as' => 'office.asset.getAssetsSeats',
+                    'as'   => 'office.asset.getAssetsSeats',
                     'uses' => 'OfficeAssetController@getAssetsSeats',
                 ]);
 
