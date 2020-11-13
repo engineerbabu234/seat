@@ -10,13 +10,8 @@
 						<h2>Question List</h2>
 					</div>
 				</div>
-				<div class="col-md-2 col-sm-2 col-xs-12">
 
-					<div class="btns">
-						<a href="#" class="add-asset btn btn-info question_logic_modal" title="Add Question Logic"  >Add Logic</a>
-					</div>
-				</div>
-				<div class="col-md-4 col-sm-4 col-xs-12">
+				<div class="col-md-6 col-sm-6 col-xs-6">
 					<div class="btns">
 						<a href="#" class="add-asset btn btn-info"  data-toggle="modal" data-target="#add_question"><i class="fas fa-plus"></i></a>
 					</div>
@@ -34,6 +29,7 @@
 					<thead>
 						<tr>
 							<th>Quetion ID.</th>
+						    <th>Quesionaire</th>
 						    <th>Question</th>
 							<th>Correct Answer</th>
 							<th>Date/Time </th>
@@ -70,6 +66,24 @@
 				@csrf
 				<div class="add-question">
 					<div class="row">
+						<div class="col-sm-12">
+						<div class="form-group">
+							<h6 class="sub-title">Quesionaire<span class="text-danger">*</span></h6>
+							<select id="quesionaire_id" name="quesionaire_id"  class="form-control" >
+								@if($questionarie->isEmpty())
+								<option value="">Record Not Found</option>
+							@else
+								@foreach($questionarie as $key => $value)
+								    @if($key == 0)
+								     <option value="">-- Select Quesionaire --</option>
+									@endif
+									<option value="{{$value->id}}"  >{{$value->title}}</option>
+								@endforeach
+							@endif
+							</select>
+							 <span class="error" id="quesionaire_id_error"></span>
+						</div>
+						</div>
 						<div class="col-sm-12">
 						<div class="form-group">
 							<h6 class="sub-title">Quetion<span class="text-danger">*</span></h6>
@@ -127,7 +141,7 @@
 
 
 
-<div class="modal" id="question_logic_modal">
+<div class="modal"  tabindex="-1"  id="question_logic_modal">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
 
@@ -149,6 +163,7 @@
 
 @endsection
 @push('css')
+ <link rel="stylesheet" type="text/css" href="{{asset('admin_assets/')}}/css/select2.min.css">
 <style type="text/css">
 	#choices {
     min-width: 200px;
@@ -180,7 +195,10 @@
 @push('js')
   <script type="text/javascript" src="{{asset('public')}}/js/sweetalert.min.js"></script>
    <script src="{{asset('admin_assets/')}}/js/jquery-ui.js"></script>
+   <script src="{{asset('admin_assets/')}}/js/select2.js"></script>
  <script type="text/javascript">
+
+
 
 		 urls = base_url+'/admin/question/';
 
@@ -193,6 +211,7 @@
 
 			columns: [
 				{ data: 'id', name: 'id' },
+				{ data: 'quesionaire', name: 'quesionaire' },
 				{ data: 'question', name: 'question' },
 				{ data: 'correct_answer', name: 'correct_answer' },
 				{ data: 'created_at', name: 'created_at' },
@@ -371,6 +390,7 @@ $(document).on("click", ".question_logic_modal", function(e) {
 		},
 	});
 });
+
 
 // add logic for questins
 function draganddrop(){

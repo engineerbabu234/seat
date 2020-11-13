@@ -30,10 +30,9 @@ class QuesionaireController extends Controller
                 $whereStr .= " AND quesionaire.title like '%{$search}%'";
             }
 
-            $columns = ['quesionaire.id', 'quesionaire.title', 'quesionaire.description', 'quesionaire.expired_date_option', 'quesionaire.start_date', 'quesionaire.expired_date', 'quesionaire.restriction'];
+            $columns = ['quesionaire.id', 'quesionaire.title', 'quesionaire.description', 'quesionaire.expired_option', 'quesionaire.expired_value', 'quesionaire.start_date', 'quesionaire.expired_date', 'quesionaire.restriction'];
 
             $Quesionaire = Quesionaire::select($columns)->whereRaw($whereStr, $whereParams);
-            $Quesionaire = $Quesionaire->where("quesionaire.user_id", Auth::id());
             $Quesionaire = $Quesionaire->orderBy('quesionaire.id', 'desc');
 
             if ($Quesionaire) {
@@ -58,17 +57,18 @@ class QuesionaireController extends Controller
             $Quesionaire = $Quesionaire->get();
 
             $final = [];
-
+            $restriction = array('0' => 'No', '1' => 'Yes');
             foreach ($Quesionaire as $key => $value) {
 
                 $final[$key]['id'] = $value->id;
                 $final[$key]['title'] = $value->title;
                 $final[$key]['description'] = $value->description;
-                $final[$key]['expired_date_option'] = $value->expired_date_option;
+                $final[$key]['expired_option'] = $value->expired_option;
+                $final[$key]['expired_value'] = $value->expired_value;
                 $final[$key]['start_date'] = date('d-m-Y', strtotime($value->start_date));
                 $final[$key]['expired_date'] = date('d-m-Y', strtotime($value->expired_date));
                 $final[$key]['created_at'] = date('d-m-Y H:i:s', strtotime($value->created_at));
-                $final[$key]['correct_answer'] = @$answer[$value->correct_answer];
+                $final[$key]['restriction'] = @$restriction[$value->restriction];
             }
 
             $response['iTotalDisplayRecords'] = count($total);
@@ -90,10 +90,11 @@ class QuesionaireController extends Controller
     public function store(Request $request)
     {
         $inputs = $request->all();
+
         $rules = [
             'title' => 'required',
             'description' => 'required',
-            'expired_date_option' => 'required',
+            'expired_option' => 'required',
         ];
 
         $messages = [];
@@ -113,15 +114,49 @@ class QuesionaireController extends Controller
         //     return ['status' => 'failed', 'message' => 'You can add only ' . $TOTAL_MAX_OFFICES . ' office'];
         // }
 
+        $expired_option = '';
+        $expired_value = '';
+        if ($inputs['expired_option']) {
+            $expired_data = explode('_', $inputs['expired_option']);
+            $expired_option = $expired_data[0];
+            $expired_value = $expired_data[1];
+        }
+
         $Quesionaire = new Quesionaire();
         $Quesionaire->user_id = Auth::id();
         $Quesionaire->title = $inputs['title'];
         $Quesionaire->description = $inputs['description'];
-        $Quesionaire->expired_date_option = $inputs['expired_date_option'];
+        $Quesionaire->expired_option = $expired_option;
+        $Quesionaire->expired_value = $expired_value;
         $Quesionaire->restriction = $inputs['restriction'];
-        $Quesionaire->expired_date_value = $inputs['expired_date_value'];
-        $Quesionaire->start_date = date('Y-m-d', strtotime($inputs['start_date']));
-        $Quesionaire->expired_date = date('Y-m-d', strtotime($inputs['expired_date']));
+        $Quesionaire->start_date = date('Y-m-d');
+
+        if ($expired_option == 'Day') {
+            if ($expired_value > 1) {
+                $expired_date = date('Y-m-d H:i:s', strtotime('+ ' . $expired_value . ' days'));
+            } else {
+                $expired_date = date('Y-m-d H:i:s', strtotime('+1 day'));
+            }
+            $Quesionaire->expired_date = date('Y-m-d', strtotime($expired_date));
+
+        } else if ($expired_option == 'Month') {
+
+            if ($expired_value > 1) {
+                $expired_date = date('Y-m-d H:i:s', strtotime('+ ' . $expired_value . ' months'));
+            } else {
+                $expired_date = date('Y-m-d H:i:s', strtotime('+1 month'));
+            }
+            $Quesionaire->expired_date = date('Y-m-d', strtotime($expired_date));
+
+        } else if ($expired_option == 'Week') {
+            if ($expired_value > 1) {
+                $expired_date = date('Y-m-d H:i:s', strtotime('+ ' . $expired_value . ' weeks'));
+            } else {
+                $expired_date = date('Y-m-d H:i:s', strtotime('+1 week'));
+            }
+            $Quesionaire->expired_date = date('Y-m-d', strtotime($expired_date));
+        }
+
         if ($Quesionaire->save()) {
             $response = [
                 'success' => true,
@@ -165,7 +200,7 @@ class QuesionaireController extends Controller
         $rules = [
             'title' => 'required',
             'description' => 'required',
-            'expired_date_option' => 'required',
+            'expired_option' => 'required',
         ];
 
         $messages = [];
@@ -184,16 +219,48 @@ class QuesionaireController extends Controller
         // if (isset($TOTAL_MAX_OFFICES) && $OfficeCount >= $TOTAL_MAX_OFFICES) {
         //     return ['status' => 'failed', 'message' => 'You can add only ' . $TOTAL_MAX_OFFICES . ' office'];
         // }
-
+        $expired_option = '';
+        $expired_value = '';
+        if ($inputs['expired_option']) {
+            $expired_data = explode('_', $inputs['expired_option']);
+            $expired_option = $expired_data[0];
+            $expired_value = $expired_data[1];
+        }
         $Quesionaire = Quesionaire::find($id);
         $Quesionaire->user_id = Auth::id();
         $Quesionaire->title = $inputs['title'];
         $Quesionaire->description = $inputs['description'];
-        $Quesionaire->expired_date_option = $inputs['expired_date_option'];
+        $Quesionaire->expired_option = $expired_option;
+        $Quesionaire->expired_value = $expired_value;
         $Quesionaire->restriction = $inputs['restriction'];
-        $Quesionaire->expired_date_value = $inputs['expired_date_value'];
-        $Quesionaire->start_date = date('Y-m-d', strtotime($inputs['start_date']));
-        $Quesionaire->expired_date = date('Y-m-d', strtotime($inputs['expired_date']));
+        $Quesionaire->start_date = date('Y-m-d');
+
+        if ($expired_option == 'Day') {
+            if ($expired_value > 1) {
+                $expired_date = date('Y-m-d H:i:s', strtotime('+ ' . $expired_value . ' days'));
+            } else {
+                $expired_date = date('Y-m-d H:i:s', strtotime('+1 day'));
+            }
+            $Quesionaire->expired_date = date('Y-m-d', strtotime($expired_date));
+
+        } else if ($expired_option == 'Month') {
+
+            if ($expired_value > 1) {
+                $expired_date = date('Y-m-d H:i:s', strtotime('+ ' . $expired_value . ' months'));
+            } else {
+                $expired_date = date('Y-m-d H:i:s', strtotime('+1 month'));
+            }
+            $Quesionaire->expired_date = date('Y-m-d', strtotime($expired_date));
+
+        } else if ($expired_option == 'Week') {
+            if ($expired_value > 1) {
+                $expired_date = date('Y-m-d H:i:s', strtotime('+ ' . $expired_value . ' weeks'));
+            } else {
+                $expired_date = date('Y-m-d H:i:s', strtotime('+1 week'));
+            }
+            $Quesionaire->expired_date = date('Y-m-d', strtotime($expired_date));
+        }
+
         if ($Quesionaire->save()) {
             $response = [
                 'success' => true,

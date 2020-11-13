@@ -28,10 +28,11 @@
 				<table class="table table-striped text-center" id="laravel_datatable">
 					<thead>
 						<tr>
-							<th>Quesionaire ID.</th>
+							<th class="text-left">Quesionaire ID.</th>
 						    <th>Title</th>
 							<th>Description</th>
 							<th>Expired option</th>
+							<th>Expired Value</th>
 							<th>Expired Date</th>
 							<th>Restriction</th>
 							<th nowrap>Action</th>
@@ -68,7 +69,7 @@
 				<div class="add-quesionaire">
 					<div class="row">
 
-						<div class="col-sm-3">
+						<div class="col-sm-4">
 							<div class="form-group">
 								<h6 class="sub-title">Title<span class="text-danger">*</span></h6>
 								<input type="text" class="form-control" placeholder="Title" id="title" name="title" required>
@@ -76,7 +77,43 @@
 							</div>
 						</div>
 
-						<div class="col-sm-3">
+						<div class="col-sm-4">
+							<div class="form-group">
+								<h6 class="sub-title">Expired Date Option<span class="text-danger">*</span></h6>
+								<select class="form-control" name="expired_option" id="expired_option">
+							        <option>Select Expired Date Option</option>
+							        <optgroup label="Day">
+							        	@for ($i = 1; $i <= 31; $i++)
+							            		<option value="{{ 'Day_'.$i }}">{{ $i }}</option>
+							            @endfor
+							        </optgroup>
+							        <optgroup label="Month">
+							          @for ($i = 1; $i <= 12; $i++)
+							            		<option value="{{  'Month_'.$i }}">{{ $i }}</option>
+							            @endfor
+							        </optgroup>
+							         <optgroup label="Week">
+							          	@for ($i = 1; $i <= 52; $i++)
+							            		<option value="{{  'Week_'.$i }}">{{ $i }}</option>
+							            @endfor
+							        </optgroup>
+							    </select>
+								 <span class="error" id="expired_option_error"></span>
+							</div>
+						</div>
+
+						<div class="col-sm-4">
+						<div class="form-group">
+							<h6 class="sub-title">Restriction</h6>
+							 <select class="form-control" name="restriction" id="restriction">
+							 	<option value="0" selected>No</option>
+							 	<option value="1">Yes</option>
+							 </select>
+							 <span class="error" id="restriction_error"></span>
+						</div>
+						</div>
+
+						<div class="col-sm-12">
 							<div class="form-group">
 								<h6 class="sub-title">Description<span class="text-danger">*</span></h6>
 								 <textarea class="form-control" name="description" id="description" rows="6"></textarea>
@@ -84,45 +121,10 @@
 							</div>
 						</div>
 
-						<div class="col-sm-3">
-							<div class="form-group">
-								<h6 class="sub-title">Expired Date Option<span class="text-danger">*</span></h6>
-								<select>
-							        <option>Please Select option Group</option>
-							        <optgroup label="Day">
-							        	@for ($i = 1; $i < 31 $i++)
-							            		<option value="{{$i }}">{{ $i }}</option>
-							            @endfor
-							        </optgroup>
-							        <optgroup label="Month">
-							          @for ($i = 1; $i < 12 $i++)
-							            		<option value="{{  $i }}">{{ $i }}</option>
-							            @endfor
-							        </optgroup>
-							         <optgroup label="Month">
-							          @for ($i = 1; $i < 12 $i++)
-							            		<option value="{{  $i }}">{{ $i }}</option>
-							            @endfor
-							        </optgroup>
-							    </select>
-								 <span class="error" id="expired_date_option_error"></span>
-							</div>
-						</div>
-
-						<div class="col-sm-12">
-						<div class="form-group">
-							<h6 class="sub-title">Correct Answer</h6>
-							 <select class="form-control" name="correct_answer" id="correct_answer">
-							 	<option value="0" selected>No</option>
-							 	<option value="1">Yes</option>
-							 </select>
-							 <span class="error" id="correct_answer_error"></span>
-						</div>
-						</div>
 
 						<div class="col-sm-12">
 						<div class="add-product-btn text-center">
-							<button class="btn btn-info add_quesionaire" type="submit"> Add Quesionaire</button>
+							<button class="btn btn-info add_quesionaire_data" type="submit"> Add Quesionaire</button>
 						</div>
 					 </div>
 					 </div>
@@ -178,7 +180,8 @@
 				{ data: 'id', name: 'id' },
 				{ data: 'title', name: 'title' },
 				{ data: 'description', name: 'description' },
-				{ data: 'expired_date_option', name: 'expired_date_option' },
+				{ data: 'expired_option', name: 'expired_option' },
+				{ data: 'expired_value', name: 'expired_value' },
 				{ data: 'expired_date', name: 'expired_date' },
 				{ data: 'restriction', name: 'restriction' },
 				{ data: 'id', name: 'id' ,
@@ -236,7 +239,7 @@
 
 
 
-$(document).on("click", ".add_quesionaire", function(e) {
+$(document).on("click", ".add_quesionaire_data", function(e) {
 	e.preventDefault();
 
 	var data = jQuery(this).parents('form:first').serialize();

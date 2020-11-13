@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Quesionaire;
 use App\Models\Question;
 use App\Models\User;
 use Auth;
@@ -31,10 +32,9 @@ class QuestionsController extends Controller
                 $whereStr .= " AND questions.question like '%{$search}%'";
             }
 
-            $columns = ['questions.id', 'questions.question', 'questions.correct_answer', 'questions.created_at'];
+            $columns = ['questions.id', 'questions.question', 'questions.correct_answer', 'quesionaire.title', 'questions.created_at'];
 
-            $Question = Question::select($columns)->whereRaw($whereStr, $whereParams);
-            $Question = $Question->where("questions.user_id", Auth::id());
+            $Question = Question::select($columns)->leftJoin("quesionaire", "quesionaire.id", "questions.quesionaire_id")->whereRaw($whereStr, $whereParams);
             $Question = $Question->orderBy('questions.id', 'desc');
 
             if ($Question) {
@@ -60,9 +60,15 @@ class QuestionsController extends Controller
 
             $final = [];
             $answer = array('0' => 'No', '1' => 'Yes');
+            $quesionaire = '';
             foreach ($Question as $key => $value) {
+                if ($value->quesionaire_id) {
+                    $quesionaire = Quesionaire::whereIn('quesionaire_id', $value->quesionaire_id);
+
+                }
 
                 $final[$key]['id'] = $value->id;
+                $final[$key]['quesionaire'] = $value->title;
                 $final[$key]['question'] = $value->question;
                 $final[$key]['correct_answer'] = @$answer[$value->correct_answer];
                 $final[$key]['created_at'] = date('d-m-Y H:i:s', strtotime($value->created_at));
@@ -75,8 +81,8 @@ class QuestionsController extends Controller
             return $response;
         }
         $data = array();
-
-        return view('admin.question.index', compact('data'));
+        $questionarie = Quesionaire::get();
+        return view('admin.question.index', compact('data', 'questionarie'));
     }
 
     /**
@@ -90,6 +96,7 @@ class QuestionsController extends Controller
         $rules = [
             'question' => 'required',
             'correct_answer' => 'required',
+            'quesionaire_id' => 'required',
         ];
 
         $messages = [];
@@ -113,6 +120,7 @@ class QuestionsController extends Controller
         $Question->user_id = Auth::id();
         $Question->question = $inputs['question'];
         $Question->correct_answer = $inputs['correct_answer'];
+        $Question->quesionaire_id = $inputs['quesionaire_id'];
         if ($Question->save()) {
             $response = [
                 'success' => true,
@@ -134,10 +142,11 @@ class QuestionsController extends Controller
     public function edit($id)
     {
         $question = Question::find($id);
+        $questionarie = Quesionaire::get();
 
         $response = [
             'success' => true,
-            'html' => view('admin.question.edit', compact('question'))->render(),
+            'html' => view('admin.question.edit', compact('question', 'questionarie'))->render(),
         ];
 
         return response()->json($response, 200);
@@ -156,6 +165,7 @@ class QuestionsController extends Controller
         $rules = [
             'question' => 'required',
             'correct_answer' => 'required',
+            'quesionaire_id' => 'required',
         ];
 
         $messages = [];
@@ -179,6 +189,7 @@ class QuestionsController extends Controller
         $Question->user_id = Auth::id();
         $Question->question = $inputs['question'];
         $Question->correct_answer = $inputs['correct_answer'];
+        $Question->quesionaire_id = $inputs['quesionaire_id'];
         if ($Question->save()) {
             $response = [
                 'success' => true,

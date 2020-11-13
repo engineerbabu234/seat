@@ -130,7 +130,6 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         Route::group(['prefix' => 'quesionaire'], function () {
 
             Route::get('/', 'QuesionaireController@index')->name('index');
-            Route::get('add_quesionaire', 'QuesionaireController@create')->name('add_quesionaire');
             Route::post('store', 'QuesionaireController@store')->name('store');
             Route::get('quesionaire_details/{id?}', 'QuesionaireController@show')->name('quesionaire_details');
             Route::get('edit_quesionaire/{id?}', 'QuesionaireController@edit')->name('edit_quesionaire');

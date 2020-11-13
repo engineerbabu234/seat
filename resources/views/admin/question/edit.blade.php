@@ -5,6 +5,24 @@
 					<div class="row">
 						<div class="col-sm-12">
 						<div class="form-group">
+							<h6 class="sub-title">Quesionaire<span class="text-danger">*</span></h6>
+							<select id="quesionaire_id" name="quesionaire_id"    class="form-control"  >
+								@if($questionarie->isEmpty())
+								<option value="">Record Not Found</option>
+							@else
+								@foreach($questionarie as $key => $value)
+								    @if($key == 0)
+								     <option value="">-- Select Quesionaire --</option>
+									@endif
+									<option @if($question->id == $value->id) {{'selected'}} @endif value="{{$value->id}}"  >{{$value->title}}</option>
+								@endforeach
+							@endif
+							</select>
+							 <span class="error" id="edit_quesionaire_id_error"></span>
+						</div>
+						</div>
+						<div class="col-sm-12">
+						<div class="form-group">
 							<h6 class="sub-title">Quetion<span class="text-danger">*</span></h6>
 							<input type="text" class="form-control" value="{{ $question->question }}" placeholder="Quetion" name="question" required>
 							 <span class="error" id="question_error"></span>
