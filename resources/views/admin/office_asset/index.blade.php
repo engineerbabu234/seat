@@ -197,6 +197,8 @@
 
 @endsection
 @push('css')
+
+
 <link  href="{{asset('admin_assets')}}/css/dropify.min.css" rel="stylesheet">
 <style type="text/css">
 	.close_new{
@@ -251,8 +253,10 @@
  <script type="text/javascript" src="{{asset('admin_assets')}}/js/seat_book/fabric/aligning_guidelines.js"></script>
 
 <script type="text/javascript" src="{{asset('admin_assets')}}/pages/office_assets/asset-canvas.js"></script>
-
+ <script src="{{asset('admin_assets/')}}/js/jquery-ui.js"></script>
 <script type="text/javascript">
+
+
 
 	$(function() {
         var drEvent = $('.dropify-event').dropify();

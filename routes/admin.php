@@ -99,7 +99,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
                     'uses' => 'OfficeAssetController@getAssetsSeats',
                 ]);
 
-                Route::get('/question_logic/', [
+                Route::post('/question_logic', [
                     'as' => 'office.asset.question_logic',
                     'uses' => 'OfficeAssetController@question_logic',
                 ]);
@@ -112,6 +112,11 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
                 Route::post('/deleteSeat/{asset_id}/{dots_id}', [
                     'as' => 'office.asset.deleteSeat',
                     'uses' => 'OfficeAssetController@deleteSeat',
+                ]);
+
+                Route::post('/get_question_list/', [
+                    'as' => 'office.asset.get_question_list',
+                    'uses' => 'OfficeAssetController@get_question_list',
                 ]);
 
             });

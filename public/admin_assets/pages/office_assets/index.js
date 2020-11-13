@@ -331,7 +331,7 @@ $(document).on("click", ".question_logic_modal", function(e) {
     var aurls = base_url + "/admin/office/asset/question_logic/";
     jQuery.ajax({
         url: aurls,
-        type: 'get',
+        type: 'post',
         dataType: 'json',
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -341,8 +341,33 @@ $(document).on("click", ".question_logic_modal", function(e) {
             if (response.success) {
                 $('#question_logic_info').html(response.html);
                 draganddrop();
+              
                 $('#question_logic_modal').modal('show');
 
+            }
+        },
+    });
+});
+
+
+$(document).on("change", ".selectmultiple", function(e) {
+    e.preventDefault();
+    var select_option = $('.selectmultiple option:selected')
+                .toArray().map(item => item.value);
+      
+    var aurls = base_url + "/admin/office/asset/get_question_list/";
+    jQuery.ajax({
+        url: aurls,
+        type: 'post',
+        dataType: 'json',
+        data: {'questionarie' : select_option},
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+
+            if (response.success) {
+                $('#question_list').html(response.html); 
             }
         },
     });

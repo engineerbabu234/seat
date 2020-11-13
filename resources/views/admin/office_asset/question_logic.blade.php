@@ -2,6 +2,25 @@
 	@csrf
 	<div class="row">
 		<div class="col-sm-12">
+			<h5>Quesionaire</h5>
+			<select class="form-control selectmultiple "  multiple name="quesionaire_id" id="quesionaire_id" required>
+				@if($quesionaire->isEmpty())
+					<option value="">Record Not Found</option>
+				@else
+					@foreach($quesionaire as $key => $value)
+					    @if($key == 0)
+					     <option value="">-- Select Quesionaire --</option>
+						@endif
+						<option value="{{$value->id}}"  >{{$value->title}}</option>
+					@endforeach
+				@endif
+			</select>
+		</div>
+		<div class="col-sm-12">
+			<div id="question_list"></div>
+
+		</div><br>
+		<div class="col-sm-12">
 			<div id="question">
 				<h5>Logic Builder</h5>
 				<div class="row">

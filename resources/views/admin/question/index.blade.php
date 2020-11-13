@@ -149,7 +149,7 @@
 @endpush
 @push('js')
   <script type="text/javascript" src="{{asset('public')}}/js/sweetalert.min.js"></script>
-   <script src="{{asset('admin_assets/')}}/js/jquery-ui.js"></script>
+
  <script type="text/javascript">
 
  		var url = window.location.pathname;

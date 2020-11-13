@@ -10,6 +10,7 @@ use App\Models\OfficeAsset;
 use App\Models\OfficeImage;
 use App\Models\OfficeSeat;
 use App\Models\Quesionaire;
+use App\Models\Question;
 use Auth;
 use DB;
 use Illuminate\Http\Request;
@@ -638,13 +639,32 @@ class OfficeAssetController extends Controller
      */
     public function question_logic()
     {
-        ;
+
         $question = Question::get();
         $quesionaire = Quesionaire::get();
-        $logic_ans = $answer = array('0' => 'No', '1' => 'Yes');
+
         $response = [
             'success' => true,
-            'html' => view($this->viewPath . 'question_logic', compact('question', 'logic_ans', 'quesionaire'))->render(),
+            'html' => view($this->viewPath . 'question_logic', compact('question', 'quesionaire'))->render(),
+        ];
+
+        return response()->json($response, 200);
+
+    }
+
+    /**
+     * [edit description]
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
+    public function get_question_list(Request $request)
+    {
+        $inputs = $request->all();
+        $question = Question::where('quesionaire_id', $inputs['questionarie'])->get();
+
+        $response = [
+            'success' => true,
+            'html' => view($this->viewPath . 'question_list', compact('question'))->render(),
         ];
 
         return response()->json($response, 200);
