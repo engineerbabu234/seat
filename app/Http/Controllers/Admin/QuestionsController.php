@@ -66,17 +66,19 @@ class QuestionsController extends Controller
             $final = [];
             $answer = array('0' => 'No', '1' => 'Yes');
             $quesionaire = '';
+            $number_key = 1;
             foreach ($Question as $key => $value) {
                 if ($value->quesionaire_id) {
                     $quesionaire = Quesionaire::whereIn('quesionaire_id', $value->quesionaire_id);
 
                 }
-
+                $final[$key]['number_key'] = $number_key;
                 $final[$key]['id'] = $value->id;
                 $final[$key]['quesionaire'] = $value->title;
                 $final[$key]['question'] = $value->question;
                 $final[$key]['correct_answer'] = @$answer[$value->correct_answer];
                 $final[$key]['created_at'] = date('d-m-Y H:i:s', strtotime($value->created_at));
+                $number_key++;
             }
 
             $response['iTotalDisplayRecords'] = count($total);

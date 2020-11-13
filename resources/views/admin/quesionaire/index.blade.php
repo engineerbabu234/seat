@@ -177,7 +177,7 @@
 			ajax:urls ,
 
 			columns: [
-				{ data: 'id', name: 'id' },
+				{ data: 'number_key', name: 'number_key' },
 				{ data: 'title', name: 'title' },
 				{ data: 'description', name: 'description' },
 				{ data: 'expired_option', name: 'expired_option' },

@@ -58,6 +58,7 @@ class QuesionaireController extends Controller
             $Quesionaire = $Quesionaire->get();
 
             $final = [];
+            $number_key = 1;
             $restriction = array('0' => 'No', '1' => 'Yes');
             foreach ($Quesionaire as $key => $value) {
                 $questions = Question::where('quesionaire_id', $value->id)->count();
@@ -66,7 +67,7 @@ class QuesionaireController extends Controller
                 } else {
                     $questions_total = 0;
                 }
-
+                $final[$key]['number_key'] = $number_key;
                 $final[$key]['id'] = $value->id;
                 $final[$key]['title'] = $value->title;
                 $final[$key]['description'] = $value->description;
@@ -77,6 +78,7 @@ class QuesionaireController extends Controller
                 $final[$key]['expired_date'] = date('d-m-Y', strtotime($value->expired_date));
                 $final[$key]['created_at'] = date('d-m-Y H:i:s', strtotime($value->created_at));
                 $final[$key]['restriction'] = @$restriction[$value->restriction];
+                $number_key++;
             }
 
             $response['iTotalDisplayRecords'] = count($total);

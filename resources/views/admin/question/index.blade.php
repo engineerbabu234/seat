@@ -170,7 +170,7 @@
 			ajax:urls ,
 
 			columns: [
-				{ data: 'id', name: 'id' },
+				{ data: 'number_key', name: 'number_key' },
 				{ data: 'quesionaire', name: 'quesionaire' },
 				{ data: 'question', name: 'question' },
 				{ data: 'correct_answer', name: 'correct_answer' },

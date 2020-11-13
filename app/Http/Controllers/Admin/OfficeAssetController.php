@@ -75,9 +75,10 @@ class OfficeAssetController extends Controller
             $final = [];
 
             $total_quesionaire = 0;
+            $number_key = 1;
             foreach ($officeAssets as $key => $value) {
                 $total_seats = OfficeSeat::where('office_asset_id', $value->id)->whereNull('deleted_at')->get();
-
+                $final[$key]['number_key'] = $number_key;
                 $final[$key]['id'] = $value->id;
                 $final[$key]['office_name'] = $value->office_name;
                 $final[$key]['building_name'] = $value->building_name;
@@ -86,6 +87,7 @@ class OfficeAssetController extends Controller
                 $final[$key]['total_quesionaire'] = $total_quesionaire;
                 $final[$key]['is_covid_test'] = $value->is_covid_test;
                 $final[$key]['created_at'] = date('d-m-Y H:i:s', strtotime($value->created_at));
+                $number_key++;
             }
 
             $response['iTotalDisplayRecords'] = count($total);

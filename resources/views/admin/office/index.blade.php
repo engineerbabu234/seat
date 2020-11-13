@@ -170,7 +170,7 @@
 			ajax:urls ,
 
 			columns: [
-				{ data: 'office_id', name: 'office_id' },
+				{ data: 'number_key', name: 'number_key' },
 				{ data: 'building_name', name: 'building_name' },
 				{ data: 'office_number', name: 'office_number' },
 				{ data: 'office_name', name: 'office_name' },

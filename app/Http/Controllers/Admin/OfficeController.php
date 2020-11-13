@@ -75,17 +75,19 @@ class OfficeController extends Controller
             $Office = $Office->get();
 
             $final = [];
-
+            $number_key = 1;
             foreach ($Office as $key => $value) {
 
                 $total_assets = OfficeAsset::where('office_id', $value->office_id)->get();
 
+                $final[$key]['number_key'] = $number_key;
                 $final[$key]['office_id'] = $value->office_id;
                 $final[$key]['office_name'] = $value->office_name;
                 $final[$key]['building_name'] = $value->building_name;
                 $final[$key]['office_number'] = $value->office_number;
                 $final[$key]['seats'] = count($total_assets);
                 $final[$key]['created_at'] = date('d-m-Y H:i:s', strtotime($value->created_at));
+                $number_key++;
             }
 
             $response['iTotalDisplayRecords'] = count($total);

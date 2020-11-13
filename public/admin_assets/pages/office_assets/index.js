@@ -12,10 +12,7 @@ $(document).ready(function() {
         "ordering": false,
         destroy: true,
         ajax: urls,
-        columns: [{
-            data: 'id',
-            name: 'id'
-        }, {
+        columns: [{ data: 'number_key', name: 'number_key' }, {
             data: 'office_name',
             name: 'office_name'
         }, {
