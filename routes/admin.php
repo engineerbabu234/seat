@@ -126,6 +126,19 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
 
         });
 
+        // questionnaires
+        Route::group(['prefix' => 'questionnaires'], function () {
+
+            Route::get('/', 'QuestionnaireController@index')->name('index');
+            Route::get('add_questionnaires', 'QuestionnaireController@create')->name('add_questionnaires');
+            Route::post('store', 'QuestionnaireController@store')->name('store');
+            Route::get('questionnaires_details/{id?}', 'QuestionnaireController@show')->name('questionnaires_details');
+            Route::get('edit_questionnaires/{id?}', 'QuestionnaireController@edit')->name('edit_questionnaires');
+            Route::post('update/{id?}', 'QuestionnaireController@update')->name('update');
+            Route::get('delete/{id}', 'QuestionnaireController@destroy')->name('destroy');
+
+        });
+
         // reservation
         Route::group(['prefix' => 'reservation'], function () {
             Route::get('reservation_request', 'ReservationController@reservationRequest')->name('reservation_request');
