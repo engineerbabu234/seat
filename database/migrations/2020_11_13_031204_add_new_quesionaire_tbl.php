@@ -18,7 +18,8 @@ class AddNewQuesionaireTbl extends Migration
             $table->integer('user_id')->unsigned()->nullable();
             $table->string('title')->nullable();
             $table->text('description')->nullable();
-            $table->string('expired_date_option')->nullable();
+            $table->string('expired_option')->nullable();
+            $table->string('expired_value')->nullable();
             $table->date('start_date')->nullable();
             $table->date('expired_date')->nullable();
             $table->boolean('restriction')->nullable();
