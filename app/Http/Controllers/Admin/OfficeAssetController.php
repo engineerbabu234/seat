@@ -50,7 +50,6 @@ class OfficeAssetController extends Controller
                 $officeAssets = $officeAssets->where("office_asset.office_id", $office_id);
 
             }
-            $officeAssets = $officeAssets->where("office_asset.user_id", Auth::id());
 
             if ($officeAssets) {
                 $total = $officeAssets->get();
