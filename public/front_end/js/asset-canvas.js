@@ -85,7 +85,8 @@
     let canvas = new fabric.Canvas("canvas", {
       controlsAboveOverlay: true,
       preserveObjectStacking: true,
-      fireRightClick: true
+      fireRightClick: true,
+       selection: false
     });
 
     initCenteringGuidelines(canvas);
@@ -397,10 +398,10 @@
               if( candata.objects.length !== 0 ){
               main_image = res.data.asset_canvas;
               var json = main_image;
-               
               canvas.clear();
               canvas.loadFromJSON(json, function() { 
                 canvas.renderAll();
+               
               });
 
               loadOfficeItemCanvasObject(0);
@@ -832,4 +833,4 @@
       });
 
      
-    }
+    }  

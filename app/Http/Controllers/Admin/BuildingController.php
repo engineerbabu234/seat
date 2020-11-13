@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\Office;
+use Auth;
 use Datatables;
 use DB;
 use Illuminate\Http\Request;
@@ -22,6 +23,7 @@ class BuildingController extends Controller
         if ($request->ajax()) {
             $buildings = DB::table('buildings as b')
                 ->select('b.*')
+                ->where('b.user_id', Auth::id())
             /*->leftJoin('users as u','u.id', '=','t.user_id')
             ->leftJoin('users as d','d.id', '=','t.driver_id')*/
                 ->orderBy('b.building_id', 'desc')
@@ -82,6 +84,7 @@ class BuildingController extends Controller
         }
 
         $Building = new Building();
+        $Building->user_id = Auth::id();
         $Building->building_name = $inputs['building_name'];
         $Building->building_address = $inputs['building_address'];
         $Building->description = $inputs['description'];
@@ -183,6 +186,7 @@ class BuildingController extends Controller
         }
 
         $Building = Building::find($id);
+        $Building->user_id = Auth::id();
         $Building->building_name = $inputs['building_name'];
         $Building->building_address = $inputs['building_address'];
         $Building->description = $inputs['description'];
