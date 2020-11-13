@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Questionnaire;
+use App\Models\Quesionaire;
 use Auth;
 use Illuminate\Http\Request;
 use Validator;
 
-class QuestionnaireController extends Controller
+class QuesionaireController extends Controller
 {
 
     /**
@@ -27,21 +27,21 @@ class QuestionnaireController extends Controller
 
             if (isset($request->search['value']) && $request->search['value'] != "") {
                 $search = trim(addslashes($request->search['value']));
-                $whereStr .= " AND questionnaires.questionnaire like '%{$search}%'";
+                $whereStr .= " AND quesionaire.title like '%{$search}%'";
             }
 
-            $columns = ['questionnaires.id', 'questionnaires.questionnaire', 'questionnaires.correct_answer', 'questionnaires.created_at'];
+            $columns = ['quesionaire.id', 'quesionaire.title', 'quesionaire.description', 'quesionaire.expired_date_option', 'quesionaire.start_date', 'quesionaire.expired_date', 'quesionaire.restriction'];
 
-            $Questionnaire = Questionnaire::select($columns)->whereRaw($whereStr, $whereParams);
-            $Questionnaire = $Questionnaire->where("questionnaires.user_id", Auth::id());
-            $Questionnaire = $Questionnaire->orderBy('questionnaires.id', 'desc');
+            $Quesionaire = Quesionaire::select($columns)->whereRaw($whereStr, $whereParams);
+            $Quesionaire = $Quesionaire->where("quesionaire.user_id", Auth::id());
+            $Quesionaire = $Quesionaire->orderBy('quesionaire.id', 'desc');
 
-            if ($Questionnaire) {
-                $total = $Questionnaire->get();
+            if ($Quesionaire) {
+                $total = $Quesionaire->get();
             }
 
             if ($request->has('iDisplayStart') && $request->get('iDisplayLength') != '-1') {
-                $Questionnaire = $Questionnaire->take($request->get('iDisplayLength'))->skip($request->get('iDisplayStart'));
+                $Quesionaire = $Quesionaire->take($request->get('iDisplayLength'))->skip($request->get('iDisplayStart'));
             }
 
             if ($request->has('iSortCol_0')) {
@@ -51,20 +51,24 @@ class QuestionnaireController extends Controller
                     if (false !== ($index = strpos($column, ' as '))) {
                         $column = substr($column, 0, $index);
                     }
-                    $Questionnaire = $Questionnaire->orderBy($column, $request->get('sSortDir_' . $i));
+                    $Quesionaire = $Quesionaire->orderBy($column, $request->get('sSortDir_' . $i));
                 }
             }
 
-            $Questionnaire = $Questionnaire->get();
+            $Quesionaire = $Quesionaire->get();
 
             $final = [];
-            $answer = array('0' => 'No', '1' => 'Yes');
-            foreach ($Questionnaire as $key => $value) {
+
+            foreach ($Quesionaire as $key => $value) {
 
                 $final[$key]['id'] = $value->id;
-                $final[$key]['questionnaire'] = $value->questionnaire;
-                $final[$key]['correct_answer'] = @$answer[$value->correct_answer];
+                $final[$key]['title'] = $value->title;
+                $final[$key]['description'] = $value->description;
+                $final[$key]['expired_date_option'] = $value->expired_date_option;
+                $final[$key]['start_date'] = date('d-m-Y', strtotime($value->start_date));
+                $final[$key]['expired_date'] = date('d-m-Y', strtotime($value->expired_date));
                 $final[$key]['created_at'] = date('d-m-Y H:i:s', strtotime($value->created_at));
+                $final[$key]['correct_answer'] = @$answer[$value->correct_answer];
             }
 
             $response['iTotalDisplayRecords'] = count($total);
@@ -75,7 +79,7 @@ class QuestionnaireController extends Controller
         }
         $data = array();
 
-        return view('admin.questionnaire.index', compact('data'));
+        return view('admin.quesionaire.index', compact('data'));
     }
 
     /**
@@ -109,22 +113,22 @@ class QuestionnaireController extends Controller
         //     return ['status' => 'failed', 'message' => 'You can add only ' . $TOTAL_MAX_OFFICES . ' office'];
         // }
 
-        $Questionnaire = new Questionnaire();
-        $Questionnaire->user_id = Auth::id();
-        $Questionnaire->title = $inputs['title'];
-        $Questionnaire->description = $inputs['description'];
-        $Questionnaire->expired_date_option = $inputs['expired_date_option'];
-        $Questionnaire->restrict_option = $inputs['restrict_option'];
-        $Questionnaire->expired_date_value = $inputs['expired_date_value'];
-        $Questionnaire->start_date = date('Y-m-d', strtotime($inputs['start_date']));
-        $Questionnaire->expired_date = date('Y-m-d', strtotime($inputs['expired_date']));
-        if ($Questionnaire->save()) {
+        $Quesionaire = new Quesionaire();
+        $Quesionaire->user_id = Auth::id();
+        $Quesionaire->title = $inputs['title'];
+        $Quesionaire->description = $inputs['description'];
+        $Quesionaire->expired_date_option = $inputs['expired_date_option'];
+        $Quesionaire->restriction = $inputs['restriction'];
+        $Quesionaire->expired_date_value = $inputs['expired_date_value'];
+        $Quesionaire->start_date = date('Y-m-d', strtotime($inputs['start_date']));
+        $Quesionaire->expired_date = date('Y-m-d', strtotime($inputs['expired_date']));
+        if ($Quesionaire->save()) {
             $response = [
                 'success' => true,
-                'message' => 'Questionnaire Added successfull',
+                'message' => 'Quesionaire Added successfull',
             ];
         } else {
-            return back()->with('error', 'Questionnaire added failed,please try again');
+            return back()->with('error', 'Quesionaire added failed,please try again');
         }
 
         return response()->json($response, 200);
@@ -138,11 +142,11 @@ class QuestionnaireController extends Controller
      */
     public function edit($id)
     {
-        $questionnaire = Questionnaire::find($id);
+        $quesionaire = Quesionaire::find($id);
 
         $response = [
             'success' => true,
-            'html' => view('admin.questionnaire.edit', compact('questionnaire'))->render(),
+            'html' => view('admin.quesionaire.edit', compact('quesionaire'))->render(),
         ];
 
         return response()->json($response, 200);
@@ -181,22 +185,22 @@ class QuestionnaireController extends Controller
         //     return ['status' => 'failed', 'message' => 'You can add only ' . $TOTAL_MAX_OFFICES . ' office'];
         // }
 
-        $Questionnaire = Questionnaire::find($id);
-        $Questionnaire->user_id = Auth::id();
-        $Questionnaire->title = $inputs['title'];
-        $Questionnaire->description = $inputs['description'];
-        $Questionnaire->expired_date_option = $inputs['expired_date_option'];
-        $Questionnaire->restrict_option = $inputs['restrict_option'];
-        $Questionnaire->expired_date_value = $inputs['expired_date_value'];
-        $Questionnaire->start_date = date('Y-m-d', strtotime($inputs['start_date']));
-        $Questionnaire->expired_date = date('Y-m-d', strtotime($inputs['expired_date']));
-        if ($Questionnaire->save()) {
+        $Quesionaire = Quesionaire::find($id);
+        $Quesionaire->user_id = Auth::id();
+        $Quesionaire->title = $inputs['title'];
+        $Quesionaire->description = $inputs['description'];
+        $Quesionaire->expired_date_option = $inputs['expired_date_option'];
+        $Quesionaire->restriction = $inputs['restriction'];
+        $Quesionaire->expired_date_value = $inputs['expired_date_value'];
+        $Quesionaire->start_date = date('Y-m-d', strtotime($inputs['start_date']));
+        $Quesionaire->expired_date = date('Y-m-d', strtotime($inputs['expired_date']));
+        if ($Quesionaire->save()) {
             $response = [
                 'success' => true,
-                'message' => 'Questionnaire Updated successfull',
+                'message' => 'Quesionaire Updated successfull',
             ];
         } else {
-            return back()->with('error', 'Questionnaire Updated failed,please try again');
+            return back()->with('error', 'Quesionaire Updated failed,please try again');
         }
 
         return response()->json($response, 200);
@@ -211,11 +215,11 @@ class QuestionnaireController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if (Questionnaire::find($id)->delete()) {
+        if (Quesionaire::find($id)->delete()) {
 
-            return ['status' => 'success', 'message' => 'Successfully deleted Questionnaire'];
+            return ['status' => 'success', 'message' => 'Successfully deleted Quesionaire'];
         } else {
-            return ['status' => 'failed', 'message' => 'Failed delete Questionnaire'];
+            return ['status' => 'failed', 'message' => 'Failed delete Quesionaire'];
         }
     }
 

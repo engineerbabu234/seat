@@ -56,10 +56,16 @@ use Illuminate\Support\Facades\Session;
 
 					<a class="@if((substr(strrchr(url()->current(),"/"),1)=='asset')){{'active'}}@endif" href="{{url('admin/office/asset')}}"><i class="fas fa-list"></i> <span>Offices Assets</span></a>
 					</li>
-					<li>
 
+					<li>
+					<a class="@if((substr(strrchr(url()->current(),"/"),1)=='quesionaire')){{'active'}}@endif" href="{{url('admin/quesionaire')}}"><i class="fas fa-list"></i> <span>Quesionaire</span></a>
+					</li>
+
+					<li>
 					<a class="@if((substr(strrchr(url()->current(),"/"),1)=='question')){{'active'}}@endif" href="{{url('admin/question')}}"><i class="fas fa-list"></i> <span>Quesionaire Question</span></a>
 					</li>
+
+
 					<li>
 
 						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='reservation_request')){{'active'}}@endif" href="{{url('admin/reservation/reservation_request')}}"><i class="fa fa-list"></i> <span>Reservation Request</span></a>
