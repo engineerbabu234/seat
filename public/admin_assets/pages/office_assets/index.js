@@ -29,6 +29,16 @@ $(document).ready(function() {
             name: 'id',
             render: function(data, type, column, meta) {
                 return '<a href="#" data-id="' + column.id + '" class="button accept get_office_assets">' + column.total_seats + '</a>';
+        }
+        }, { 
+            data: 'id',
+            name: 'id',
+            render: function(data, type, column, meta) {
+                if(column.total_questionarie > 0 ){
+                return '<a href="#" data-id="' + column.id + '" class="button accept question_logic_modal">' + column.total_questionarie + '</a>';
+                }else{
+                        return '<a href="#"  class="button accept">0</a>';
+                        }
             }
         }, {
             data: 'created_at',
@@ -308,6 +318,135 @@ $(document).on("click", ".edit-booking-seat", function(e) {
                 $('.error').removeClass('text-danger');
                 swal("Success!", response.message, "success");
                 $('#updateseatsModal').modal('hide');
+            }
+        },
+    });
+});
+
+
+
+
+
+$(document).on("click", ".question_logic_modal", function(e) {
+    e.preventDefault();
+    var id = $(this).data('id');
+
+    var aurls = base_url + "/admin/office/asset/question_logic/";
+    jQuery.ajax({
+        url: aurls,
+        type: 'get',
+        dataType: 'json',
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+
+            if (response.success) {
+                $('#question_logic_info').html(response.html);
+                draganddrop();
+                $('#question_logic_modal').modal('show');
+
+            }
+        },
+    });
+});
+
+
+// add logic for questins
+function draganddrop(){
+ $(function() {
+
+  var draggableOptions = {
+    appendTo: "body",
+    helper: "clone",
+    cursor: 'move'
+  };
+
+  var draggableOptions1 = {
+    appendTo: "body",
+    helper: "clone",
+    cursor: 'copy'
+
+  };
+
+  $('.choice').draggable(draggableOptions);
+  $('.choicelogic').draggable(draggableOptions1);
+
+  $('#choices')
+    .sortable()
+    .droppable({
+      activeClass: 'ui-state-default',
+      hoverClass: 'ui-state-hover',
+       accept: '.choice, .choicelogic',
+      drop: function(evt, ui) {
+        $('<div></div>')
+          .addClass('choice')
+          .text(ui.draggable.text())
+          .draggable(draggableOptions)
+          .appendTo(this);
+        //$(ui.draggable).hide();
+      }
+    });
+
+
+  $('.answerContainer').droppable({
+    activeClass: 'ui-state-default',
+    hoverClass: 'ui-state-hover',
+    //accept: ":not(.ui-sortable-helper)",
+    drop: function(event, ui) {
+      //$(this).find(".placeholder").remove();
+
+
+      $('<div></div>')
+        .addClass('choice')
+        .text(ui.draggable.text())
+        .attr('data-id',ui.draggable.attr("id"))
+        .draggable(draggableOptions)
+        .appendTo(this);
+      //$(ui.draggable).hide();
+
+    }
+  });
+
+
+});
+}
+
+
+
+$(document).on("click", ".save_question_logic", function(e) {
+    e.preventDefault();
+    var logic_data = [];
+    $('.choice').each(function(n) {
+        if($(this).attr('data-id')){
+            logic_data[n] = $(this).attr('data-id');
+        }
+    });
+
+    console.log(logic_data);
+
+    $.ajax({
+        url: base_url + '/admin/office/asset/save_question_logic',
+        type: 'post',
+        dataType: 'json',
+        data: {'logic':logic_data},
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        error: function(response) {
+            if (response.status == 400) {
+                $.each(response.responseJSON.errors, function(k, v) {
+                    $('#' + k + '_error').text(v);
+                    $('#' + k + '_error').addClass('text-danger');
+                });
+            }
+        },
+        success: function(response) {
+            if (response.success) {
+                $("form#question-logic")[0].reset();
+                swal("Success!", response.message, "success");
+                $('.error').removeClass('text-danger');
+                $('#question_logic_modal').modal('hide');
             }
         },
     });

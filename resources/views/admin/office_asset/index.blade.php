@@ -31,6 +31,7 @@
 							<th>Office Name</th>
 							<th>Assets Name</th>
 							<th>Total Seats</th>
+							<th>Quesionaire</th>
 							<th>Date/Time </th>
 							<th nowrap>Action</th>
 						</tr>
@@ -67,6 +68,14 @@
 					@csrf
 
 					<div class="row">
+						<div class="col-sm-12">
+
+						<div class="form-group">
+							<h6 class="sub-title">Assets Title <span class="text-danger">*</span></h6>
+							<input type="text" class="form-control" placeholder="Assets Title" name="title" required>
+							 <span class="error" id="title_error"></span>
+						</div>
+				</div>
 
 					<div class="col-sm-6">
 					<div class="form-group">
@@ -86,6 +95,8 @@
 						 <span class="error" id="building_id_error"></span>
 					</div>
 				</div>
+
+
 				<div class="col-sm-6">
 
 						<div class="form-group">
@@ -94,25 +105,8 @@
 							  <span class="error" id="office_id_error"></span>
 						</div>
 				</div>
-				<div class="col-sm-6">
 
-						<div class="form-group">
-							<h6 class="sub-title">Assets Title <span class="text-danger">*</span></h6>
-							<input type="text" class="form-control" placeholder="Assets Title" name="title" required>
-							 <span class="error" id="title_error"></span>
-						</div>
-				</div>
 
-				<div class="col-sm-6">
-						<div class="form-group">
-							<h6 class="sub-title">Is Covide Test</h6>
-							 <select class="form-control" name="is_covid_test" id="is_covid_test">
-							 	<option value="0" selected>No</option>
-							 	<option value="1">Yes</option>
-							 </select>
-							 <span class="error" id="is_covid_test_error"></span>
-						</div>
-				</div>
 				<div class="col-sm-6">
 						<div class="form-group">
 							<h6 class="sub-title">Description</h6>
@@ -181,6 +175,24 @@
 
 
 
+<div class="modal"  tabindex="-1"  id="question_logic_modal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h4 class="modal-title">Question Logic</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body" id="question_logic_info">
+
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- End display assets -->
 
 @endsection
@@ -192,6 +204,32 @@
 	    border: 0;
 	    font-size: 26px;
 	}
+
+	#choices {
+    min-width: 200px;
+    min-height: 60px;
+}
+.choice {
+    float: left;
+    border: 2px solid gray;
+    margin: 5px;
+    padding: 5px;
+    cursor: pointer;
+}
+.questionContainer, .answerContainer {
+    border: 2px solid gray;
+    float: left;
+    margin: 5px;
+    width: 400px;
+    height: 80px;
+    padding: 10px;
+}
+.answerContainer {
+    border-style: dashed;
+}
+.clearfix {
+    clear: both;
+}
 </style>
  <!-- fabric canvas css -->
 

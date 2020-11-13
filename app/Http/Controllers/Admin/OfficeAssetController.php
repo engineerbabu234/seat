@@ -74,8 +74,8 @@ class OfficeAssetController extends Controller
 
             $final = [];
 
+            $total_quesionaire = 0;
             foreach ($officeAssets as $key => $value) {
-
                 $total_seats = OfficeSeat::where('office_asset_id', $value->id)->whereNull('deleted_at')->get();
 
                 $final[$key]['id'] = $value->id;
@@ -83,6 +83,7 @@ class OfficeAssetController extends Controller
                 $final[$key]['building_name'] = $value->building_name;
                 $final[$key]['title'] = $value->title;
                 $final[$key]['total_seats'] = count($total_seats);
+                $final[$key]['total_quesionaire'] = $total_quesionaire;
                 $final[$key]['is_covid_test'] = $value->is_covid_test;
                 $final[$key]['created_at'] = date('d-m-Y H:i:s', strtotime($value->created_at));
             }
@@ -112,7 +113,7 @@ class OfficeAssetController extends Controller
             'office_id' => 'required',
             'title' => 'required',
             'preview_image' => 'required',
-            'is_covid_test' => 'required',
+
         ];
         $messages = [];
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -151,7 +152,6 @@ class OfficeAssetController extends Controller
         $OfficeAsset->title = $inputs['title'];
         $OfficeAsset->description = $inputs['description'];
 
-        $OfficeAsset->is_covid_test = $inputs['is_covid_test'];
         $OfficeAsset->preview_image = $preview_image;
         if ($OfficeAsset->save()) {
             $response = [
@@ -203,7 +203,7 @@ class OfficeAssetController extends Controller
             'office_id' => 'required',
             'title' => 'required',
             'preview_image' => 'required',
-            'is_covid_test' => 'required',
+
         ];
         $messages = [];
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -250,7 +250,6 @@ class OfficeAssetController extends Controller
         $OfficeAsset->office_id = $inputs['office_id'];
         $OfficeAsset->title = $inputs['title'];
 
-        $OfficeAsset->is_covid_test = $inputs['is_covid_test'];
         $OfficeAsset->description = $inputs['description'];
 
         if (isset($preview_image)) {
@@ -626,6 +625,71 @@ class OfficeAssetController extends Controller
         ];
 
         return response()->json($response, 200);
+    }
+
+    /**
+     * [edit description]
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
+    public function question_logic()
+    {
+        $question = Question::where('user_id', Auth::id())->get();
+        $logic_ans = $answer = array('0' => 'No', '1' => 'Yes');
+        $response = [
+            'success' => true,
+            'html' => view($this->viewPath . 'question_logic', compact('question', 'logic_ans'))->render(),
+        ];
+
+        return response()->json($response, 200);
+
+    }
+
+    /**
+     * [save_question_logic description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function save_question_logic(Request $request)
+    {
+        $inputs = $request->all();
+
+        $rules = [
+            'logic' => 'required',
+
+        ];
+
+        $messages = [];
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            $response = [
+                'success' => false,
+                'errors' => $validator->errors()->toArray(),
+            ];
+            return response()->json($response, 400);
+        }
+
+        $values = array();
+        foreach ($inputs['logic'] as $key => $value) {
+            if ($value != '') {
+                $values[] .= $value;
+            }
+        }
+
+        $question_logic = OfficeAsset::find($office_asset_id);
+        $question_logic->covid_logic = json_encode($values);
+        if ($question_logic->save()) {
+            $response = [
+                'success' => true,
+                'message' => 'Question Logic Added successfull',
+            ];
+        } else {
+            return back()->with('error', 'Question Logic added failed,please try again');
+        }
+
+        return response()->json($response, 200);
+
     }
 
 }

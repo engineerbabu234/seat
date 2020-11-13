@@ -2,7 +2,13 @@
 					@csrf
 
 					<div class="row">
-
+					<div class="col-sm-12">
+						<div class="form-group">
+							<h6 class="sub-title">Assets Title <span class="text-danger">*</span></h6>
+							<input type="text" class="form-control" placeholder="Assets Title" name="title" value="{{ $officeAsset->title }}" required>
+							 <span class="error" id="edit_title_error"></span>
+						</div>
+				</div>
 					<div class="col-sm-6">
 					<input type="hidden" name="id"  value="{{ $officeAsset->id }}">
 					<div class="form-group">
@@ -37,23 +43,7 @@
 						</div>
 				</div>
 				</div>
-				<div class="col-sm-6">
-						<div class="form-group">
-							<h6 class="sub-title">Assets Title <span class="text-danger">*</span></h6>
-							<input type="text" class="form-control" placeholder="Assets Title" name="title" value="{{ $officeAsset->title }}" required>
-							 <span class="error" id="edit_title_error"></span>
-						</div>
-				</div>
-				<div class="col-sm-6">
-						<div class="form-group">
-							<h6 class="sub-title">Is Covide Test</h6>
-							 <select class="form-control" name="is_covid_test" id="is_covid_test">
-							 	<option @if($officeAsset->is_covid_test == 0) {{'selected'}}  @endif value="0">No</option>
-							 	<option @if($officeAsset->is_covid_test == 1) {{'selected'}}  @endif value="1">Yes</option>
-							 </select>
-							 <span class="error" id="edit_is_covid_test_error"></span>
-						</div>
-				</div>
+
 				<div class="col-sm-6">
 						<div class="form-group">
 							<h6 class="sub-title">Description</h6>

@@ -33,7 +33,6 @@
 							<th>Description</th>
 							<th>Expired option</th>
 							<th>Expired Value</th>
-							<th>Expired Date</th>
 							<th>Restriction</th>
 							<th>Quetions</th>
 							<th nowrap>Action</th>
@@ -183,7 +182,6 @@
 				{ data: 'description', name: 'description' },
 				{ data: 'expired_option', name: 'expired_option' },
 				{ data: 'expired_value', name: 'expired_value' },
-				{ data: 'expired_date', name: 'expired_date' },
 				{ data: 'restriction', name: 'restriction' },
 				{ data: 'id', name: 'id',
 					render: function (data, type, column, meta) {

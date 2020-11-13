@@ -99,6 +99,9 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
                     'uses' => 'OfficeAssetController@getAssetsSeats',
                 ]);
 
+                Route::get('question_logic', 'OfficeAssetControllerQuestionsController@question_logic')->name('question_logic');
+                Route::post('save_question_logic', 'OfficeAssetController@save_question_logic')->name('save_question_logic');
+
             });
 
             Route::get('/{building_id?}', 'OfficeController@index')->name('index');
@@ -121,8 +124,6 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
             Route::get('edit_question/{id?}', 'QuestionsController@edit')->name('edit_question');
             Route::post('update/{id?}', 'QuestionsController@update')->name('update');
             Route::get('delete/{id}', 'QuestionsController@destroy')->name('destroy');
-            Route::get('question_logic', 'QuestionsController@question_logic')->name('question_logic');
-            Route::post('save_question_logic', 'QuestionsController@save_question_logic')->name('save_question_logic');
 
         });
 
