@@ -487,7 +487,7 @@
       // handler for delete icon click event
       $(".removeImg").click(function() {
           let id = $(this).attr("id").split("-")[1];
-          let asset_id = $(this).attr("asset");          
+          let asset_id = $(this).data("asset");          
           remove_objects(asset_id,id);
    
             
@@ -497,6 +497,7 @@
                   canvas.remove(clonedCircles[index])
                   hideCircleToolBox();
                   delete_object(assets_id,id);
+                  saveImage(1);
               }
           }));
       });
@@ -516,7 +517,8 @@
                                 $('#remove-'+id).hide();
                                 $('#dots-'+id).hide();
                                 delete_object(assets_id,id);
-                           }
+                                saveImage(1);
+                           }    
                             
                         });
 
