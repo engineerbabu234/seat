@@ -45,10 +45,10 @@ class OfficeController extends Controller
             if (isset($buildingId) && $buildingId != "") {
                 $Office = Office::select($columns)->leftJoin("buildings", "buildings.building_id", "offices.building_id")->whereRaw($whereStr, $whereParams);
                 $Office = $Office->where("offices.building_id", $buildingId);
-                $Office = $Office->where("offices.user_id", Auth::id());
+
             } else {
                 $Office = Office::select($columns)->leftJoin("buildings", "buildings.building_id", "offices.building_id")->whereRaw($whereStr, $whereParams);
-                $Office = $Office->where("offices.user_id", Auth::id());
+
             }
 
             $Office = $Office->orderBy('office_id', 'desc');

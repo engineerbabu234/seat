@@ -23,7 +23,7 @@ class BuildingController extends Controller
         if ($request->ajax()) {
             $buildings = DB::table('buildings as b')
                 ->select('b.*')
-                ->where('b.user_id', Auth::id())
+
             /*->leftJoin('users as u','u.id', '=','t.user_id')
             ->leftJoin('users as d','d.id', '=','t.driver_id')*/
                 ->orderBy('b.building_id', 'desc')
