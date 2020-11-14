@@ -427,6 +427,7 @@ class OfficeAssetController extends Controller
                 'id' => $OfficeSeat->seat_id,
                 'assetId' => $inputs['asset_id'],
                 'dotsId' => $inputs['dots_id'],
+                'status' => $inputs['status'],
             ];
         } else {
             return back()->with('error', 'Office seat failed,please try again');
@@ -448,10 +449,10 @@ class OfficeAssetController extends Controller
         $assets_image = ImageHelper::getOfficeAssetsImage($officeAsset->preview_image);
 
         $seatid = '';
-        $assets_count = OfficeSeat::where('office_asset_id', $assetId)->orderBy('seat_id', 'desc')->count();
+        $assets_count = OfficeSeat::where('office_asset_id', $assetId)->orderBy('seat_id', 'desc')->first();
 
-        if ($assets_count > 0) {
-            $seatid = ($assets_count + 1);
+        if (isset($assets_count->dots_id) && $assets_count->dots_id != '') {
+            $seatid = ($assets_count->dots_id + 1);
         } else {
             $seatid = 1;
         }
@@ -543,20 +544,33 @@ class OfficeAssetController extends Controller
         $image_64 = null;
         $image_64 = $inputs['preview_seat_image'];
 
-        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
-        $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+        $officeseat = OfficeSeat::where('seat_id', $seatid)->first();
+        $officeseat_image = DB::table('office_images')->where('seat_id', $seatid)->where('office_id', $officeseat->office_id)->first();
 
-        $image = str_replace($replace, '', $image_64);
+        $oldimage = ImageHelper::getOfficeAssetsImage($officeseat_image->image);
 
-        $image = str_replace(' ', '+', $image);
+        //$oldimage = DB::table('office_images')->where('seat_id', $seatid)->first();
+        $new_image = explode('office_asset/', $inputs['preview_seat_image']);
+        $oldimage_new = explode('office_asset/', $oldimage);
 
-        $imageName = str_random('10') . '_' . time() . '.' . $extension;
-        $destinationPath = ImageHelper::$getOfficeAssetsImagePath;
+        if (isset($new_image[1]) && ($new_image[1] == $oldimage_new[1])) {
+        } else {
 
-        $uploadPath = $destinationPath . '/' . $imageName;
-        if (file_put_contents($uploadPath, base64_decode($image))) {
-            $preview_image = $imageName;
+            $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+            $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
 
+            $image = str_replace($replace, '', $image_64);
+
+            $image = str_replace(' ', '+', $image);
+
+            $imageName = str_random('10') . '_' . time() . '.' . $extension;
+            $destinationPath = ImageHelper::$getOfficeAssetsImagePath;
+
+            $uploadPath = $destinationPath . '/' . $imageName;
+            if (file_put_contents($uploadPath, base64_decode($image))) {
+                $preview_image = $imageName;
+
+            }
         }
 
         $OfficeSeat = OfficeSeat::where('seat_id', $seatid)->first();
@@ -571,13 +585,17 @@ class OfficeAssetController extends Controller
         $OfficeSeat->status = $inputs['status'];
         if ($OfficeSeat->save()) {
 
-            $OfficeImage = OfficeImage::where('office_id', $inputs['office_id'])->where('seat_id', $seatid)->first();
-            $OfficeImage->image = $preview_image;
-            $OfficeImage->save();
+            if (isset($preview_image)) {
+                $OfficeImage = OfficeImage::where('office_id', $inputs['office_id'])->where('seat_id', $seatid)->first();
+                $OfficeImage->image = $preview_image;
+                $OfficeImage->save();
+
+            }
 
             $response = [
                 'success' => true,
                 'message' => 'Office seat Updated success',
+                'status' => $inputs['status'],
             ];
         } else {
             return back()->with('error', 'Office seat updated failed,please try again');
@@ -612,11 +630,16 @@ class OfficeAssetController extends Controller
 
         $seat_id = '';
         $counts = '';
+        $status = "";
+        $seat_type = "";
+
         if (isset($OfficeSeat)) {
             $seat_count = $OfficeSeat->count();
             if ($seat_count > 0) {
                 $counts = true;
                 $seat_id = $OfficeSeat->seat_id;
+                $status = $OfficeSeat->status;
+                $seat_type = $OfficeSeat->seat_type;
             } else {
                 $counts = false;
             }
@@ -626,7 +649,8 @@ class OfficeAssetController extends Controller
             'success' => true,
             'seat_count' => $counts,
             'seat_id' => $seat_id,
-
+            'status' => $status,
+            'seat_type' => $seat_type,
         ];
 
         return response()->json($response, 200);

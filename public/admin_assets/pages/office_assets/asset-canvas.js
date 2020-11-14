@@ -126,8 +126,14 @@
               }
           }));
       }
+
+
+
       // function to load canvas json object into canvas
       function loadOfficeItemCanvasObject(id) {
+            let total_object = canvas._objects;
+           
+
           console.log('cloned circle');
           clonedCircles.splice(0, clonedCircles.length);
           circleNums = 0;
@@ -309,8 +315,13 @@
           $(".dotsImg").attr("id", "dots-" + e.target._objects[1].text);
           $(".dotsImg").css("left", e.target.left + $("#main").position().left - 20);
           $(".dotsImg").css("top", e.target.top + 25);
-          $(".dotsImg").css("display", "block");
+          $(".dotsImg").css("display", "block"); 
+          
       }
+
+       
+
+
       // hide circle tool box
       function hideCircleToolBox() {
           $(".removeImg").css("display", "none");
@@ -340,6 +351,8 @@
                           canvas.loadFromJSON(json, function() {
                               canvas.renderAll();
                           });
+
+
                           loadOfficeItemCanvasObject(0);
                           $('#is_edit').val('yes');
                       } else {
@@ -489,8 +502,7 @@
           let id = $(this).attr("id").split("-")[1];
           let asset_id = $(this).data("asset");          
           remove_objects(asset_id,id);
-   
-            
+           
           clonedCircles.map(((value, index) => {
                
               if (value._objects[1].text === id) {
@@ -505,14 +517,40 @@
      
 
       function remove_objects(assets_id,id) {
-             
+  
              let activeObjects = canvas.getActiveObjects();
+             if (activeObjects.length) {
+                    if (confirm('Do you want to update status??')) {           
+        
+                        activeObjects.forEach(function (object) {
+                           
+                           if(object._objects[1].text == id){
+                             
+                             console.log(object._objects[0].get('fill'));
+                              object._objects[0].set("fill",'#9E9E9E');
+                              object._objects[0].set("stroke",'#9E9E9E');
+                               canvas.renderAll();
+ 
+                           }    
+                            
+                        });
+
+                    }
+                
+            }
+
+
             if (activeObjects.length) {
                     if (confirm('Do you want to delete the selected item??')) {           
         
                         activeObjects.forEach(function (object) {
                            
                            if(object._objects[1].text == id){
+                             console.log('select object');
+                              object._objects[1].set("fill", circleAC);
+                              object._objects[1].set("stroke", strokeCircleAC)
+
+
                                 canvas.remove(object);
                                 $('#remove-'+id).hide();
                                 $('#dots-'+id).hide();
@@ -526,8 +564,7 @@
                 
             }
             
-      }
-
+      } 
 
       $(".dotsImg").click(function() {
           let id = $(this).attr("id").split("-")[1];
@@ -615,9 +652,31 @@
           if (e.target) {
             console.log('click');
             
-             // if(e.target._objects[1].text != ''){
-             //        delete_object(e);
-             // }
+             if(e.target._objects[1].text != ''){
+                 let asset_id = $('#asset_id').val();
+                  getlastdata(asset_id,e.target._objects[1].text);
+                  setTimeout(function() {
+                    let status = $('#seat_status').val();
+                    let seat_type = $('#seat_type').val();
+                    if(status != '' && status ==  1){
+                         e.target._objects[0].set("fill",'#9E9E9E');
+                         e.target._objects[0].set("stroke",'#9E9E9E');
+                          canvas.renderAll();                      
+                    } else if(status != '' && status ==  0){
+                        e.target._objects[0].set("fill",'#62AF57');
+                         e.target._objects[0].set("stroke",'#62AF57');
+                          canvas.renderAll();
+                    }
+
+                    if(seat_type != '' && seat_type == 2){
+                         e.target._objects[0].set("fill",'#ff0000');
+                         e.target._objects[0].set("stroke",'#ff0000');
+                          canvas.renderAll();
+                    }
+                     saveImage(1);
+
+                  }, 1000);
+             }
               
           }else{
             //add rectangle
@@ -625,6 +684,14 @@
           }
          
       });
+
+      function set_color(){
+
+      }
+
+
+
+
       canvas.on("mouse:move", function(e) {
           // if (!started_flag) return;
           // if (down_flag === false) return;
@@ -714,6 +781,8 @@
           success: function(res) {
               $('#total_count').val(res.seat_count);
               $('#seat_ids').val(res.seat_id);
+              $('#seat_status').val(res.status);
+              $('#seat_type').val(res.seat_type);
 
               
           },
@@ -722,3 +791,4 @@
           }
       });
   }
+

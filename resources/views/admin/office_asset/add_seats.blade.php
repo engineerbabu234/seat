@@ -14,6 +14,8 @@
           </div>
 
         </div>
+        <input type="hidden"  id="seat_type" value="">
+        <input type="hidden"  id="seat_status" value="">
         <input type="hidden"  id="total_count" value="">
         <input type="hidden"  id="last_id" value="">
         <input type="hidden" name="seat_ids" id="seat_ids" value="">

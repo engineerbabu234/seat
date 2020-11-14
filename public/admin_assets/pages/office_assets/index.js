@@ -252,6 +252,7 @@ $(document).on("click", ".add-booking-seat", function(e) {
             if (response.success) {
                 $("form#add-office-asset-image-form")[0].reset();
                 $('.dotsImg').data('seat_id', response.id);
+                $('.dotsImg').data('status', response.status);
                 swal("Success!", response.message, "success");
                 $('#seat_ids').val(response.id);
                 $('#btnSave').click();
