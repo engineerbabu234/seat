@@ -1,0 +1,285 @@
+@media (min-width: 768px) and (max-width: 1191px){
+	.right-block .main-body .tenders .single-tender .date-total label {
+	    padding: 6px 10px;
+	    font-size: 12px;
+	    margin: 0 2px;
+	}
+	.right-block .main-body .tenders .single-tender{
+		padding: 15px;
+	}
+	.right-block .inner-body .tender-details .product-details table {
+	    width: 80%;
+	}
+	.right-block .inner-body .supplier-profile-details .supplier-documents .documents .single-document {
+	    width: 50%;
+	}
+	.right-block .inner-body .supplier-request .single-s-request .img-text .txt p{
+		font-size: 12px;
+	}
+	.right-block .inner-body .supplier-request .single-s-request .buttons button, 
+	.right-block .inner-body .supplier-request .single-s-request .buttons a{
+		font-size: 12px;
+		padding: 6px 14px;
+		border-radius: 4px;
+		min-width: auto;
+	}
+	.right-block .main-body .tenders .single-tender table {
+	    width: 100%;
+	    min-width: 500px;
+	}
+}
+
+@media (min-width: 768px) and (max-width: 991px){
+	.right-block .inner-body .tenders .col-md-6.col-sm-6.col-xs-12 {
+	    width: 100%;
+	}
+	.right-block .main-body .header .btns .edit-tender, 
+	.right-block .main-body .header .btns .delete-tender{
+		font-size: 12px;
+		padding: 6px 12px;
+		border-radius: 4px;
+	}
+	.right-block .inner-body .supplier-profile-details .profile-details .profile-star .img {
+	    width: 120px;
+	    height: 120px;
+	    overflow: hidden;
+	    border-radius: 6px;
+	    float: initial;
+	    margin: 0 auto;
+	}
+	.right-block .inner-body .supplier-profile-details .profile-details .profile-star .star {
+	    margin-left: 0;
+	    padding: 15px 0;
+	    text-align: center;
+	}
+	.right-block .inner-body .supplier-profile-details .profile-details .profile-star .star h2 {
+	    margin: 0;
+	    font-size: 17px;
+	    color: #faa116;
+	}
+	.right-block .inner-body .supplier-profile-details .profile-details .star-rating label span{
+		font-size: 20px;
+	}
+	.right-block .inner-body .supplier-profile-details .profile-details .star-rating {
+	    margin-top: 0;
+	}
+	.right-block .inner-body .supplier-profile-details .supplier-documents .documents .single-document {
+	    width: 50%;
+	}
+	.right-block .main-body .header .text .download-pdf {
+	    font-size: 11px;
+	    padding: 7px 8px;
+	    border-radius: 4px;
+	    margin: 0 2px 0 0;
+	    min-width: auto;
+	}
+	.right-block .main-body .tenders .single-tender table {
+	    width: 100%;
+	    min-width: 500px;
+	}
+	.right-block .inner-body .supplier-profile-details .profile-details .profile-star .star button{
+		position: initial;
+	}
+	.right-block .inner-body .supplier-profile-details .profile-details .profile-star{
+		margin-bottom: 10px;
+	}
+
+}
+
+@media screen and (max-width: 767px) {
+/*********nav***********/
+	.right-block .top-nav .right-item{
+		padding: 0;
+	}
+	.right-block .top-nav .right-item .user-profile h2{
+		display: none;
+	}
+	.right-block .top-nav .right-item .notification{
+		margin-right: 20px;
+	}
+	.right-block, .right-block .top-nav {
+	    margin: 0;
+	}
+	.d-none-m{
+		display: none;
+	}
+	.toggle-class .Navoverlay{
+		display: block;
+	}
+	.toggle-class  .close-menu{
+	  display: block;
+	}
+	.toggle-class .left-block .nav-logo img {
+	    max-width: 145px;
+	}
+	.toggle-class .logo {
+	    display: block;
+	}
+	.toggle-class .left-block{
+		width: 220px !important;
+		transform: translate(0) !important;
+	}
+	.toggle-class .logo-icon{
+		display: none;
+	}
+	.toggle-class .navlink ul li a span {
+	    display: inline-block; 
+	}
+	.toggle-class .left-block .navlink ul li a i {
+	    font-size: 15px !important;
+	    width: 30px;
+	}
+	.toggle-class .left-block .navlink ul li a {
+	    padding: 10px 15px;
+	    font-size: 12px;
+	    text-align: left;
+	}
+	.left-block{
+		transform: translate(-100%);
+		transition: all 0.3s;
+	}
+	.left-block .nav-logo img.logo-icon {
+	    display: none;
+	}
+
+	.right-block .main-body{
+		padding: 100px 15px 20px;
+	}
+	/*****login********/
+	.login-register .body .custom-col-left{
+		display: none;
+	}
+	.login-register .body .custom-col-right {
+	    width: 100%;
+	    float: initial;
+	}
+	.login-register .body .lr-wrapper{
+		padding: 15px;
+	}
+	.login-register .body .lr-wrapper .lr-wrapper-inner .input-field{
+		padding: 20px;
+	}
+	.right-block .main-body .header-banner .txt p{
+		display: none;
+	}
+	.right-block .main-body .header-banner{
+		min-height: 160px;
+	}
+	.right-block .main-body .header-banner .txt-wrapper{
+		padding: 10px;
+	}
+	.right-block .main-body .header-banner .txt h2{
+		font-size: 14px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		display: -webkit-box;
+		-webkit-line-clamp: 3;
+		-webkit-box-orient: vertical;
+	}
+	.right-block .inner-body{
+		padding: 15px;
+	}
+	.right-block .main-body .header .btns {
+	    text-align: left;
+	    margin: 15px -5px 0;
+	}
+	.right-block .main-body .tenders .single-tender table td{
+		padding: 5px 0;
+	}
+	.right-block .main-body .tenders .single-tender .date-total label{
+		margin: 0 5px 10px;
+	}
+	.right-block .main-body .header .btns .edit-tender, 
+	.right-block .main-body .header .btns .delete-tender{
+		font-size: 12px;
+		padding: 6px 12px;
+		border-radius: 4px;
+	}
+	.right-block .inner-body .tender-details .product-details table {
+	    width: 80%;
+	}
+	.custom-data-table .heading-search .searchbar-wrapper {
+	    text-align: left;
+	    margin-top: 10px;
+	}
+	.custom-data-table .heading-search .searchbar-wrapper .searchbar {
+	    margin-right: auto;
+	    margin-left: unset;
+	}
+	.right-block .main-body .header .text {
+	    text-align: left;
+	    margin-top: 10px;
+	}
+	.right-block .inner-body .supplier-profile-details .profile-details{
+		padding: 15px;
+	}
+	.right-block .main-body .tenders .single-tender table {
+	    width: 100%;
+	    min-width: 500px;
+	}
+	.right-block .main-body .header .text .download-pdf {
+	    font-size: 11px;
+	    padding: 7px 8px;
+	    border-radius: 4px;
+	    margin: 0 2px 0 0;
+	    min-width: auto;
+	}
+	.right-block .main-body .header .text label {
+	    font-size: 13px;
+	}
+}
+
+@media (min-width: 568px) and (max-width: 767px){
+	.right-block .main-body .header .btns {
+	    text-align: right;
+	    margin: 0 -5px 0;
+	}
+	.right-block .main-body .header .col-xs-12{
+		width: 50% !important;
+	}
+}
+
+@media screen and (max-width: 550px){
+	.right-block .inner-body .tender-details .product-details table {
+	    width: 100%;
+	}
+	.right-block .main-body .quatation-details .quatation-supplier-tabs ul li a{
+		font-size: 12px;
+		padding: 6px 8px;
+	}
+	.right-block .inner-body .supplier-profile-details .profile-details .profile-star .img {
+	    width: 120px;
+	    height: 120px;
+	    overflow: hidden;
+	    border-radius: 6px;
+	    float: initial;
+	    margin: 0 auto;
+	}
+	.right-block .inner-body .supplier-profile-details .profile-details .profile-star .star {
+	    margin-left: 0;
+	    padding: 15px 0;
+	    text-align: center;
+	}
+	.right-block .inner-body .supplier-profile-details .profile-details .profile-star .star h2 {
+	    margin: 0;
+	    font-size: 17px;
+	    color: #faa116;
+	}
+	.right-block .inner-body .supplier-profile-details .profile-details .star-rating label span{
+		font-size: 20px;
+	}
+	.right-block .inner-body .supplier-profile-details .profile-details .star-rating {
+	    margin-top: 0;
+	}
+	.right-block .inner-body .supplier-profile-details .supplier-documents .documents .single-document {
+	    width: 50%;
+	}
+}
+@media screen and (max-width: 576px){
+	.right-block .inner-body .supplier-profile-details .profile-details .profile-star .star button{
+		position: initial;
+	}
+	.right-block .inner-body .supplier-profile-details .profile-details .profile-star{
+		margin-bottom: 10px;
+	}
+}

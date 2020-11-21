@@ -1,0 +1,63 @@
+version: '3.5'
+services:
+
+  #PHP Service
+  app:
+    build:
+      context: '.'
+      args:
+        uid: ${UID}
+    container_name: app
+    restart: unless-stopped
+    environment:
+      - APACHE_RUN_USER=#${UID}
+      - APACHE_RUN_GROUP=#${UID}
+    env_file:
+      - .env
+    volumes:
+      - .:/var/www/html
+    ports:
+      - 80:80
+    networks:
+      - app-network
+
+  #MySQL Service
+  db:
+    image: mysql:5.7.22
+    container_name: db
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: seat_reservation
+      MYSQL_ROOT_PASSWORD: helloworld
+      CE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - dbdata:/var/lib/mysql/
+     # - ./mysql/my.cnf:/etc/mysql/my.cnf
+      - ./SQLScripts/seat_reservation.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - app-network
+
+  #phpMyAdmin
+  phpadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    ports:
+      - '8080:80'
+    environment:
+      PMA_HOST: db
+    networks:
+      - app-network
+
+#Docker Networks
+networks:
+  app-network:
+    driver: bridge
+#Volumes
+volumes:
+  dbdata:
+    driver: local
