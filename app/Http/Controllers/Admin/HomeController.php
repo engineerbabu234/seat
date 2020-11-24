@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Building;
 use App\Models\Office;
 use Illuminate\Http\Request;
+use App\Models\InviteUser;
+use auth;
 
 class HomeController extends Controller
 {
@@ -37,5 +39,26 @@ class HomeController extends Controller
     public function termCondition(Request $request)
     {
         return view('term_condition');
+    }
+
+    public function inviteUsers(Request $request){
+        $users = InviteUser::where('invited_user_id',auth::id())->paginate(20);
+        return view('admin.invite_user.index',compact('users'));
+    }
+
+    public function createInvitatinLink(){
+        return view('admin.invite_user.create');
+    }
+
+    public function storeInvitationLink(Request $request){
+        $InviteUser = new InviteUser;
+        $InviteUser->name  = $request->name;
+        $InviteUser->email = $request->email;
+        $InviteUser->phone = $request->phone;
+        $InviteUser->invited_user_id = auth::id();
+        if($InviteUser->save())
+             return redirect()->route('invite.users')->with('status',true)->with('message','Successfully sent invitation');
+        else
+             return redirect()->route('invite.users')->with('status',false)->with('message','Failed to send invitation');
     }
 }

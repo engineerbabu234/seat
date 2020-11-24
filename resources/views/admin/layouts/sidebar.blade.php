@@ -75,6 +75,9 @@ use Illuminate\Support\Facades\Session;
 						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='reservation_history')){{'active'}}@endif" href="{{url('admin/reservation/reservation_history')}}"><i class="fa fa-list"></i> <span>Reservation History</span></a>
 					</li>
 					<li>
+						<a href="{{route('invite.users')}}"><i class="fa fa-users"></i> <span>Invite User</span></a>
+					</li>
+					<li>
 						<a href="{{ route('logout') }}" onclick="event.preventDefault();
                                 document.getElementById('logout-form').submit();">
                                 <i class="fas fa-sign-in-alt"></i>

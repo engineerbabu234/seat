@@ -74,7 +74,7 @@
                                </table>
                                <!-- End Body -->
                             </td>
-                         </tr>
+                       </tr>
                       </tbody>
                    </table>
                    <!-- End template container -->

@@ -11,6 +11,10 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         Route::put('update_profile_image', 'ProfileController@updateProfileImage')->name('update_profile_image');
         Route::put('update_logo_image', 'ProfileController@updateLogoImage')->name('update_logo_image');
 
+        Route::get('invite/users', 'Admin\HomeController@inviteUsers')->name('invite.users');
+        Route::get('create/invitation/link', 'Admin\HomeController@createInvitatinLink')->name('create.invitation.link');
+        Route::post('store/invitation/link', 'Admin\HomeController@storeInvitationLink')->name('store.invitation.link');
+
         // building
         Route::group(['prefix' => 'building'], function () {
             Route::get('/', 'BuildingController@index')->name('index');
