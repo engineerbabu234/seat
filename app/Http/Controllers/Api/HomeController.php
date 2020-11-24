@@ -6,10 +6,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Validation\Rule;
+use App\Mail\NotifyMail;
 use Validator;
 use Auth;
 use Hash;
-use Redirect,Response,DB,Config;
+use DB;
+use Mail;
 
 class HomeController extends Controller{
 
@@ -33,7 +35,8 @@ class HomeController extends Controller{
              'email'    => $inputs['adminEmail'],
              'password' => Hash::make($inputs['password']),
              'user_name' => $inputs['tenantName'],
-             'role'      => '1'
+             'role'      => '1',
+             'approve_status' => '1'
          );
             DB::beginTransaction();
 
@@ -49,10 +52,39 @@ class HomeController extends Controller{
                 );
                 DB::table('tenant_details')->insertGetId($plandDetails);
                 DB::commit();
-                $inputs['tenantID'] = $tenantId; 
+                $inputs['tenantID'] = $tenantId;
+                $User = User::find($tenantId);
+                $user_email= $User->email;
+            $userId = encrypt($User->id);
+            $logo=env('Logo');
+            if($logo){
+                $Admin = User::where('role','1')->first();
+                $logo_url = ImageHelper::getProfileImage($Admin->logo_image);
+
+            }else{
+                $logo_url = asset('front_end/images/logo.png');
+            }
+            $userMailData = array(
+                'name'          => $inputs['tenantName'],
+                'email'         => $user_email,
+                'password'      => $inputs['password'],
+                'user_name'     => $inputs['tenantName'],
+                'form_name'     => 'Support@gmail.com',
+                'schedule_name' => 'weBOOK',
+                'template'      => 'admin_signup_mail',
+                'subject'       => 'Registration',
+                'data'          => $User,
+                'base_url'      => url('/admin'),
+                'logo_url'      => $logo_url,
+            );
+            if(!empty($userMailData) && !empty($user_email && !is_null($user_email))){
+                Mail::to($user_email)->send(new NotifyMail($userMailData));
+            }
+
                 return ['status'=>true,'message'=>'Successfully registered','data'=>$inputs];
             } catch (\Exception $e) {
                 DB::rollback();
+                return $e->getMessage();
                 return ['status'=>false,'message'=>'Failed to registered'];
             }
     } 

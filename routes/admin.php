@@ -3,7 +3,7 @@
 Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::group(['prefix' => 'admin'], function () {
 
-        Route::get('dashboard', 'HomeController@index')->name('dashboard');
+        Route::get('dashboard', 'Admin\HomeController@index')->name('dashboard');
         Route::get('profile', 'ProfileController@show')->name('profile');
         Route::put('update', 'ProfileController@update')->name('admin_profile_update');
         Route::put('update', 'ProfileController@update')->name('admin_profile_update');

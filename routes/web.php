@@ -1,7 +1,7 @@
 <?php
 Auth::routes();
 Route::get('/admin', 'Auth\LoginController@showLoginFormAdmin')->name('admin-login');
-Route::get('/', 'Auth\LoginController@showLoginForm')->name('');
+Route::get('/', 'Auth\LoginController@showLoginForm');
 Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.request');
 Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset');
 
