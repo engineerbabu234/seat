@@ -33,3 +33,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/bookOfficeSeats', 'Front_End\HomeController@bookOfficeSeats');
 
 });
+
+    Route::get('invite/user/registration/{id}', 'Front_End\HomeController@inviteUserRegistrationForm');
+    Route::post('invite/user/registration', 'Front_End\HomeController@inviteUserRegistrationStore');

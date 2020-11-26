@@ -7,6 +7,11 @@ use App\Models\Building;
 use App\Models\Office;
 use Illuminate\Http\Request;
 use App\Models\InviteUser;
+use App\Helpers\ImageHelper;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NotifyMail;
+use App\User;
 use auth;
 
 class HomeController extends Controller
@@ -51,14 +56,49 @@ class HomeController extends Controller
     }
 
     public function storeInvitationLink(Request $request){
+
+        $inputs   = $request->all();
+        $rules = [
+            'name'              => 'required',
+            'email'             => ['required', Rule::unique('users', 'email')->where('role', '2')],
+        ];
+       
+        $this->validate($request,$rules);
+
         $InviteUser = new InviteUser;
         $InviteUser->name  = $request->name;
         $InviteUser->email = $request->email;
-        $InviteUser->phone = $request->phone;
         $InviteUser->invited_user_id = auth::id();
-        if($InviteUser->save())
+        if($InviteUser->save()){
+            
+            $logo=env('Logo');
+            if($logo){
+                $Admin = User::where('role','1')->first();
+                $logo_url = ImageHelper::getProfileImage($Admin->logo_image);
+
+            }else{
+                $logo_url = asset('front_end/images/logo.png');
+            }
+            $userMailData = array(
+                'name'          => $request->name,
+                'form_name'     => 'Support@gmail.com',
+                'schedule_name' => 'weBOOK',
+                'template'      => 'invite_user',
+                'subject'       => 'Invite',
+                'base_url'      => url('invite/user/registration',encrypt($InviteUser->id)),
+                'logo_url'      => $logo_url,
+            );
+            if(!empty($userMailData)){
+                Mail::to($InviteUser->email)->send(new NotifyMail($userMailData));
+            }
+
+
              return redirect()->route('invite.users')->with('status',true)->with('message','Successfully sent invitation');
-        else
+        }
+        else{
              return redirect()->route('invite.users')->with('status',false)->with('message','Failed to send invitation');
+        }
     }
+
+
 }

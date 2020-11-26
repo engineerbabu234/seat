@@ -11,6 +11,7 @@ use App\Models\Office;
 use App\Models\OfficeAsset;
 use App\Models\OfficeImage;
 use App\Models\ReserveSeat;
+use Illuminate\Validation\Rule;
 use App\Models\Seat;
 use App\Models\User;
 use Auth;
@@ -564,5 +565,76 @@ class HomeController extends Controller
 
         return response()->json($response, 200);
     }
+
+     public function inviteUserRegistrationForm($id){
+        $id = decrypt($id);
+        $inviteUser = DB::table('user_invitations')->where('id',$id)->whereNull('deleted_at')->first();
+        if($inviteUser){
+             $data['id']        = encrypt($inviteUser->id);
+             $data['user_name'] = $inviteUser->name;
+             $data['email']     = $inviteUser->email;
+        return view('invite_user_registration',compact('data'));
+        }
+     }
+
+     public function inviteUserRegistrationStore(Request $request){
+        $inputs   = $request->all();
+        $rules = [
+            '_id'               => 'required',
+            'user_name'         => 'required',
+            'job_profile'       => 'required',
+            'email'             => ['required', Rule::unique('users', 'email')->where('role', '2')],
+            'password'          => 'min:8|required_with:confirm_password|same:confirm_password',
+            'confirm_password'  => 'required|min:8',
+
+        ];
+        $this->validate($request,$rules);
+
+        $profile_image=null;
+        if($request->hasFile('profile_image')) {
+            $profile_image = str_random('10').'_'.time().'.'.request()->profile_image->getClientOriginalExtension();
+            request()->profile_image->move(public_path('uploads/profiles/'), $profile_image);
+        }
+
+        $inviteId = decrypt($inputs['_id']);
+
+        $inviteUser = DB::table('user_invitations')->where('id',$inviteId)->whereNull('deleted_at')->first();
+        if($inviteUser){
+             $data['id']        = $inviteUser->id;
+             $data['user_name'] = $inviteUser->name;
+             $data['email']     = $inviteUser->email;
+             $data['invited_user_id']     = $inviteUser->invited_user_id;
+             $data['invited_time']        = $inviteUser->created_at;
+        }else{
+              return Redirect('/sign_up')->with('error','Your registration failed,please try again');
+        }
+
+        if(strtotime($data['invited_time']) < strtotime(date('Y-m-d H:i:s'))){
+              return Redirect('/sign_up')->with('error','This page is expire');
+        }
+        
+        $User                     = new User;
+        $User->role               = '2';
+        $User->user_name          = $inputs['user_name'];
+        $User->email              = $data['email'];
+        $User->job_profile        = $inputs['job_profile'];
+        $User->email_verify_status = '1';
+        $User->approve_status      = '1';
+        $User->is_invited          = '1';
+        $User->invite_user_id      = $data['invited_user_id'];
+        $User->password            = \Hash::make($inputs['password']);
+
+        if($profile_image){
+            $User->profile_image  = $profile_image;
+        }
+
+        $User->save();
+        if($User){
+            DB::table('user_invitations')->where('id',$inviteId)->update(['is_registered'=>'1']);
+            return Redirect('/login')->with('success','Your registration successfully');
+        }else{
+            return Redirect('/sign_up')->with('error','Your registration failed,please try again');
+        }
+     }
 
 }
