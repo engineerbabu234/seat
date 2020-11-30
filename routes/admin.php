@@ -4,12 +4,12 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::group(['prefix' => 'admin'], function () {
 
         Route::get('dashboard', 'Admin\HomeController@index')->name('dashboard');
-        Route::get('profile', 'ProfileController@show')->name('profile');
-        Route::put('update', 'ProfileController@update')->name('admin_profile_update');
-        Route::put('update', 'ProfileController@update')->name('admin_profile_update');
-        Route::put('update_password', 'ProfileController@updatePassword')->name('admin_update_password');
-        Route::put('update_profile_image', 'ProfileController@updateProfileImage')->name('update_profile_image');
-        Route::put('update_logo_image', 'ProfileController@updateLogoImage')->name('update_logo_image');
+        Route::get('profile', 'Admin\ProfileController@show')->name('profile');
+        Route::put('update', 'Admin\ProfileController@update')->name('admin_profile_update');
+        Route::put('update', 'Admin\ProfileController@update')->name('admin_profile_update');
+        Route::put('update_password', 'Admin\ProfileController@updatePassword')->name('admin_update_password');
+        Route::put('update_profile_image', 'Admin\ProfileController@updateProfileImage')->name('update_profile_image');
+        Route::put('update_logo_image', 'Admin\ProfileController@updateLogoImage')->name('update_logo_image');
 
         Route::get('invite/users', 'Admin\HomeController@inviteUsers')->name('invite.users');
         Route::get('create/invitation/link', 'Admin\HomeController@createInvitatinLink')->name('create.invitation.link');
@@ -17,7 +17,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
 
         // building
         Route::group(['prefix' => 'building'], function () {
-            Route::get('/', 'BuildingController@index')->name('index');
+            Route::get('/', 'Admin\BuildingController@index')->name('index');
             Route::get('add_building', 'BuildingController@create')->name('add_building');
             Route::post('store', 'BuildingController@store')->name('store');
 
@@ -35,155 +35,155 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
             Route::group(['prefix' => 'asset'], function () {
                 Route::get('/{id?}', [
                     'as' => 'office.asset',
-                    'uses' => 'OfficeAssetController@index',
+                    'uses' => 'Admin\OfficeAssetController@index',
                 ]);
 
                 Route::post('/save', [
                     'as' => 'office.asset.save',
-                    'uses' => 'OfficeAssetController@saveOfficeAsset',
+                    'uses' => 'Admin\OfficeAssetController@saveOfficeAsset',
                 ]);
 
                 Route::post('/edit/{asset_id}', [
                     'as' => 'office.asset.edit',
-                    'uses' => 'OfficeAssetController@editOfficeAsset',
+                    'uses' => 'Admin\OfficeAssetController@editOfficeAsset',
                 ]);
 
                 Route::post('/update/{asset_id}', [
                     'as' => 'office.asset.update',
-                    'uses' => 'OfficeAssetController@updateOfficeAsset',
+                    'uses' => 'Admin\OfficeAssetController@updateOfficeAsset',
                 ]);
 
                 Route::post('/delete/{asset_id}', [
                     'as' => 'office.asset.delete',
-                    'uses' => 'OfficeAssetController@deleteAsset',
+                    'uses' => 'Admin\OfficeAssetController@deleteAsset',
                 ]);
 
                 Route::get('/getoffice/{id}', [
                     'as' => 'office.asset.getoffices',
-                    'uses' => 'OfficeAssetController@getoffices',
+                    'uses' => 'Admin\OfficeAssetController@getoffices',
                 ]);
 
                 Route::get('/getofficeassets/{id}', [
                     'as' => 'office.asset.getofficeassets',
-                    'uses' => 'OfficeAssetController@getofficeassets',
+                    'uses' => 'Admin\OfficeAssetController@getofficeassets',
                 ]);
 
                 Route::post('/addseat', [
                     'as' => 'office.asset.addseat',
-                    'uses' => 'OfficeAssetController@addseat',
+                    'uses' => 'Admin\OfficeAssetController@addseat',
                 ]);
 
                 Route::get('/getofficeassetsinfo/{id}', [
                     'as' => 'office.asset.getofficeassetsinfo',
-                    'uses' => 'OfficeAssetController@getofficeassetsinfo',
+                    'uses' => 'Admin\OfficeAssetController@getofficeassetsinfo',
                 ]);
 
                 Route::post('/updateassets_image/{asset_id}', [
                     'as' => 'office.asset.updateassets_image',
-                    'uses' => 'OfficeAssetController@updateassets_image',
+                    'uses' => 'Admin\OfficeAssetController@updateassets_image',
                 ]);
 
                 Route::post('/edit_seats/{seat_id}', [
                     'as' => 'office.asset.edit_seats',
-                    'uses' => 'OfficeAssetController@edit_seats',
+                    'uses' => 'Admin\OfficeAssetController@edit_seats',
                 ]);
 
                 Route::post('/updateSeat/{seat_id}', [
                     'as' => 'office.asset.updateSeat',
-                    'uses' => 'OfficeAssetController@updateSeat',
+                    'uses' => 'Admin\OfficeAssetController@updateSeat',
                 ]);
 
                 Route::post('/deleteSeat/{seat_id}', [
                     'as' => 'office.asset.deleteSeat',
-                    'uses' => 'OfficeAssetController@deleteSeat',
+                    'uses' => 'Admin\OfficeAssetController@deleteSeat',
                 ]);
 
                 Route::get('/getAssetsSeats/{asset_id}/{dots_id}', [
                     'as' => 'office.asset.getAssetsSeats',
-                    'uses' => 'OfficeAssetController@getAssetsSeats',
+                    'uses' => 'Admin\OfficeAssetController@getAssetsSeats',
                 ]);
 
                 Route::post('/question_logic', [
                     'as' => 'office.asset.question_logic',
-                    'uses' => 'OfficeAssetController@question_logic',
+                    'uses' => 'Admin\OfficeAssetController@question_logic',
                 ]);
 
                 Route::post('/save_question_logic/', [
                     'as' => 'office.asset.deleteSeat',
-                    'uses' => 'OfficeAssetController@save_question_logic',
+                    'uses' => 'Admin\OfficeAssetController@save_question_logic',
                 ]);
 
                 Route::post('/deleteSeat/{asset_id}/{dots_id}', [
                     'as' => 'office.asset.deleteSeat',
-                    'uses' => 'OfficeAssetController@deleteSeat',
+                    'uses' => 'Admin\OfficeAssetController@deleteSeat',
                 ]);
 
                 Route::post('/get_question_list/', [
                     'as' => 'office.asset.get_question_list',
-                    'uses' => 'OfficeAssetController@get_question_list',
+                    'uses' => 'Admin\OfficeAssetController@get_question_list',
                 ]);
 
             });
 
-            Route::get('/{building_id?}', 'OfficeController@index')->name('index');
-            Route::get('add_office', 'OfficeController@create')->name('add_office');
-            Route::post('store', 'OfficeController@store')->name('store');
-            Route::get('office_details/{id?}', 'OfficeController@show')->name('office_details');
-            Route::get('edit_office/{id?}', 'OfficeController@edit')->name('edit_office');
-            Route::post('update/{id?}', 'OfficeController@update')->name('update');
-            Route::get('delete/{id}', 'OfficeController@destroy')->name('destroy');
-            Route::get('delete_seat/{id}', 'OfficeController@deleteSeat')->name('delete_seat');
+            Route::get('/{building_id?}', 'Admin\OfficeController@index')->name('index');
+            Route::get('add_office', 'Admin\OfficeController@create')->name('add_office');
+            Route::post('store', 'Admin\OfficeController@store')->name('store');
+            Route::get('office_details/{id?}', 'Admin\OfficeController@show')->name('office_details');
+            Route::get('edit_office/{id?}', 'Admin\OfficeController@edit')->name('edit_office');
+            Route::post('update/{id?}', 'Admin\OfficeController@update')->name('update');
+            Route::get('delete/{id}', 'Admin\OfficeController@destroy')->name('destroy');
+            Route::get('delete_seat/{id}', 'Admin\OfficeController@deleteSeat')->name('delete_seat');
         });
 
         // office
         Route::group(['prefix' => 'question'], function () {
 
-            Route::get('/{quesionaire_id?}', 'QuestionsController@index')->name('index');
-            Route::get('add_question', 'QuestionsController@create')->name('add_question');
-            Route::post('store', 'QuestionsController@store')->name('store');
-            Route::get('question_details/{id?}', 'QuestionsController@show')->name('question_details');
-            Route::get('edit_question/{id?}', 'QuestionsController@edit')->name('edit_question');
-            Route::post('update/{id?}', 'QuestionsController@update')->name('update');
-            Route::get('delete/{id}', 'QuestionsController@destroy')->name('destroy');
+            Route::get('/{quesionaire_id?}', 'Admin\QuestionsController@index')->name('index');
+            Route::get('add_question', 'Admin\QuestionsController@create')->name('add_question');
+            Route::post('store', 'Admin\QuestionsController@store')->name('store');
+            Route::get('question_details/{id?}', 'Admin\QuestionsController@show')->name('question_details');
+            Route::get('edit_question/{id?}', 'Admin\QuestionsController@edit')->name('edit_question');
+            Route::post('update/{id?}', 'Admin\QuestionsController@update')->name('update');
+            Route::get('delete/{id}', 'Admin\QuestionsController@destroy')->name('destroy');
 
         });
 
         // quesionaire
         Route::group(['prefix' => 'quesionaire'], function () {
 
-            Route::get('/', 'QuesionaireController@index')->name('index');
-            Route::post('store', 'QuesionaireController@store')->name('store');
-            Route::get('quesionaire_details/{id?}', 'QuesionaireController@show')->name('quesionaire_details');
-            Route::get('edit_quesionaire/{id?}', 'QuesionaireController@edit')->name('edit_quesionaire');
-            Route::post('update/{id?}', 'QuesionaireController@update')->name('update');
-            Route::get('delete/{id}', 'QuesionaireController@destroy')->name('destroy');
+            Route::get('/', 'Admin\QuesionaireController@index')->name('index');
+            Route::post('store', 'Admin\QuesionaireController@store')->name('store');
+            Route::get('quesionaire_details/{id?}', 'Admin\QuesionaireController@show')->name('quesionaire_details');
+            Route::get('edit_quesionaire/{id?}', 'Admin\QuesionaireController@edit')->name('edit_quesionaire');
+            Route::post('update/{id?}', 'Admin\QuesionaireController@update')->name('update');
+            Route::get('delete/{id}', 'Admin\QuesionaireController@destroy')->name('destroy');
 
         });
 
         // reservation
         Route::group(['prefix' => 'reservation'], function () {
-            Route::get('reservation_request', 'ReservationController@reservationRequest')->name('reservation_request');
-            Route::get('reservation_history', 'ReservationController@reservationHistory')->name('reservation_history');
-            Route::get('accpted', 'ReservationController@Accpted')->name('accpted');
-            Route::get('rejected', 'ReservationController@Rejected')->name('rejected');
-            Route::get('delete/{id}', 'ReservationController@destroy')->name('destroy');
+            Route::get('reservation_request', 'Admin\ReservationController@reservationRequest')->name('reservation_request');
+            Route::get('reservation_history', 'Admin\ReservationController@reservationHistory')->name('reservation_history');
+            Route::get('accpted', 'Admin\ReservationController@Accpted')->name('accpted');
+            Route::get('rejected', 'Admin\ReservationController@Rejected')->name('rejected');
+            Route::get('delete/{id}', 'Admin\ReservationController@destroy')->name('destroy');
         });
 
         // user
         Route::group(['prefix' => 'user'], function () {
-            Route::get('/', 'UserController@index')->name('index');
-            Route::get('create', 'UserController@create')->name('create');
-            Route::put('store', 'UserController@store')->name('store');
-            Route::get('document', 'UserController@document')->name('document');
-            Route::get('invoice/{id?}', 'UserController@invoice')->name('invoice');
-            Route::get('show/{id?}', 'UserController@show')->name('show');
-            Route::get('edit/{id?}', 'UserController@edit')->name('edit');
-            Route::put('update/{id?}', 'UserController@update')->name('update');
-            Route::delete('delete/{id?}', 'UserController@destroy')->name('destroy');
-            Route::put('active_status_change', 'UserController@activeStatusChange')->name('active_status_change');
-            Route::get('trip_history', 'UserController@tripHistory')->name('trip_history');
-            Route::delete('delete/{id?}', 'UserController@destroy')->name('destroy');
-            Route::put('approve_status_change', 'UserController@approveStatusChange')->name('approve_status_change');
+            Route::get('/', 'Admin\UserController@index')->name('index');
+            Route::get('create', 'Admin\UserController@create')->name('create');
+            Route::put('store', 'Admin\UserController@store')->name('store');
+            Route::get('document', 'Admin\UserController@document')->name('document');
+            Route::get('invoice/{id?}', 'Admin\UserController@invoice')->name('invoice');
+            Route::get('show/{id?}', 'Admin\UserController@show')->name('show');
+            Route::get('edit/{id?}', 'Admin\UserController@edit')->name('edit');
+            Route::put('update/{id?}', 'Admin\UserController@update')->name('update');
+            Route::delete('delete/{id?}', 'Admin\UserController@destroy')->name('destroy');
+            Route::put('active_status_change', 'Admin\UserController@activeStatusChange')->name('active_status_change');
+            Route::get('trip_history', 'Admin\UserController@tripHistory')->name('trip_history');
+            Route::delete('delete/{id?}', 'Admin\UserController@destroy')->name('destroy');
+            Route::put('approve_status_change', 'Admin\UserController@approveStatusChange')->name('approve_status_change');
         });
     });
 });

@@ -1,4 +1,5 @@
 <?php
+
 Auth::routes();
 Route::get('/admin', 'Auth\LoginController@showLoginFormAdmin')->name('admin-login');
 Route::get('/', 'Auth\LoginController@showLoginForm');
@@ -34,5 +35,5 @@ Route::group(['middleware' => ['auth']], function () {
 
 });
 
-    Route::get('invite/user/registration/{id}', 'Front_End\HomeController@inviteUserRegistrationForm');
-    Route::post('invite/user/registration', 'Front_End\HomeController@inviteUserRegistrationStore');
+Route::get('invite/user/registration/{id}', 'Front_End\HomeController@inviteUserRegistrationForm');
+Route::post('invite/user/registration', 'Front_End\HomeController@inviteUserRegistrationStore');
