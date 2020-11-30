@@ -588,7 +588,9 @@ class HomeController extends Controller
             'confirm_password'  => 'required|min:8',
 
         ];
-        $this->validate($request,$rules);
+
+        $request->validate($rules);
+
 
         $profile_image=null;
         if($request->hasFile('profile_image')) {
@@ -606,11 +608,11 @@ class HomeController extends Controller
              $data['invited_user_id']     = $inviteUser->invited_user_id;
              $data['invited_time']        = $inviteUser->created_at;
         }else{
-              return Redirect('/sign_up')->with('error','Your registration failed,please try again');
+              return back()->with('status',false)->with('message','Your registration failed,please try again');
         }
 
-        if(strtotime($data['invited_time']) < strtotime(date('Y-m-d H:i:s'))){
-              return Redirect('/sign_up')->with('error','This page is expire');
+        if(strtotime($data['invited_time']) > strtotime(date('Y-m-d H:i:s'))){
+              return back()->with('status',false)->with('message','This page is expire');
         }
         
         $User                     = new User;
@@ -631,9 +633,9 @@ class HomeController extends Controller
         $User->save();
         if($User){
             DB::table('user_invitations')->where('id',$inviteId)->update(['is_registered'=>'1']);
-            return Redirect('/login')->with('success','Your registration successfully');
+            return Redirect('/login')->with('status',true)->with('message','Your registration successfully');
         }else{
-            return Redirect('/sign_up')->with('error','Your registration failed,please try again');
+            return bach()->with('status',false)->with('message','Your registration failed,please try again');
         }
      }
 

@@ -48,7 +48,7 @@
 								<tr>
 									<th>#Id</th>
 									<th>Name</th>
-									<th>Phone</th>
+									<th>Email</th>
 									<th>Is Registered</th>
 									<th>Date </th>
 									<th>Action</th>
@@ -60,7 +60,7 @@
 										<td>{{$value->id}}</td>
 										<td>{{$value->name}}</td>
 										<td>{{$value->email}}</td>
-										<td>{{$value->phone}}</td>
+										<td>@if($value->is_registered) Yes @else No @endif</td>
 										<td>{{date('Y-M-d',strtotime($value->created_at))}}</td>
 										<td>
 											<button data-id="{{$value->id}}" class="button btn-danger delete">Delete</button>

@@ -6,7 +6,15 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">{{ __('Login') }}</div>
-
+    @if(Session::get('message'))
+        <div class="alert @if(Session::get('status')) alert-success @else alert-danger @endif">
+            @if(Session::get('status'))
+               <strong>Success!</strong> {{Session::get('message')}}
+            @else
+               <strong>Failed!</strong> {{Session::get('message')}}
+            @endif
+        </div>
+    @endif
                 <div class="card-body">
                     <form method="POST" action="{{ route('login') }}">
                         @csrf

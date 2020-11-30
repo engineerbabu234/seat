@@ -47,7 +47,7 @@ class HomeController extends Controller
     }
 
     public function inviteUsers(Request $request){
-        $users = InviteUser::where('invited_user_id',auth::id())->paginate(20);
+        $users = InviteUser::where('invited_user_id',auth::id())->orderBy('id','desc')->paginate(20);
         return view('admin.invite_user.index',compact('users'));
     }
 
@@ -60,10 +60,14 @@ class HomeController extends Controller
         $inputs   = $request->all();
         $rules = [
             'name'              => 'required',
-            'email'             => ['required', Rule::unique('users', 'email')->where('role', '2')],
+            'email'             => ['required', Rule::unique('users', 'email')->where('role', '2')]
+        ];
+
+        $message = [
+           'email.unique' => 'This email id is already registered'
         ];
        
-        $this->validate($request,$rules);
+        $this->validate($request,$rules,$message);
 
         $InviteUser = new InviteUser;
         $InviteUser->name  = $request->name;
