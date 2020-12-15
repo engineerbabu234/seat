@@ -60,11 +60,7 @@ class HomeController extends Controller
         $inputs   = $request->all();
         $rules = [
             'name'              => 'required',
-            'email'             => ['required', Rule::unique('users', 'email')->where('role', '2')]
-        ];
-
-        $message = [
-           'email.unique' => 'This email id is already registered'
+            'email'             => ['required']
         ];
        
         $this->validate($request,$rules,$message);

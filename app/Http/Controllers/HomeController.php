@@ -45,7 +45,7 @@ class HomeController extends Controller
                     $logo=env('Logo');
                     $Admin = User::where('role','1')->first();
                     if($logo){
-                        //$logo_url =asset('uploads/profiles/'.$Admin->logo_image);
+                        $logo_url =asset('uploads/profiles/'.$Admin->logo_image);
                         $logo_url = ImageHelper::getProfileImage($Admin->logo_image);
 
                     }else{

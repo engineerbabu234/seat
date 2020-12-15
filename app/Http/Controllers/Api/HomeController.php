@@ -30,6 +30,12 @@ class HomeController extends Controller{
             $errors =  $validator->errors()->all();
             return response(['status' => false , 'message' => $errors[0]] , 200);              
         }
+        
+        $email = $inputs['adminEmail'];
+        $email = explode('@',$email);
+        $email = $email[0];
+
+        $host = $email . '.' . request()->getHost();
 
         $insertData = array(
              'email'    => $inputs['adminEmail'],
@@ -48,11 +54,12 @@ class HomeController extends Controller{
                     'allow_Logo'   => $inputs['planDetails']['allowLogo']   ?? false,
                     'max_building' => $inputs['planDetails']['maxbuilding'] ?? '0',
                     'max_office'   => $inputs['planDetails']['maxoffice']   ?? '0',
-                    'max_seats'    => $inputs['planDetails']['maxseats']    ?? '0',
+                    'sub_domain'   => $email[0]
                 );
                 DB::table('tenant_details')->insertGetId($plandDetails);
                 DB::commit();
-                $inputs['tenantID'] = $tenantId;
+                $inputs['tenantID']   = $tenantId;
+                $inputs['sub_domain'] = $host;
                 $User = User::find($tenantId);
                 $user_email= $User->email;
             $userId = encrypt($User->id);
@@ -78,7 +85,7 @@ class HomeController extends Controller{
                 'logo_url'      => $logo_url,
             );
             if(!empty($userMailData) && !empty($user_email && !is_null($user_email))){
-                Mail::to($user_email)->send(new NotifyMail($userMailData));
+             //   Mail::to($user_email)->send(new NotifyMail($userMailData));
             }
 
                 return ['status'=>true,'message'=>'Successfully registered','data'=>$inputs];

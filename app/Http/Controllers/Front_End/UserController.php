@@ -101,6 +101,21 @@ class UserController extends Controller{
             }else{
                 //return back()->with('error','Seat reservation failed,please try again');
             }
+
+            $host = request()->getHost();
+            $hostArr = explode('.',$host);
+            $subDomain = $hostArr[0];
+
+            $tenantData = DB::table('tenant_details')->where('sub_domain',$subDomain)->first();
+
+            if($tenantData){
+                $tenantId = $tenantData->tenant_id;
+                DB::table('user_tenants')->insert([
+                'user_id'   => $User->id,
+                'tenant_id' => $tenantId
+                ]);
+            }
+
             return Redirect('/login')->with('success','Your registration successfully,please check your email and verify your email');
         }else{
             return Redirect('/sign_up')->with('error','Your registration failed,please try again');
