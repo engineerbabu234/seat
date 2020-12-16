@@ -60,10 +60,10 @@ class HomeController extends Controller
         $inputs   = $request->all();
         $rules = [
             'name'              => 'required',
-            'email'             => ['required']
+            'email'             => 'required'
         ];
        
-        $this->validate($request,$rules,$message);
+        $this->validate($request,$rules);
 
         $InviteUser = new InviteUser;
         $InviteUser->name  = $request->name;

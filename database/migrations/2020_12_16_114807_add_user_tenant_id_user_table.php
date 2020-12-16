@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class UserTenantRelationshipTable extends Migration
+class AddUserTenantIdUserTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,8 @@ class UserTenantRelationshipTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_tenants', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->integer('user_id');
-            $table->integer('tenant_id');
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->integer('tenant_id')->after('invite_user_id')->unsigned()->nullable();
         });
     }
 
@@ -28,6 +25,8 @@ class UserTenantRelationshipTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_tenants');
+        Schema::table('users', function (Blueprint $table) {
+            //
+        });
     }
 }

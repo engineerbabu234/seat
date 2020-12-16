@@ -24,14 +24,25 @@ class UserController extends Controller{
 
     public function signProcess(Request $request){
         $inputs   = $request->all();
+        $host = request()->getHost();
+        $hostArr = explode('.',$host);
+        $subDomain = $hostArr[0];
+        $tenantData = DB::table('tenant_details')->where('sub_domain',$subDomain)->first();
+        
+        $tenantId = null;
+        if($tenantData){
+            $tenantId = $tenantData->tenant_id;
+        }
+
         $rules = [
             'user_name'     => 'required',
             'job_profile'   => 'required',
-            'email'         => ['required', Rule::unique('users', 'email')->where('role', '2')],
+            'email'         => ['required', Rule::unique('users', 'email')->where('tenant_id',$tenantId)->where('role', '2')],
             'password'      => 'min:8|required_with:confirm_password|same:confirm_password',
             'confirm_password'  => 'required|min:8',
 
         ];
+
         $this->validate($request,$rules);
 
         $profile_image=null;
@@ -46,6 +57,7 @@ class UserController extends Controller{
         $User->email              = $inputs['email'];
         $User->job_profile        = $inputs['job_profile'];
         $User->password           = Hash::make($inputs['password']);
+        $User->tenant_id          = $tenantId;
 
         if($profile_image){
             $User->profile_image  = $profile_image;
@@ -101,21 +113,6 @@ class UserController extends Controller{
             }else{
                 //return back()->with('error','Seat reservation failed,please try again');
             }
-
-            $host = request()->getHost();
-            $hostArr = explode('.',$host);
-            $subDomain = $hostArr[0];
-
-            $tenantData = DB::table('tenant_details')->where('sub_domain',$subDomain)->first();
-
-            if($tenantData){
-                $tenantId = $tenantData->tenant_id;
-                DB::table('user_tenants')->insert([
-                'user_id'   => $User->id,
-                'tenant_id' => $tenantId
-                ]);
-            }
-
             return Redirect('/login')->with('success','Your registration successfully,please check your email and verify your email');
         }else{
             return Redirect('/sign_up')->with('error','Your registration failed,please try again');

@@ -42,6 +42,31 @@ class LoginController extends Controller
         return view('admin.auth.login');
     }
 
+    /**
+     * Attempt to log the user into the application.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return bool
+     */
+    protected function attemptLogin(Request $request)
+    {
+
+        $host = request()->getHost();
+        $hostArr = explode('.',$host);
+        $subDomain = $hostArr[0];
+        $tenantData = \DB::table('tenant_details')->where('sub_domain',$subDomain)->first();
+        
+        $tenantId = null;
+        if($tenantData){
+            $tenantId = $tenantData->tenant_id;
+        }
+
+        return $this->guard()->attempt([
+           'email' => $request->email,'password'=>$request->password,'role'=>$request->role,'tenant_id' => $tenantId
+        ],$request->filled('remember')
+        );
+    }
+
     protected function authenticated(Request $request, $user)
     {
         if ($request->role != $user->role) {

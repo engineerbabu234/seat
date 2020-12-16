@@ -30,6 +30,7 @@ class HomeController extends Controller
     public function getBuilding(Request $request)
     {
         $inputs = $request->all();
+        $tenantId = $this->getTenantIdBYHost();
         $Building = Building::whereNull('deleted_at')
             ->where(function ($query) use ($inputs) {
                 if (!empty($inputs['search_name'])) {
@@ -37,7 +38,7 @@ class HomeController extends Controller
                         ->orWhereRaw('LOWER(building_address) like ?', '%' . strtolower($inputs['search_name']) . '%');
                 }
             })
-            ->get();
+            ->where('user_id',$tenantId)->get();
         if ($Building->toArray()) {
             return response(['status' => true, 'message' => 'Record found', 'data' => $Building]);
         } else {
@@ -56,6 +57,7 @@ class HomeController extends Controller
     public function getOfficeList(Request $request)
     {
         $inputs = $request->all();
+        $tenantId = $this->getTenantIdBYHost();
         $building_id = $inputs['building_id'];
         $Office = Office::whereNull('deleted_at')
             ->where(function ($query) use ($inputs) {
@@ -65,6 +67,7 @@ class HomeController extends Controller
                 }
             })
             ->where('building_id', $building_id)
+            ->where('user_id',$tenantId)
             ->get();
         if ($Office->toArray()) {
             return response(['status' => true, 'message' => 'Record found', 'data' => $Office]);
@@ -579,18 +582,20 @@ class HomeController extends Controller
 
      public function inviteUserRegistrationStore(Request $request){
         $inputs   = $request->all();
+        
+        $tenantId = $this->getTenantIdBYHost();
+
         $rules = [
             '_id'               => 'required',
             'user_name'         => 'required',
             'job_profile'       => 'required',
-            'email'             => ['required', Rule::unique('users', 'email')->where('role', '2')],
+            'email'             => ['required', Rule::unique('users', 'email')->where('tenant_id',$tenantId)->where('role', '2')],
             'password'          => 'min:8|required_with:confirm_password|same:confirm_password',
             'confirm_password'  => 'required|min:8',
 
         ];
 
         $request->validate($rules);
-
 
         $profile_image=null;
         if($request->hasFile('profile_image')) {
@@ -610,8 +615,10 @@ class HomeController extends Controller
         }else{
               return back()->with('status',false)->with('message','Your registration failed,please try again');
         }
+         
+        $inviteDate = date('Y-m-d H:i:s', strtotime($data['invited_time']. ' + 48 days'));
 
-        if(strtotime($data['invited_time']) > strtotime(date('Y-m-d H:i:s'))){
+        if(strtotime($data['invited_time']) < strtotime(date('Y-m-d H:i:s'))){
               return back()->with('status',false)->with('message','This page is expire');
         }
         
@@ -625,6 +632,17 @@ class HomeController extends Controller
         $User->is_invited          = '1';
         $User->invite_user_id      = $data['invited_user_id'];
         $User->password            = \Hash::make($inputs['password']);
+        $User->tenant_id           = $tenantId;
+
+        $host = request()->getHost();
+        $hostArr = explode('.',$host);
+        $subDomain = $hostArr[0];
+        $tenantData = DB::table('tenant_details')->where('sub_domain',$subDomain)->first();
+
+        if($tenantData){
+            $tenantId = $tenantData->tenant_id;
+            $User->tenant_id        = $tenantId;
+        }
 
         if($profile_image){
             $User->profile_image  = $profile_image;
@@ -637,6 +655,18 @@ class HomeController extends Controller
         }else{
             return bach()->with('status',false)->with('message','Your registration failed,please try again');
         }
+     }
+
+     public function getTenantIdBYHost(){
+        $host = request()->getHost();
+        $hostArr = explode('.',$host);
+        $subDomain = $hostArr[0];
+        $tenantData = \DB::table('tenant_details')->where('sub_domain',$subDomain)->first();
+        $tenantId = null;
+        if($tenantData){
+            $tenantId = $tenantData->tenant_id;
+        }
+        return $tenantId;
      }
 
 }
