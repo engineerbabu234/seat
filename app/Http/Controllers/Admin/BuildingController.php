@@ -28,6 +28,7 @@ class BuildingController extends Controller
             ->leftJoin('users as d','d.id', '=','t.driver_id')*/
                 ->orderBy('b.building_id', 'desc')
                 ->whereNull('b.deleted_at')
+                ->where('b.user_id',auth::id())
                 ->get();
             $number_key = 1;
             foreach ($buildings as $key => $value) {
@@ -114,6 +115,7 @@ class BuildingController extends Controller
                 ->where('o.building_id', $id)
                 ->whereNull('o.deleted_at')
                 ->orderBy('o.office_id', 'desc')
+                ->where('o.user_id',auth::id())
                 ->get();
             $number_key = 1;
             foreach ($offices as $key => $value) {
@@ -125,7 +127,7 @@ class BuildingController extends Controller
             //print_r($offices);
             return datatables()->of($offices)->make(true);
         }
-        $data['office_count'] = DB::table('offices as o')->where('o.building_id', $id)->whereNull('o.deleted_at')->count();
+        $data['office_count'] = DB::table('offices as o')->where('o.building_id', $id)->whereNull('o.deleted_at')->where('o.user_id',auth::id())->count();
         $data['building_id']  = $id;
         $data['js']           = ['building/office_list.js'];
         return view('admin.building.office_list', compact('data'));
