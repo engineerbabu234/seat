@@ -12,6 +12,7 @@ use Auth;
 use Hash;
 use DB;
 use Mail;
+use App\Helpers\ImageHelper;
 
 class HomeController extends Controller{
 
