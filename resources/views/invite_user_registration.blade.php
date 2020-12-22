@@ -8,6 +8,13 @@
 			<h2>Sign Up</h2>
 			<p>Enter All Ddetails..!!</p>
 		</div>
+
+		@if(Session::get('message'))
+			<div class="alert" style="color:red">
+				 <p>{{Session::get('message')}}</p>
+			</div>
+		@endif
+
 		<form method="POST" action="{{ url('invite/user/registration') }}">
 			@csrf
             <input type="hidden" name="_id" value="{{ $data['id'] }}">

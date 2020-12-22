@@ -36,12 +36,17 @@ class HomeController extends Controller
 
             $id = decrypt($id);
             $user = User::find($id);
+            
         if($user){
 
-            if($user->email_verify_status != 1){
+            $status = $user->email_verify_status;
+
+            if($status != '1'){
+                
                  $user->email_verify_status = '1';
 
                  if($user->update()){
+
                     $logo=env('Logo');
                     $Admin = User::where('role','1')->first();
                     if($logo){
@@ -60,7 +65,7 @@ class HomeController extends Controller
                         'user_name'     => $user->user_name,
                         'form_name'     => 'Support@gmail.com',
                         'schedule_name' => 'weBOOK',
-                        'template'      => 'verify_admin',
+                        'template'      => 'signup',
                         'subject'       => 'weBOOK',
                         'data'          => $user,
                         'base_url'      => url('/admin'),
@@ -72,18 +77,23 @@ class HomeController extends Controller
                     }
 
                     $data['status'] = '1';
+                    return view('verify_email',compact('data'));
                  }else{
                    $data['status'] = '2';
+                   return view('verify_email',compact('data'));
                  }
             }else{
               $data['status'] = '0';
+              return view('verify_email',compact('data'));
             }
         }else{
             $data['status'] = '2';
+            return view('verify_email',compact('data'));
         }
         } catch ( \Exception $e) {
-
+            return $e->getMessage();
             $data['status'] = '2';
+            return view('verify_email',compact('data'));
         }
       return view('verify_email',compact('data'));
     }

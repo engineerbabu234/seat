@@ -38,8 +38,14 @@ class User extends Authenticatable
     ];
 
      public function getProfile_imageAttribute($value){
-        echo "Ganesh";
-        die;
+        if($value==null){
+          return asset('uploads/placeholder.jpg');
+        }else{
+            return asset('uploads/profiles/'.$value);
+        }
+    }
+
+    public function getProfileImageAttribute($value){
         if($value==null){
           return asset('uploads/placeholder.jpg');
         }else{

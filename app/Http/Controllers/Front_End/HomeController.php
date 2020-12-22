@@ -618,7 +618,7 @@ class HomeController extends Controller
          
         $inviteDate = date('Y-m-d H:i:s', strtotime($data['invited_time']. ' + 48 days'));
 
-        if(strtotime($data['invited_time']) < strtotime(date('Y-m-d H:i:s'))){
+        if(strtotime($inviteDate) < strtotime(date('Y-m-d H:i:s'))){
               return back()->with('status',false)->with('message','This page is expire');
         }
         
