@@ -10,6 +10,7 @@ use App\Models\InviteUser;
 use App\Helpers\ImageHelper;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Validator;
 use App\Mail\NotifyMail;
 use App\User;
 use auth;
@@ -60,11 +61,13 @@ class HomeController extends Controller
         $inputs   = $request->all();
         $rules = [
             'name'              => 'required',
-            'email'             => 'required'
-        ];
-       
+            'email'             => 'required|string|email|regex:/(.+)@(.+).(.+)/i|regex:/^[a-z]{4}/'
+        ];        
         $this->validate($request,$rules);
-
+        /*return Validator::make($request->all(), [
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'regex:/^[a-z]{4}/']
+        ]);*/       
         $InviteUser = new InviteUser;
         $InviteUser->name  = $request->name;
         $InviteUser->email = $request->email;

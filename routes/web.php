@@ -1,5 +1,4 @@
 <?php
-
 Auth::routes();
 Route::get('/admin', 'Auth\LoginController@showLoginFormAdmin')->name('admin-login');
 Route::get('/', 'Auth\LoginController@showLoginForm');

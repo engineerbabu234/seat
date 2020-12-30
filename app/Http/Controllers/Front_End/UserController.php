@@ -37,7 +37,7 @@ class UserController extends Controller{
         $rules = [
             'user_name'     => 'required',
             'job_profile'   => 'required',
-            'email'         => ['required', Rule::unique('users', 'email')->where('tenant_id',$tenantId)->where('role', '2')],
+            'email'         => ['required', Rule::unique('users', 'email')->where('tenant_id',$tenantId)->where('role', '2'),'regex:/(.+)@(.+).(.+)/i','regex:/^[a-z]{4}/'],
             'password'      => 'min:8|required_with:confirm_password|same:confirm_password',
             'confirm_password'  => 'required|min:8',
 
