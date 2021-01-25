@@ -5,16 +5,12 @@
 			<!--header-->
 			<div class="header">
 				<div class="row">
-					<div class="col-md-6 col-sm-6 col-xs-12">
+					<div class="col-md-12 col-sm-12 col-xs-12">
 						<div class="title">
 							<h2>Dashbaord</h2>
 						</div>
 					</div>
-					<div class="col-md-6 col-sm-6 col-xs-12">
-						{{-- <div class="btns">
-							<a href="add_building.html" class="add-tender">Add Building/Office</a>
-						</div> --}}
-					</div>
+
 				</div>
 			</div><!--END header-->
 

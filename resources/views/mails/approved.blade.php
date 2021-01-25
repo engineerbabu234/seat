@@ -20,7 +20,7 @@
                                            <tr>
                                               <td align="center" valign="middle" style="text-align: center; padding-top: 5px; padding-bottom:0;border-bottom: 1px solid #ddd;">
 
-                                                 <p style="margin-bottom: 0; margin-top: 0;"><a href="{{url('/')}}"><img src="{{$data['logo_url']}}" alt="Uber Clone market" width="170" style="border: none; display: inline; font-weight: bold; height: auto; outline: none; text-decoration: none; text-transform: capitalize; font-size: 14px; line-height: 25px; width: 100%; max-width: 170px;"></a></p>
+                                                 <p style="margin-bottom: 0; margin-top: 0;"><a href="{{url('/')}}"><img src="{{$data['logo_url']}}" alt="weBOOK" width="170" style="border: none; display: inline; font-weight: bold; height: auto; outline: none; text-decoration: none; text-transform: capitalize; font-size: 14px; line-height: 25px; width: 100%; max-width: 170px;"></a></p>
                                               </td>
                                            </tr>
                                         </tbody>
@@ -46,15 +46,15 @@
                                                           <p style="margin: 0; padding: 15px 0">Your account has been approved by admin , please login with your credential.</p>
 
                                                           <div style="clear: both; height: 20px;"></div>
-                                                        </div>  
+                                                        </div>
 
                                                         <div id="body_content_inner" style="color: #192435; text-align: left; font-size: 14px; line-height: 25px; font-family: &quot;Lucida Sans Unicode&quot;, &quot;Lucida Grande&quot;, sans-serif; font-weight: 400;text-align: center;">
                                                             <a href="{{$data['base_url']}}" style="font-family: Avenir,Helvetica,sans-serif; box-sizing: border-box;   border-radius: 3px; color: #fff; display: inline-block; text-decoration: none;   background-color: #1e1d5b; border-top: 10px solid #1e1d5b; border-right: 25px solid #1e1d5b;border-bottom: 10px solid #1e1d5b;border-left: 25px solid #1e1d5b;">Login</a>
                                                           <div style="clear: both; height: 20px;"></div>
                                                        </div>
-                                                        
 
-                                                       
+
+
 
                                                         <div id="body_content_inner" style="color: #192435; text-align: left; font-size: 14px; line-height: 25px; font-family: &quot;Lucida Sans Unicode&quot;, &quot;Lucida Grande&quot;, sans-serif; font-weight: 400;">
                                                           <p style="margin: 0; padding: 15px 0">
@@ -62,7 +62,7 @@
                                                             weBOOK Support Team
                                                           </p>
                                                           <div style="clear: both; height: 1px;"></div>
-                                                        </div> 
+                                                        </div>
                                                     </td>
                                                  </tr>
                                               </tbody>

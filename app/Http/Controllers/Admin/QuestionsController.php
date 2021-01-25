@@ -31,7 +31,7 @@ class QuestionsController extends Controller
                 $whereStr .= " AND questions.question like '%{$search}%'";
             }
 
-            $columns = ['questions.id', 'questions.question', 'questions.correct_answer', 'quesionaire.title', 'questions.created_at'];
+            $columns = ['questions.id', 'questions.question', 'questions.correct_answer', 'quesionaire.title'];
 
             if (isset($quesionaire_id) && $quesionaire_id != "") {
                 $Question = Question::select($columns)->leftJoin("quesionaire", "quesionaire.id", "questions.quesionaire_id")->whereRaw($whereStr, $whereParams);
@@ -77,7 +77,6 @@ class QuestionsController extends Controller
                 $final[$key]['quesionaire'] = $value->title;
                 $final[$key]['question'] = $value->question;
                 $final[$key]['correct_answer'] = @$answer[$value->correct_answer];
-                $final[$key]['created_at'] = date('d-m-Y H:i:s', strtotime($value->created_at));
                 $number_key++;
             }
 
@@ -131,6 +130,7 @@ class QuestionsController extends Controller
         if ($Question->save()) {
             $response = [
                 'success' => true,
+                'quesionaire_id' => $inputs['quesionaire_id'],
                 'message' => 'Question Added successfull',
             ];
         } else {

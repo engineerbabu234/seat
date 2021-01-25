@@ -58,9 +58,9 @@ button:focus {
     background-color: #62AF57;
 }
 
-.btn-delete {
+/*.btn-delete {
     background-color: #DB0000;
-}
+}*/
 
 .btn-create {
     width: 40px;

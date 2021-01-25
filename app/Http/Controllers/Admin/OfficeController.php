@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ImageHelper;
 use App\Http\Controllers\Controller;
 use App\Mail\NotifyMail;
 use App\Models\Building;
 use App\Models\Office;
 use App\Models\OfficeAsset;
+use App\Models\OfficeSeat;
 use App\Models\ReserveSeat;
 use App\Models\Seat;
 use Auth;
@@ -40,7 +42,7 @@ class OfficeController extends Controller
                 $whereStr .= " OR offices.office_number like '%{$search}%'";
             }
 
-            $columns = ['offices.office_id', 'offices.created_at', 'offices.office_name as office_name', 'offices.office_number as office_number', 'buildings.building_name as building_name', 'offices.description'];
+            $columns = ['offices.office_id', 'offices.updated_at', 'offices.created_at', 'offices.office_name as office_name', 'offices.office_number as office_number', 'buildings.building_name as building_name', 'offices.description'];
 
             if (isset($buildingId) && $buildingId != "") {
                 $Office = Office::select($columns)->leftJoin("buildings", "buildings.building_id", "offices.building_id")->whereRaw($whereStr, $whereParams);
@@ -76,6 +78,7 @@ class OfficeController extends Controller
 
             $final = [];
             $number_key = 1;
+
             foreach ($Office as $key => $value) {
 
                 $total_assets = OfficeAsset::where('office_id', $value->office_id)->get();
@@ -86,7 +89,7 @@ class OfficeController extends Controller
                 $final[$key]['building_name'] = $value->building_name;
                 $final[$key]['office_number'] = $value->office_number;
                 $final[$key]['seats'] = count($total_assets);
-                $final[$key]['created_at'] = date('d-m-Y H:i:s', strtotime($value->created_at));
+                $final[$key]['updated_at'] = date('d/m/Y', strtotime($value->updated_at));
                 $number_key++;
             }
 
@@ -540,10 +543,79 @@ class OfficeController extends Controller
     public function destroy(Request $request, $id)
     {
         if (Office::find($id)->delete()) {
-            DB::table('seats')->where('office_id', $id)->delete();
-            return ['status' => 'success', 'message' => 'Successfully deleted office'];
+            $office_asstes = OfficeAsset::where('office_id', $id)->first();
+            if (isset($office_asstes->id)) {
+                OfficeAsset::where('office_id', $id)->delete();
+                OfficeSeat::where('office_asset_id', $office_asstes->id)->delete();
+                $this->send_cancle_email_delete($office_id);
+            }
+            return ['status' => 'success', 'message' => 'Successfully deleted office and related office asstes,seats, reserve seat Cancel'];
         } else {
-            return ['status' => 'failed', 'message' => 'Failed delete office'];
+            return ['status' => 'failed', 'message' => 'Failed delete office and office assets'];
         }
     }
+
+    public function send_cancle_email_delete($office_id)
+    {
+        $office_asstes = OfficeAsset::where('office_id', $office_id)->get();
+
+        foreach ($office_asstes as $akey => $avalue) {
+            $reserve_seat = ReserveSeat::where('office_asset_id', $avalue->id)->get();
+
+            if ($reserve_seat) {
+                foreach ($reserve_seat as $key => $value) {
+
+                    $this->send_email_block_seat($value->reserve_seat_id);
+                }
+            }
+
+        }
+
+    }
+
+    public function send_email_block_seat($seat_id)
+    {
+        $logo = env('Logo');
+        if ($logo) {
+            $Admin = User::where('role', '1')->first();
+            $logo_url = ImageHelper::getProfileImage($Admin->logo_image);
+
+        } else {
+            $logo_url = asset('front_end/images/logo.png');
+        }
+        $todaydate = date('Y-m-d');
+        $ReserveSeatData = DB::table('reserve_seats as rs')
+            ->select('rs.*', 'b.building_name', 'o.office_name', 'u.user_name', 'u.email')
+            ->leftJoin('offices as o', 'o.office_id', '=', 'rs.office_id')
+            ->leftJoin('buildings as b', 'b.building_id', '=', 'o.building_id')
+            ->leftJoin('users as u', 'u.id', '=', 'rs.user_id')
+            ->whereNull('rs.deleted_at')
+            ->whereNotIn('rs.status', ['2', '3'])
+            ->where('rs.reserve_date', '>=', $todaydate)
+            ->where('rs.reserve_seat_id', $seat_id)
+            ->get();
+
+        foreach ($ReserveSeatData as $key => $value) {
+
+            $mailData = array(
+                'first_name' => $value->user_name,
+                'email' => $value->email,
+                'user_name' => $value->user_name,
+                'form_name' => 'paul@datagov.ai',
+                'schedule_name' => 'weBOOK',
+                'template' => 'admin_reservation_cancel',
+                'subject' => 'weBOOK Reservation Cancelled Due To Admin Remove Office',
+                'data' => $value,
+                'logo_url' => $logo_url,
+            );
+            if (!empty($mailData) && !empty($value->email && !is_null($value->email))) {
+                Mail::to($value->email)->send(new NotifyMail($mailData));
+            }
+
+            $seat_info = ReserveSeat::where('reserve_seat_id', $value->reserve_seat_id)->first();
+            $seat_info->status = '2';
+            $seat_info->save();
+        }
+    }
+
 }

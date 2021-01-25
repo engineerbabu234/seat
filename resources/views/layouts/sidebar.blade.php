@@ -1,41 +1,18 @@
-{{-- <div class="left-wrapper">
-	<div class="left-block">
-		<button class="close-menu">
-			<i class="fa fa-times"></i>
-		</button>
-		<div class="left-block-body">
-			<nav>
-				<div class="nav-logo">
-					<a href="{{route('dashboard')}}">
-						<img src="{{asset('admin_assets')}}/images/nav-logo.png" class="logo" width="70px">
-						<img src="{{asset('admin_assets')}}/images/logo-icon.png" class="logo-icon">
-					</a>
-				</div>
-				<div class="navlink">
-					<ul>
-						<li>
-							<a class="@if((substr(strrchr(url()->current(),"/"),1)=='dashboard')){{'active'}}@endif" href="{{route('dashboard')}}"><i class="fa fa-home"></i> <span>Dashboard</span></a>
-						</li>
-						<li>
-							<a class="@if((substr(strrchr(url()->current(),"/"),1)=='user')){{'active'}}@endif" href="{{route('admin/user/index')}}"><i class="fa fa-user"></i> <span>Users</span></a>
-						</li>
+@php
+namespace App\Helpers;
+Use Auth;
+$product_place_holder_image=ImageHelper::getProductPlaceholderImage();
+use Illuminate\Support\Facades\Session;
+$Admin = \App\Models\User::where('role','1')->first();
 
-						<li>
-							<a class="@if((substr(strrchr(url()->current(),"/"),1)=='driver')){{'active'}}@endif" href="{{route('admin/driver/index')}}"><i class="fa fa-car"></i> <span>Drivers</span></a>
-						</li>
+@endphp
 
-						<li>
-							<a class="@if((substr(strrchr(url()->current(),"/"),1)=='vehicle_type')){{'active'}}@endif" href="{{route('admin/vehicle_type/index')}}"><i class="fa fa-car"></i> <span>Vehicle Type</span></a>
-						</li>
-						<li>
-							<a class="@if((substr(strrchr(url()->current(),"/"),1)=='trip')){{'active'}}@endif" href="{{route('admin/trip/index')}}"><i class="fa fa-car"></i> <span>Trips</span></a>
-						</li>
-					</ul>
-				</div>
-			</nav>
-		</div>
-	</div>
-</div> --}}
+<style type="text/css">
+
+    .left-block{
+        background:{{$Admin->color}};
+    }
+</style>
 <div class="left-block">
 	<button class="close-menu">
 		<i class="fa fa-times"></i>
@@ -43,37 +20,58 @@
 	<div class="left-block-body">
 		<nav>
 			<div class="nav-logo">
-				<a href="index.html">
-					<img src="{{asset('admin_assets')}}/images/nav-logo2.png" class="logo">
-					<img src="{{asset('admin_assets')}}/images/logo-icon.png" class="logo-icon">
+				<a href="{{route('dashboard')}}">
+					@php
+
+					$Admin = \App\Models\User::where('role','1')->first();
+
+					if($Admin->logo_status == 1){
+						@endphp
+
+						<img src="{{ImageHelper::getLogoImage($Admin->logo_image)}}" class="logo">
+						<img src="{{ImageHelper::getLogoImage($Admin->logo_image)}}" class="logo-icon">
+						@php
+					}else{
+						@endphp
+						<img src="{{asset('admin_assets')}}/images/nav-logo2.png" class="logo">
+						<img src="{{asset('admin_assets')}}/images/logo-icon.png" class="logo-icon">
+						@php
+					}
+					@endphp
 				</a>
 			</div>
 
 			<div class="navlink">
 				<ul>
+					@if(Auth::User()->role == 2)
 					<li>
-						<a href="index.html"><i class="fa fa-list-alt"></i> <span>System Managing</span></a>
+						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='seat_reservation')){{'active'}}@endif" href="{{url('/')}}"><img src="{{asset('admin_assets')}}/images/users.png" class="menu_icons wh-img"> <span>Home</span></a>
 					</li>
+
+					 @if (!Auth::guest())
 					<li>
-						<a href="add_building.html"><i class="fas fa-building"></i> <span>Add Bulding</span></a>
+						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='questionaries')){{'active'}}@endif" href="{{url('/questionaries')}}"><img src="{{asset('admin_assets')}}/images/system_messaging.png" class="menu_icons wh-img"> <span>Questionaries</span></a>
 					</li>
+				    @endif
+
+				     @if (!Auth::guest())
 					<li>
-						<a href="add_office.html"><i class="fas fa-plus"></i> <span>Add Office</span></a>
+						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='reservation')){{'active'}}@endif" href="{{url('/reservation')}}"><img src="{{asset('admin_assets')}}/images/building.png" class="menu_icons wh-img"> <span>Reservation</span></a>
 					</li>
+					 @endif
+
+					 @endif
+
+
 					<li>
-						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='building')){{'active'}}@endif" href="{{route('admin/building/index')}}"><i class="fas fa-building"></i> <span>My Buldings</span></a>
-					</li>
-					<li>
-						<a href="my_offices_list.html"><i class="fas fa-building"></i> <span>My Offices</span></a>
-					</li>
-					<li>
-						<a href="reservation_request.html"><i class="fa fa-list"></i> <span>reservation request</span></a>
-					</li>
-					<li>
-						<a href="reservation_history.html"><i class="fa fa-list"></i> <span>reservation History</span></a>
-					</li>
-					<li>
-						<a href="login.html"><i class="fas fa-sign-in-alt"></i> <span>log out</span></a>
+						<a href="{{ route('logout') }}" onclick="event.preventDefault();
+                        document.getElementById('logout-form').submit();">
+                       <img src="{{asset('admin_assets')}}/images/logout.png" class="menu_icons wh-img">
+                        Log Out</a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                        @csrf
+                        </form>
+
 					</li>
 				</ul>
 			</div>

@@ -116,6 +116,11 @@ class ProfileController extends Controller
         }
     }
 
+    /**
+     * [updatePassword description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function updatePassword(Request $request)
     {
 
@@ -152,6 +157,11 @@ class ProfileController extends Controller
         }
     }
 
+    /**
+     * [updateProfileImage description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
     public function updateProfileImage(Request $request)
     {
         $user_id = Auth::id();
@@ -215,10 +225,16 @@ class ProfileController extends Controller
             //return response(['status' => false , 'message' => 'failed' ]);
         }
     }
+
+    /**
+     * [passwordForm description]
+     * @return [type] [description]
+     */
     public function passwordForm()
     {
         return view('admin.profile.update_password');
     }
+
     /**
      * Remove the specified resource from storage.
      *
@@ -235,14 +251,10 @@ class ProfileController extends Controller
         $user = User::find($user_id);
         $destinationPath = ImageHelper::$getProfileImagePath;
         $removepath = $destinationPath . '/' . $user->profile_image;
-        if (file_exists(public_path($removepath))) {
-
+        if (isset($user->profile_image) && file_exists(public_path($removepath))) {
             unlink(public_path($removepath));
-
         } else {
-
             return false;
-
         }
     }
 }

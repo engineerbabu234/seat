@@ -4,59 +4,63 @@ Use Auth;
 $product_place_holder_image=ImageHelper::getProductPlaceholderImage();
 use Illuminate\Support\Facades\Session;
 @endphp
-<header>
-	<div class="container">
-		<div class="row">
-            <div class="col-md-4 col-xs-4 col-sm-4">
-                <a href="{{url('/')}}" class="logo">
-                    @php
-                    $logo=env('Logo');
-                    if($logo){
-                        $Admin = \App\Models\User::where('role','1')->first();
-                        @endphp
-                            <img src="{{ImageHelper::getProfileImage($Admin->logo_image)}}">
-                        @php
-                    }else{
-                        @endphp
-                        <img src="{{asset('front_end')}}/images/logo.png">
-                        @php
-                    }
-                    @endphp
+{{-- <div class="top-nav">
+    <div class="nav-item clearfix">
+        <div class="left-item">
+            <button class="toggle-btn"><i class="fa fa-bars"></i></button>
+        </div>
+        <div class="right-item">
+            <div class="user-profile">
+                <a href="{{ route('logout') }}" onclick="event.preventDefault();
+                document.getElementById('logout-form').submit();">
+                <button><i class="fa fa-sign-out"></i></button>
+                </a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+                </form>
+            </div>
+
+            <div class="user-profile">
+                <a href="{{route('profile')}}">
+                    <button><i class="fa fa-user"></i></button>
                 </a>
             </div>
-            <div class="col-md-8 col-xs-8 col-sm-8">
 
-                <nav>
-                    <ul>
-                        <li><a class="@if((substr(strrchr(url()->current(),"/"),1)=='seat_reservation')){{'active'}}@endif " href="{{url('/')}}"  href="{{url('/')}}"> Home</a></li>
-
-
-                        @if (!Auth::guest())
-                            <li><a class="@if((substr(strrchr(url()->current(),"/"),1)=='history')){{'active'}}@endif " href="{{url('/history')}}"> History</a></li>
-                            <li >
-                                <a class="@if((substr(strrchr(url()->current(),"/"),1)=='profile')){{'active'}}@endif " href="{{url('/profile')}}">
-                                <div class="profile-icon">
-                                <span><img src="{{ImageHelper::getProfileImage(Auth::User()->profile_image)}}"></span>
-                                {{Auth::User()->user_name}}
-                                </div>
-                                </a>
-                            </li>
-                            <li>
-
-                                <a href="{{ route('logout') }}" onclick="event.preventDefault();
-                                document.getElementById('logout-form').submit();">
-                                <i class="fas fa-power-off"></i>
-                                </a>
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                                @csrf
-                                </form>
-                            </li>
-                        @else
-                            <li><a href="{{url('/login')}}"> Login</a></li>
-                        @endif
-                    </ul>
-                </nav>
+        </div>
+    </div>
+    <div class="title-btn clearfix">
+    </div>
+</div> --}}
+<div class="top-nav">
+<div class="nav-item clearfix">
+    <div class="row">
+        <div class="col-md-2 col-sm-4 col-xs-3 d-none">
+            <div class="left-item">
+                <button class="toggle-btn"><i class="fa fa-bars"></i></button>
             </div>
         </div>
-	</div>
-</header>
+        <div class="col-md col-sm-4 d-none-m">
+            <div class="title">Workspace Management System</div>
+        </div>
+        <div class="col-md-auto col-sm-4 col-xs-auto text-right">
+            <div class="right-item">
+                {{-- <a href="notification.html" class="notification"><i class="fa fa-bell"></i> <span>&nbsp;</span></a> --}}
+                <div class="user-profile">
+
+                    <a href="{{url('/profile/')}}">
+                      @if(Auth::User()->profile_image)
+                        <img src="{{Auth::User()->profile_image}}" alt="profile" id="user-profile-img" class="img-responsive">
+                        @else
+                        <img src="{{ImageHelper::getProfileImage('')}}" alt="profile" class="img-responsive">
+                        @endif
+                    </a>
+                    <span>
+                        <h2>{{Auth::User()->user_name}}</h2>
+                        <span class="h6" id="header_time">{{ date('d/m/Y h:i A')}}</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>

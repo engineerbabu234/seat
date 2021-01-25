@@ -1,836 +1,656 @@
   $.fn.canvasfiles = function() {
+      // initialize coordinate and size
+      let originContentW = 1370,
+          originContentH = 885,
+          contentW = $("#canvas").width(),
+          contentH = $("#canvas").height(),
+          scaleX = contentW / originContentW,
+          scaleY = contentH / originContentH,
+          borderR = 25,
+          strokeW = 3,
+          normalF = 22 * scaleX,
+          sidebarX = 10 * scaleX,
+          sidebarY = 80,
+          sidebarWidth = 350 * scaleX,
+          sidebarHeight = contentH - 10,
+          mainX = sidebarX + sidebarWidth + 15 * scaleX,
+          mainY = 0,
+          mainW = contentW - sidebarX - sidebarWidth - 15 * scaleX - 10 * scaleX,
+          mainH = contentH - 10,
+          sidebarTitleX = 65 * scaleX,
+          sidebarTitleY = 50,
+          sidebarTitleF = 40 * scaleX,
+          circleR = 25 * scaleX,
+          circleF = 32 * scaleX,
+          circleY = sidebarTitleY + sidebarTitleF + 20,
+          circleBX = sidebarWidth / 2 - circleR - 50 * scaleX,
+          circleAX = sidebarWidth / 2 + 50 * scaleX,
+          statusY = circleY + circleR * 2 + 5,
+          statusTextF = 26 * scaleX,
+          blockedStatusX = sidebarWidth / 2 - 95 * scaleX,
+          availableStatusX = sidebarWidth / 2 + 25 * scaleX,
+          officeDetailsY = statusY + 80,
+          officeDetailsX = sidebarWidth / 2,
+          officeDetails = sidebarWidth / 2,
+          officeAssetsY = officeDetailsY + sidebarTitleF + normalF * 3 + 70,
+          officeAssetsX = sidebarX + 10,
+          imageX = 0,
+          imageY = 0,
+          modalW = 600 * scaleX,
+          modalH = 350,
+          modalX = mainX + (mainW - modalW) / 2,
+          modalY = mainY + 50,
+          modalTitleX = 30,
+          modalTitleY = 20,
+          modalTitleF = 24,
+          btnW = 83 * scaleX,
+          btnH = 30 * scaleX,
+          btnR = 5 * scaleX,
+          btnF = (17 * scaleX).toString() + "px",
+          btnML = (20 * scaleX).toString() + "px",
+          createBtnW = 40 * scaleX,
+          mapN = 2;
+      // initialize color of objects on canvas
+      let strokeC = "#D37C3A",
+          strokeCircleAC = "#84AA4F",
+          strokeCircleBC = "#3E538C",
+          circleAC = "#62AF57",
+          circleBC = "#DA0000",
+          editBtnC = "#62AF57",
+          deleteBtnC = "#DB0000",
+          strokeBtnC = "#3E538C",
+          selectedBtnC = "#D8EBD5",
+          greyC = "#808080",
+          opacityC = 0.2,
+          modalStrokeC = "#3D538C";
+      // dynamic canvas object
+      let officeAssets = [];
+      let clonedCircles = [];
+      let rulers = [];
+      let circleNums = 0;
+      let currentOfficeIndex = -1;
+      // flags of status
+      let edit_flag = false;
+      let started_flag = false;
+      let down_flag = false;
+      let mainImage = null;
+      // initialize canvas
+      let canvas = new fabric.Canvas("canvas", {
+          controlsAboveOverlay: true,
+          preserveObjectStacking: true,
+          fireRightClick: true,
+          selection: false
+      });
+      initCenteringGuidelines(canvas);
+      initAligningGuidelines(canvas);
+      canvas.selectionColor = "transparent";
+      canvas.selection = false;
+      canvas.setWidth(contentW);
+      canvas.setHeight(contentH);
 
-    // initialize coordinate and size
-    let originContentW = 1370,
-      originContentH = 885,
-      contentW = $("#canvas").width(),
-      contentH = $("#canvas").height(),
-      scaleX = contentW / originContentW,
-      scaleY = contentH / originContentH,
-      borderR = 25,
-      strokeW = 3,
-      normalF = 22 * scaleX,
-      sidebarX = 10 * scaleX,
-      sidebarY = 80,
-      sidebarWidth = 350 * scaleX,
-      sidebarHeight = contentH - 10,
-      mainX = sidebarX + sidebarWidth + 15 * scaleX,
-      mainY = 0,
-      mainW = contentW - sidebarX - sidebarWidth - 15 * scaleX - 10 * scaleX,
-      mainH = contentH - 10,
-      sidebarTitleX = 65 * scaleX,
-      sidebarTitleY = 50,
-      sidebarTitleF = 40 * scaleX,
-      circleR = 25 * scaleX,
-      circleF = 32 * scaleX,
-      circleY = sidebarTitleY + sidebarTitleF + 20,
-      circleBX = sidebarWidth / 2 - circleR - 50 * scaleX,
-      circleAX = sidebarWidth / 2 + 50 * scaleX,
-      statusY = circleY + circleR * 2 + 5,
-      statusTextF = 26 * scaleX,
-      blockedStatusX = sidebarWidth / 2 - 95 * scaleX,
-      availableStatusX = sidebarWidth / 2 + 25 * scaleX,
-      officeDetailsY = statusY + 80,
-      officeDetailsX = sidebarWidth / 2,
-      officeDetails = sidebarWidth / 2,
-      officeAssetsY = officeDetailsY + sidebarTitleF + normalF * 3 + 70,
-      officeAssetsX = sidebarX + 10,
-      imageX = 0,
-      imageY = 0,
-      modalW = 600 * scaleX,
-      modalH = 350,
-      modalX = mainX + (mainW - modalW) / 2,
-      modalY = mainY + 50,
-      modalTitleX = 30,
-      modalTitleY = 20,
-      modalTitleF = 24,
-      btnW = 83 * scaleX,
-      btnH = 30 * scaleX,
-      btnR = 5 * scaleX,
-      btnF = (17 * scaleX).toString() + "px",
-      btnML = (20 * scaleX).toString() + "px",
-      createBtnW = 40 * scaleX,
-      mapN = 2;
 
-    // initialize color of objects on canvas
-    let strokeC = "#D37C3A",
-      strokeCircleAC = "#84AA4F",
-      strokeCircleBC = "#3E538C",
-      circleAC = "#62AF57",
-      circleBC = "#DA0000",
-      editBtnC = "#62AF57",
-      deleteBtnC = "#DB0000",
-      strokeBtnC = "#3E538C",
-      selectedBtnC = "#D8EBD5",
-      greyC = "#808080",
-      opacityC = 0.2,
-      modalStrokeC = "#3D538C";
-
-    // dynamic canvas object
-    let officeAssets = [];
-    let clonedCircles = [];
-    let rulers = [];
-    let circleNums = 0;
-    let currentOfficeIndex = -1;
-
-    // flags of status
-    let edit_flag = false;
-    let started_flag = false;
-    let down_flag = false;
-
-
-    let mainImage = null;
-
-    // initialize canvas
-    let canvas = new fabric.Canvas("canvas", {
-      controlsAboveOverlay: true,
-      preserveObjectStacking: true,
-      fireRightClick: true,
-       selection: false
-    });
-
-    initCenteringGuidelines(canvas);
-    initAligningGuidelines(canvas);
-    canvas.selectionColor = "transparent";
-    canvas.selection = false;
-
-    canvas.setWidth(contentW);
-    canvas.setHeight(contentH);
- 
-
-    function setSavedStatus(id) {
-      officeAssets.map(((value, index) => {
-        if (Number(value.id) === Number(id)) {
-          officeAssets[index].is_saved = true;
-        }
-      }));
-    }
-
-    function setUnSavedStatus(id) {
-      officeAssets.map(((value, index) => {
-        if (Number(value.id) === Number(id)) {
-          officeAssets[index].is_saved = false;
-        }
-      }));
-    }
-
-    // function to handle click event of edit asset item button
-    function editButtonClicked(id) {
-      started_flag = true;
-      saveOfficeItemCanvasObject(currentOfficeIndex);
-      loadOfficeItemCanvasObject(id);
-      canvas.renderAll();
-      edit_flag = true;
-
-      officeAssets.map(((value, index1) => {
-        if (Number(value.id) === Number(id)) {
-          edit_flag = true;
-          currentOfficeIndex = id;
-          // officeAssets[index1].is_saved = false;
-          rearrangeAssets();
-        }
-      }));
-    }
-
-    
-
-    // function to save canvas json data of office item
-    function saveOfficeItemCanvasObject(id) {
-      officeAssets.map(((value, index) => {
-        if (id === value.id) {
-          officeAssets[index].canvas = canvas.toJSON([
-            "selectable",
-            "lockMovementX",
-            "lockMovementY",
-            "lockScalingX",
-            "lockScalingY",
-            "lockRotation",
-            "hasControls",
-            "hasBorders"
-          ]);
-        }
-      }));
-    }
-
- 
-
-    // function to load canvas json object into canvas
-    function loadOfficeItemCanvasObject(id) {
-        console.log('cloned circle');
-      clonedCircles.splice(0, clonedCircles.length);
-      circleNums = 0; 
+       var url = window.location.href;
+      var search_asset =  url.split("?")[1];
+      var first =  url.split("&")[1];
+      var second =  url.split("&")[2];
+      if(search_asset){
+          var search_asset_id =  search_asset.split("=")[1];  
           
-          canvas.clear();
-         
-          canvas.loadFromJSON(canvas, canvas.renderAll.bind(canvas), function(o, object) {
-            
-            if (object._objects) {
-                console.log(bject._objects[1].name);
-              if (object._objects.length === 2) {
-                if (object._objects[0].type === "circle") {
-                  if (object._objects[1].text !== "B" && object._objects[1].text !== "A") {
-                    clonedCircles.push(object);
-                    circleNums++;
-                  }
-                }
-              }
-            }
-          });
-          canvas.renderAll(); 
-      
-    }
-
-    // function to set disable on edit button and delete button
-    function setDisableButton(editButton, deleteButton) {
-      editButton.disabled = true;
-      editButton.style.opacity = 0.5;
-      deleteButton.disabled = true;
-      deleteButton.style.opacity = 0.5
-    }
-
-    // function to set enable on edit button and delete button
-    function setEnableButton(editButto, deleteButton) {
-      editButton.disabled = false;
-      editButton.style.opacity = 1;
-      deleteButton.disabled = false;
-      deleteButton.style.opacity = 1;
-    }
-
-    // function to set disable on save button
-    function setDisableSaveButton() {
-      $("#btnSave").css("opacity", 0.5);
-      $("#btnSave").attr("disabled", true);
-    }
-
-    // function to set enable button
-    function setEnableSaveButton() {
-      $("#btnSave").css("opacity", 1);
-      $("#btnSave").attr("disabled", false);
-    }
-
-    // function to redraw asset buttons
-    function redrawAreaMapButtons(item) {
-      officeAssets.map(((value, index1) => {
-        if (Number(value.id) === Number(item.id)) {
-          setDisableButton(value.editButton, value.deleteButton);
-        } else {
-          setEnableButton(value.editButton, value.deleteButton);
-        }
-      }));
-    }
-
-    //saveOfficeAsset($('#asset_id').val());
-
-    // function to re arrange office assets items
-    function rearrangeAssets() {
-      $("#assets-box").empty(); 
- 
-    }
-
-    $('#btnSave').on('click', function(event) {
-        event.preventDefault();
-
-        saveImage(event);
-    });
-
-    // function remove main content
-    function removeMainContent() {
-      clonedCircles.map((value => {
-        canvas.remove(value)
-      }));
-
-      if (mainImage)
-        canvas.remove(mainImage)
-    }
-
-    // function to get max index of cloned circles
-    function getOfficeNextIndex() {
-      let num = 0;
-      officeAssets.map(((value, index) => {
-        if (Number(value.id) >= num)
-          num = Number(value.id) + 1;
-      }));
-      return num;
-    }
-
-    // function to show spinner
-    function showSpinner() {
-      $("#spinner").show();
-    }
-
-    // function to hide spinner
-    function hideSpinner() {
-      $("#spinner").hide();
-    }
-
-    
-    // function to handle to start edit asset
-    function start(url, title = '') {
-
-      clonedCircles.slice(0, clonedCircles.length);
-      circleNums = 0;
-      canvas.set("fill", "#fff");
-      edit_flag = true;
-      setEnableSaveButton();
-
-      if (mainImage) {
-        canvas.remove(mainImage);
-        canvas.renderAll();
       }
-      fabric.Image.fromURL(url, function(Img) {
-        mainImage = Img;
-        mainImage.set({
-          top: imageY + 100,
-          left: imageX
-        }, {
-          crossOrigin: 'annonymous'
-        });
-        canvas.add(mainImage);
-        canvas.renderAll();
-      });
+      if(first){
+        var arrow_id =  first.split("=")[1];  
+      }
 
-      let titleText = new fabric.Text(title, {
-        left: 15,
-        top: 10,
-        fontSize: 50,
-        fontWeight: "bold",
-        fill: "#000",
-        selectable: false
-      });
-      //canvas.add(titleText);
+      if(second){
+        var search_date =  second.split("=")[1]; 
+        if(search_date){ 
+            // $("#booking_date").datepicker({"setDate": search_date});
+            setTimeout(function() { 
+              $('#today_date').text(search_date);
+              $('#booking_date').val(search_date);
+              loadDataFromStrapi($('#asset_id').val(),search_date); 
+            }, 1000);
+        }
 
-      started_flag = true;
-    };
- 
-
-    // function to handle click event of circle a
-    // clone new next circle from circle a
-    function cloneCircleA() {
-       circleNums++;
-
-      var last_id = $('#last_id').val();
-    
-      let newCircle = new fabric.Circle({ 
-     
-        radius: circleR,
-        stroke: strokeCircleAC,
-        fill: circleAC,
-        selectable: false,  
-      });  
-     
-      let newText = new fabric.Text(circleNums.toString(), { 
-        top: circleR,
-        left: circleR,
-        fontSize: circleF,
-        selectable: true,
-        textAlign: "center",
-        originX: "center",
-        originY: "center",
-        fill: "#fff",   
-        subscript:{'seatid':54}
-      });   
 
       
- 
-      let newGroup = new fabric.Group([newCircle, newText], {
-        top: canvas.getHeight() / 2 - circleR,
-        left: canvas.getWidth() / 2 - circleR,
-        lockRotation: true,
-        lockScalingX: true,
-        lockScalingY: true,
-        originX: "center",
-        originY: "center",
-        hasControls: false,
-        hasBorders: false, 
-       
-      });
-
-
-
-      clonedCircles.push(newGroup);
-      canvas.add(newGroup);
-      canvas.renderAll(); 
-    }
- 
-
-    // show circle tool box
-    function showCircleToolBox(e) {
-     
-      $(".removeImg").attr("id", "remove-" + e.target._objects[1].text);
-      $(".removeImg").data("id",  e.target._objects[1].group.seatid);
-      $(".removeImg").css("left", e.target.left + $("#main").position().left + 25);
-      $(".removeImg").css("top", e.target.top + 25);
-      $(".removeImg").css("display", "block");
-      $(".dotsImg").attr("id", "dots-4" );
-      //$(".dotsImg").attr("id", "dots-" + e.target._objects[1].text);
-      $(".dotsImg").data("id", e.target._objects[1].group.seatid);
-      $(".dotsImg").css("left", e.target.left + $("#main").position().left - 20);
-      $(".dotsImg").css("top", e.target.top + 25);
-      $(".dotsImg").css("display", "block");
-    }
-
-    // hide circle tool box
-    function hideCircleToolBox() {
-      $(".removeImg").css("display", "none");
-      $(".dotsImg").css("display", "none");
-    }
-
-    //getcanvas iamge
-
-    loadDataFromStrapi($('#asset_id').val());
-
-    // load data from strapi
-    function loadDataFromStrapi(id) {
-
-      // showSpinner();
-      $.ajax({
-        url: base_url + "/getofficeassetsinfo/" + id,
-        type: "GET",
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        success: function(res) {
-           
-          var main_image = '';
-          var canvas_data = res.data.asset_canvas;   
-          if (canvas_data !== null && canvas_data.length > 0 && canvas_data !== undefined ) {
-              var candata = jQuery.parseJSON(canvas_data );
-              if( candata.objects.length !== 0 ){
-              main_image = res.data.asset_canvas;
-              var json = main_image;
-              canvas.clear();
-              canvas.loadFromJSON(json, function() { 
-                canvas.renderAll();
-               
-              });
-
-              loadOfficeItemCanvasObject(0);
-              $('#is_edit').val('yes');
-            } else {
-                 start($("#main_image").val(), $("#asset_name").val());
-            }
-          } else {
-            main_image = res.assets_image;
-            start($("#main_image").val(), $("#asset_name").val());
-          }
-
-          hideSpinner();
-          rearrangeAssets();
-        },
-        error: function(err) {
-          console.log(err);
-          hideSpinner();
-        }
-      });
-    }
-
-    function calculate(e) {
-      canvas.getObjects().map(((value, index) => {
-        if (e.target === value)
-          return;
-
-        if (value.left === e.target.left) {
-          drawVertical(value.left, value.top, e.target.top);
-          console.log('vertical');
-        } else if (value.top === e.target.top) {
-          drawHorizontal(value.top, value.left, e.target.left);
-          console.log('horizontal');
-        }
-      }))
-    }
-
-    function drawHorizontal(top, left1, left2) {
-      let left;
-      let leftOrigin;
-      if (left1 > left2) {
-        left = left1 - left2;
-        leftOrigin = left2;
-      } else {
-        left = left2 - left1;
-        leftOrigin = left1
       }
-     
-      let ruler = new fabric.Text(left.toFixed(2).toString(), {
-        top: top,
-        left: leftOrigin + left / 2 - circleR / 2,
-        fill: "#000",
-        fontSize: 11,
-        selectable: false
-      });
-      rulers.push(ruler);
-      canvas.add(ruler)
-    }
 
-    function drawVertical(left, top1, top2) {
-      let top;
-      let topOrigin;
-      if (top1 > top2) {
-        top = top1 - top2;
-        topOrigin = top2;
-      } else {
-        top = top2 - top1;
-        topOrigin = top1;
+       // show circle tool box
+      function showShadowToolBox(e) {   
+          if(e.target){
+            stopDragging(e.target);  
+            $(".shadowImg").css("left", e.target.left + $("#main").position().left-5);
+            $(".shadowImg").css("top", e.target.top + 492);
+            $(".shadowImg").css("width", 40);
+            $(".shadowImg").css("height", 40);
+            $(".shadowImg").css("display", "block");
+          } 
       }
-      let ruler = new fabric.Text(top.toFixed(2).toString(), {
-        top: topOrigin + top / 2,
-        left: left,
-        fill: "#000",
-        fontSize: 11,
-        selectable: false
-      });
-      rulers.push(ruler);
-      canvas.add(ruler)
-    }
 
-    // function to remove rulers on canvas
-    function removeRulers() { 
-      rulers.map(((value, index) => {
-        canvas.remove(rulers[index])
-      }));
-    }
-
-    // function to set saved status
-    function setSavedStatus(id) {
-      officeAssets.map(((value, index) => {
-        if (Number(value.id) === Number(id)) {
-          officeAssets[index].is_saved = true;
-        }
-      }));
-    }
-
-    // function to set unsaved status
-    function setUnSavedStatus(id) {
-      officeAssets.map(((value, index) => {
-        if (Number(value.id) === Number(id)) {
-          officeAssets[index].is_saved = false;
-        }
-      }));
-    }
-
+      // hide circle tool box
+      function hideShadowToolBox() { 
+          $(".shadowImg").css("display", "none"); 
+      }
   
-    // handler for click event of status change button
-    $("#btn-change").click(function() {
-      let num = $("#change-number").text();
-      
-      clonedCircles.map(((value, index) => {
-        if (value._objects.length < 2)
-          return; 
-        if (value._objects[1].text === num) {
-          if (value._objects[0].fill === circleBC) {
-            value._objects[0].set("fill", circleAC);
-            value._objects[0].set("stroke", strokeCircleAC)
-          } else if (value._objects[0].fill === circleAC) {
-            value._objects[0].set("fill", circleBC);
-            value._objects[0].set("stroke", strokeCircleBC)
-          }
-        }
-      }));
-
-        $("#bookseatModal").modal("hide");
-       canvas.renderAll();
-    });
- 
-    // trigger click event of input type file tag when image preview is clicked
-    $(".img-preview").click(function() {
-      $("#file-input").trigger("click");
-    });
-
-    var canvas_images = $('#canvas_image').val();
-
-    if (canvas_images == 0) {
-      start($("#main_image").val(), $("#asset_name").val());
-    }
- 
-    // clone new circle from circle a when click circle a
-    $("#img-create").click(function() {
-      hideCircleToolBox();
-        console.log('clone user');
-      // if (edit_flag === false)
-      //   return;
-        getlastdata($('#asset_id').val()); 
-        setTimeout(function() {
-            cloneCircleA();
-        }, 1000);
-         
-    });
-
-     
-
-    $('.add-booking-seat').on('click', function(event) {
-        event.preventDefault();  
-        setTimeout(function() { 
-           
-        }, 2000);
-        
-        
-    });
-
-    // handler for delete icon click event
-    $(".removeImg").click(function() {
-
-
-      let id = $(this).attr("id").split("-")[1]; 
-      clonedCircles.map(((value, index) => { 
-                if (value._objects[1].text === id) {
-                  canvas.remove(clonedCircles[index])
-                  hideCircleToolBox();
-                }
-              }));
-
-      
-     
-    });
-
-    function remove_objects(id){
-        clonedCircles.map(((value, index) => { 
-                if (value._objects[1].text === id) {
-                  canvas.remove(clonedCircles[index])
-                  hideCircleToolBox();
-                }
-              }));
-    }
-
-    $(".dotsImg").click(function() {
-
-      let id = $(this).attr("id").split("-")[1];
-      let dots = $(this).attr("id");
-      let seat_id = $(this).attr("id").split("-")[1];
-      let asset_id = $('#asset_id').val(); 
-      clonedCircles.map(((value, index) => {
-        if (value._objects[1].text === id) {
-
-          if (value._objects[0].fill === circleBC) {
-            $("#btn-available").css("background-color", circleBC);
-            $("#btn-available").text("Blocked");
-          } else if (value._objects[0].fill === circleAC) {
-            $("#btn-available").css("background-color", circleAC);
-            $("#btn-available").text("Available");
-          }
-           
-          $("#change-number").text(value._objects[1].text);
-          $("form#add-office-asset-image-form").find("#dots_id").val(dots);  
-            var edit_seat = $('.dotsImg').hasClass('editSeat');
+      // function to show spinner
+      function showSpinner() {
+           $('#loader-wrapper').css("visibility", "visible"); 
+          $('#loader-wrapper').css("opacity", "1");         
+      }
+      // function to hide spinner
+      function hideSpinner() {
+         $('#loader-wrapper').css("visibility", "hidden"); 
+          $('#loader-wrapper').css("opacity", "0"); 
           
+      }
+
+
+      canvas.on('mouse:move',function(e){ 
+          if (!e.target) return;
+          if (!e.target._objects) return;
+          if (e.target._objects.length === 2) {
+              if (e.target._objects[0].type === "circle") { 
+                   showShadowToolBox(e);
+                  return;
+              }
+          }
           
-            $("#bookseatModal").modal("show");
-          // $('#office_assets_seats').html("");
-          // $('#assets_seat_modal').modal('hide');
-            
-        }
-      }));
-    });
-
-
-
-    canvas.renderAll();
-
-    
-    // add listener for click event on canvas
-    canvas.on("mouse:down", function(e) {
-       
-      if (!started_flag)
-        return;
-      hideCircleToolBox();
-      down_flag = true;
-      if (!e.target)
-        return;
-      if (!e.target._objects)
-        return;
-      if (e.target._objects.length === 2) {
-        if (e.target._objects[0].type === "circle") {
-          showCircleToolBox(e)
-          return;
-        }
-      }
-      hideCircleToolBox();
-    });
-
-    canvas.on("mouse:up", function(e) {
-      down_flag = false;
-      if (e.target) {
-        //clicked on object 
-         console.log(e.target._objects[0]);
-         getassetsdetails();
-      }else{
-        //add rectangle
-        
-      }
-      removeRulers();
-    });
-
-    canvas.on("mouse:move", function(e) {
-       
-      // if (!started_flag)
-      //   return;
-      // if (down_flag === false)
-      //   return;
-      // if (!e.target)
-      //   return;
-      
-      //setUnSavedStatus(currentOfficeIndex);
-      
-
-    if (!e.target._objects)
-        return;
-      if (e.target._objects.length === 2) {
-        if (e.target._objects[0].type === "circle") {
-            ;
-          $("#changeModal").modal("hide");
-          removeRulers();
-          calculate(e);
-          showCircleToolBox(e)
-        }
-      }
-    });
-
-    // var imageSaver = document.getElementById('btnSave');
-    // imageSaver.addEventListener('click', saveImage, false);
-
-    function saveImage(e) {
-      var image_json = canvas.toJSON();
-      var asset_id = $('#asset_id').val();
-      
-      $.ajax({
-        url: base_url + '/admin/office/asset/updateassets_image/' + asset_id,
-        type: "POST",
-        dataType: 'json',
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        data: {
-          canvas: JSON.stringify(image_json)
-        },
-        success: function(res) {
-          // rearrangeAssets();
-        },
-        error: function(err) {
-          console.log(err);
-        }
       });
 
-    }
 
-
-    function bookseats(){
-      
-      
-    }
-
-
-    canvas.on("mouse:over", function(e) {
-     
-      if (!started_flag)
-        return;
-
-      if (!e.target)
-        return;
-
-
-      if (!e.target._objects)
-        return;
-
-      if (e.target._objects.length === 2) {
-        if (e.target._objects[0].type === "circle") {
-          $("#changeModal").modal("hide");
+      canvas.on('mouse:down',function(e){ 
+          if (!e.target) return;
+          if (!e.target._objects) return;
+          if (e.target._objects.length === 2) {
+              if (e.target._objects[0].type === "circle") { 
+                   showShadowToolBox(e);
+                  return;
+              }
+          }
           
-          showCircleToolBox(e)
+      });
+
+      canvas.on('mouse:out',function(e){
+          if (!e.target) return;
+          if (!e.target._objects) return;
+          if (e.target._objects.length === 2) {
+              if (e.target._objects[0].type === "circle") { 
+                  hideShadowToolBox();
+                  return;
+              }
+          }
+           
+      });
+ 
+
+      
+
+      // function to handle to start edit asset
+      function start(url, title = '') {
+          clonedCircles.slice(0, clonedCircles.length);
+          circleNums = 0;
+          canvas.set("fill", "#fff");
+          edit_flag = true;
+           
+          if (mainImage) {
+              canvas.remove(mainImage);
+              canvas.renderAll();
+          }
+          fabric.Image.fromURL(url, function(Img) {
+              mainImage = Img;
+              mainImage.set({
+                  top: imageY + 100,
+                  left: imageX
+              }, {
+                  crossOrigin: 'annonymous'
+              });
+              canvas.add(mainImage);
+              canvas.renderAll();
+          });
+          let titleText = new fabric.Text(title, {
+              left: 15,
+              top: 10,
+              fontSize: 50,
+              fontWeight: "bold",
+              fill: "#000",
+              selectable: false
+          });
+          //canvas.add(titleText);
+          started_flag = true;
+      };
+      // function to handle click event of circle a
+       
+
+       $("#booking_date").on('change',function(e){ 
+          e.preventDefault();
+          setTimeout(function() {
+              loadDataFromStrapi($('#asset_id').val(),$('#today_date').text()); 
+
+
+          }, 1000);
+       });
+      //getcanvas iamge
+      loadDataFromStrapi($('#asset_id').val());
+      // load data from strapi
+      function loadDataFromStrapi(id, booking_date = null) {
+
+          var date = '';
+          if (booking_date) {
+              date = booking_date;
+          } else {
+              date = $('#today_date').text();
+          }
+
+          $.ajax({
+              url: base_url + "/getofficeassetsinfo/" + id,
+              type: "POST",
+              data: {
+                  'date': date
+              },
+              headers: {
+                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+              },
+              success: function(res) {
+                  var main_image = '';
+                  var canvas_data = res.data.asset_canvas;
+                  if (canvas_data !== null && canvas_data.length > 0 && canvas_data !== undefined) {
+                      var candata = jQuery.parseJSON(canvas_data);
+                      if (candata.objects.length !== 0) {
+                          main_image = res.data.asset_canvas;
+                          var json = main_image;
+                          canvas.clear();
+                          canvas.loadFromJSON(json, function() {
+                              canvas.item(0).selectable = false;
+                              canvas.renderAll();
+                          }); 
+                           
+                          $('#is_edit').val('yes');
+                      } else {
+                          start($("#main_image").val(), $("#asset_name").val());
+                      }
+
+                  
+                      showSpinner();
+                      setTimeout(function() {
+                         
+                           /* iterate through array or object */
+                                  obj = canvas.getObjects();
+                                  
+                                  obj.forEach(function(item, i) {
+
+                                      if (item._objects) {
+                                        
+                                          item._objects.forEach(function(object) {
+                                                object.group._objects[0].set("fill", '#84AA4F'); 
+                                                 canvas.renderAll(); 
+                                            if (object && object.text != ''  ) {  
+
+                                                
+                                                  if(object.text == arrow_id){
+                                                      $(".view_arrow").css("left", item.left + $("#main").position().left-95);
+                                                      $(".view_arrow").css("top", item.top + 467);
+                                                      $(".view_arrow").css("width", 100);
+                                                      $(".view_arrow").css("height", 100);
+                                                      $(".view_arrow").css('-webkit-animation', 'uparrow 0.6s infinite alternate ease-in-out');
+                                                      $(".view_arrow").css("display", "block");
+                                                  }
+
+
+                                                if (res.seats_status) { 
+                                                    $.each(res.seats_status, function(index, sval) { 
+                                                      if (object.text == sval.seat_no) {
+
+
+                                                              let asset_id = id; 
+                                                              object.group._objects[0].set("fill", '#F32D13'); 
+                                                              canvas.renderAll();  
+                                                        }   
+                                                     }); 
+                                                  } 
+
+                                                 if (res.reserve_seats) { 
+                                                    $.each(res.reserve_seats, function(index, val) { 
+                                                      if (object.text == val.seat_no) { 
+
+                                                            if(val.status == 0){
+                                                              let asset_id = id; 
+                                                              object.group._objects[0].set("fill", '#5471BF');
+                                                              object.group._objects[0].set("stroke", '#fff');
+                                                              canvas.renderAll();                                                               
+                                                            }
+
+                                                            if(val.status == 1 || val.status == 4){
+                                                              let asset_id = id; 
+                                                              object.group._objects[0].set("fill", '#9E9E9E');
+                                                              object.group._objects[0].set("stroke", '#fff');
+                                                              canvas.renderAll();                                                               
+                                                            }
+                                                            
+                                                        }  
+
+                                                     });
+
+                                                  } 
+
+                                                 
+                                              }
+                                          });                                          
+                                      }                                 
+                              });
+                              saveImage(1);     
+                        hideSpinner();          
+
+                      }, 2000);
+                     
+                        
+
+                  } else {
+                      main_image = res.assets_image;
+                      start($("#main_image").val(), $("#asset_name").val());
+                        hideSpinner();
+                  }
+                  
+              },
+              error: function(err) {
+                  console.log(err);
+                  hideSpinner();
+              }
+          });
+      }
+
+
+      setTimeout(function() {
+        $(".view_arrow").css("display", "none");
+
+      }, 4000);
+
+      
+      // add listener for click event on canvas
+      canvas.on("mouse:down", function(e) {
+         
+          stopDragging(e.target);
+          if (!started_flag) return;
+           hideShadowToolBox();
+          down_flag = true;
+          if (!e.target) return;
+          if (!e.target._objects) return;
+          if (e.target._objects.length === 2) {
+              if (e.target._objects[0].type === "circle") { 
+                   showShadowToolBox();
+                  return;
+              }
+          }
+           hideShadowToolBox();
+      });
+      var objs = canvas.getObjects().map(function(o) {
+          console.log('all objects');
+      });
+
+      function stopDragging(element) {
+        if(typeof element !== "undefined")
+          {
+          
+          element.lockMovementY = true;
+          element.lockMovementX = true;
+          element.selectable = false;
+          element.hasControls = false;
         }
       }
-    });
+      var timeoutTriggered = false;
 
-    canvas.on("mouse:out", function(e) {
+      function onMoving(e) {
+          if (!timeoutTriggered) {
+              stopDragging(e.target);
+              timeoutTriggered = true;
+          }
+      }
+      canvas.on("mouse:up", function(e) {
+          down_flag = false;
+          if (e.target) {
 
-      // hideCircleToolBox()
-    });
+              //clicked on object  
+              getassetsdetails(e.target._objects[1].text);
+               if (e.target._objects.length === 2) {
+              if (e.target._objects[0].type === "circle") { 
+                  showShadowToolBox();
+              }
+          }
+              
+              stopDragging(e.target);
+              //add rectangle
+          }
+           
+      });
+      canvas.renderAll();
+
+
+       
+      // seat booking and validation
+       $(document).on("click", ".booking-seat", function(e) {
+                 $('#seat_book_modal').modal('hide');
+                e.preventDefault(); 
+                var data = jQuery(this).parents('form:first').serialize();
+                var myThis = $(this);
+                $.ajax({
+                    url: base_url + '/bookOfficeSeats',
+                    type: 'post',
+                    dataType: 'json',
+                    data: data,
+                    headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                    },
+                    beforeSend: function () {
+                       showPageSpinner();
+                    },
+                    error: function(response) { 
+                        if (response.status == 400) {
+                            if(response.responseJSON.html){  
+                               
+                                    $('#error_modal').show();
+                                    $('#error_modal_text').html(response.responseJSON.html);
+                                    $('#seat_book_modal').modal('hide');
+                                    $('#error_modal').data('bs.modal',null);
+                                    $('#error_modal').modal({backdrop:'static', keyboard:false});   
+                                     hidePageSpinner();                                
+                                
+
+                            } 
+                            
+                        }
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $("#add-office-asset-seat-booking-form").trigger('reset');
+                             
+                             
+                             setTimeout(function() {
+                                if(response.order){
+                                    $('#warning_modal').show();
+                                    $('#warning_modal').modal({ backdrop: 'static', keyboard: false});
+                                    $('#warning_modal_text').html(response.html);
+
+                                } else{
+                                    $('#success_modal').show();
+                                    $('#success_modal_text').html(response.html);
+                                    $('#success_modal').modal({ backdrop: 'static', keyboard: false});
+                                } 
+
+
+                                 let dots_id = $('#seat_no').val();  
+                                  obj = canvas.getObjects();
+                                  obj.forEach(function(item, i) {
+                                      if (item._objects) {
+                                          item._objects.forEach(function(object) {
+                                              if (object.text == dots_id) {
+                                                  if (object && object.text != '') {
+                                                      let asset_id = $('#asset_id').val();
+                                                      
+                                                         if(response.order){
+                                                           object.group._objects[0].set("fill", '#5471BF');
+                                                         } else {
+                                                          object.group._objects[0].set("fill", '#9E9E9E');                                                      
+                                                         }
+                                                          object.group._objects[0].set("stroke", '#fff');
+                                                          canvas.renderAll(); 
+                                                  }
+                                              }
+                                          });
+                                      }
+                                  });
+                                 get_seat_data($('#today_date').text()); 
+                                 
+                               }, 1000);
+
+                             saveImage(1);   
+                        }
+                    },
+                    'complete': function() {
+                        hidePageSpinner();
+                    }
+                });
+
+                
+        });
+
+
+
+      canvas.on("mouse:move", function(e) {
+          if (!started_flag)
+            return;
+          if (down_flag === false)
+            return;
+          if (!e.target)
+            return;
+          if (e.target._objects.length === 2) {
+            console.log(e.target._objects.length);
+              if (e.target._objects[0].type === "circle") {
+                   
+                  showShadowToolBox();
+              }
+          }
+          onMoving(e.target);
+          
+      });
+      // var imageSaver = document.getElementById('btnSave');
+      // imageSaver.addEventListener('click', saveImage, false);
+      function saveImage(e) {
+          var image_json = canvas.toJSON();
+          var asset_id = $('#asset_id').val();
+          $.ajax({
+              url: base_url + '/updateassets_image/' + asset_id,
+              type: "POST",
+              dataType: 'json',
+              headers: {
+                  'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+              },
+              data: {
+                  canvas: JSON.stringify(image_json)
+              },
+              success: function(res) {
+                  // rearrangeAssets();
+              },
+              error: function(err) {
+                  console.log(err);
+              }
+          });
+      }
+      canvas.on("mouse:over", function(e) {
+          if (!started_flag) return;
+          if (!e.target) return;
+          if (!e.target._objects) return;
+          if (e.target._objects.length === 2) {
+              if (e.target._objects[0].type === "circle") {
+                    showShadowToolBox();
+              }
+          }
+      });
+      canvas.on("mouse:out", function(e) {
+          hideShadowToolBox();
+      });
   };
 
-  
+  function getassetsdetails(dots_id = '') {
+      let asset_id = $('#asset_id').val();
+      let booking_date = $('#today_date').text();
+      $.ajax({
+          url: base_url + "/check_user_seat_booking/" + asset_id + "/" + dots_id,
+          type: "POST",
+          data: {
+              'booking_date': booking_date
+          },
+          headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          },
+          error: function(response) {
+                   
+              if (response.status == 400) {
 
-  function delete_object(){ 
-     swal({
-          title: "Are you sure you want to delete?",
-          //text: "Once deleted, you will not be able to recover this office data!",
-          icon: "warning",
-          buttons: true,
-          dangerMode: true,
-         })
-         .then((willDelete) => {
-            if(!willDelete){
-                return false;
-            }
-              
-              swal("Success!",'Seat Removed', "success");
+                 if(response.responseJSON.message){
+                    swal("Failed!",response.responseJSON.message, "error");
+                } 
+              }
+          },
+          success: function(res) {
+              if (res.success) {
+                  if (res.booked_seat) {
+                      $('#bookedseat_modal').show();
+                      $('#bookedseat_modal').modal({ backdrop: 'static', keyboard: false});
+                      $('#view_booked_seat_details').html(res.html);
+                  }
+                  if (res.available) {
+                      $("#seat_book_modal").modal("show");
+                      $('#seat_book_details').html(res.html); 
+                  }
+                  if (res.exam) {
+                      $("#user_exam_modal").modal("show");
+                      $('#view_exam_details').html(res.html);
+                  }
 
-                // $.ajax({
-                //     "headers":{
-                //     'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
-                // },
-                //     'type':'get',
-                //     'url' : url,
-                // beforeSend: function() {
-                // },
-                // 'success' : function(response){
-                //     if(response.status == 'success'){
-                      
-                        
-                //     }
-                //     if(response.status == 'failed'){
-                //         swal("Failed!",response.message, "error");
-                //     }
-                // },
-                // 'error' : function(error){
-                // },
-                // complete: function() {
-                // },
-                // });
-         });
+                   if (res.bloked) {
+                      $("#blocked_seat_modal").modal("show");
+                      $('#blocked_seat_details').html(res.html);
+
+                  }
+                  get_pophover();
+                  $('[data-toggle="tooltip"]').tooltip();
+              }
+          },
+      });
   }
 
-
-   // load data from strapi
-    function getlastdata(id) {
-
-      // showSpinner();
+  function get_seat_data(reserve_date){
+         
         $.ajax({
-        url: base_url + "/admin/office/asset/getAssetsSeats/" + id,
-        type: "GET",
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        "headers":{
+        'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
         },
-        success: function(res) {
-           
-            $('#total_count').val(res.seat_count);
-            $('#last_id').val(res.last_id);
-          
+        method: 'get',
+        url: base_url+'/get_seat_list',
+        data: {
+        "reserve_date": reserve_date,
+        "asset_id" : $('#asset_id').val(),
+        "office_id" :  $('#office_id').val(),
         },
-        error: function(err) {
-          console.log(err); 
+        'beforeSend': function() {
+        },
+        'success' : function(response){
+        $('.seats-list').html('');
+        var html = '';
+        if(response.status){
+
+        $('.total_seats').text('Total : '+response.count_data.total_seats);
+        $('.available_seats').text('Available : '+response.count_data.available_seats);
+        $('.booked_seats').text('Reserved : '+response.count_data.booked_seats);;
+        $('.blocked_seats').text('Blocked : '+response.count_data.blocked_seats);
+        $('.pending_seats').text('Pending : '+response.count_data.pending_seats);
         }
-      });
-
-     
-    }
-
-
-     function getassetsdetails() {
-
-        let asset_id = $('#asset_id').val();
-        $.ajax({
-        url: base_url + "/getassetsdetails/" + asset_id,
-        type: "GET",
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        success: function(res) {
-            $("#bookseatModal").modal("show");  
-            $('#building_name').text(res.data.building_name);
-            $('#office_name').text(res.data.office_name);
-            $('#asset_name').text(res.data.title); 
+        'error' :  function(errors){
+        console.log(errors);
         },
-        error: function(err) {
-          console.log(err); 
-        }
-      });
-
-     
-    }  
+        complete: function () {
+        },
+        })
+        
+  }

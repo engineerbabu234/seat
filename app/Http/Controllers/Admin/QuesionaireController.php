@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\OfficeAsset;
 use App\Models\Quesionaire;
 use App\Models\Question;
 use Auth;
@@ -31,7 +32,7 @@ class QuesionaireController extends Controller
                 $whereStr .= " AND quesionaire.title like '%{$search}%'";
             }
 
-            $columns = ['quesionaire.id', 'quesionaire.title', 'quesionaire.description', 'quesionaire.expired_option', 'quesionaire.expired_value', 'quesionaire.start_date', 'quesionaire.expired_date', 'quesionaire.restriction'];
+            $columns = ['quesionaire.id', 'quesionaire.title', 'quesionaire.description', 'quesionaire.expired_option', 'quesionaire.expired_value', 'quesionaire.start_date', 'quesionaire.expired_date', 'quesionaire.restriction', 'quesionaire.updated_at'];
 
             $Quesionaire = Quesionaire::select($columns)->whereRaw($whereStr, $whereParams);
             $Quesionaire = $Quesionaire->orderBy('quesionaire.id', 'desc');
@@ -59,6 +60,7 @@ class QuesionaireController extends Controller
 
             $final = [];
             $number_key = 1;
+            $expired_value = '';
             $restriction = array('0' => 'No', '1' => 'Yes');
             foreach ($Quesionaire as $key => $value) {
                 $questions = Question::where('quesionaire_id', $value->id)->count();
@@ -67,16 +69,14 @@ class QuesionaireController extends Controller
                 } else {
                     $questions_total = 0;
                 }
+
                 $final[$key]['number_key'] = $number_key;
                 $final[$key]['id'] = $value->id;
                 $final[$key]['title'] = $value->title;
                 $final[$key]['description'] = $value->description;
-                $final[$key]['expired_option'] = $value->expired_option;
-                $final[$key]['expired_value'] = $value->expired_value;
+                $final[$key]['expired_option'] = $value->expired_value . ' ' . $value->expired_option;
                 $final[$key]['questions'] = $questions_total;
-                $final[$key]['start_date'] = date('d-m-Y', strtotime($value->start_date));
-                $final[$key]['expired_date'] = date('d-m-Y', strtotime($value->expired_date));
-                $final[$key]['created_at'] = date('d-m-Y H:i:s', strtotime($value->created_at));
+                $final[$key]['updated_at'] = date('d/m/Y', strtotime($value->updated_at));
                 $final[$key]['restriction'] = @$restriction[$value->restriction];
                 $number_key++;
             }
@@ -105,6 +105,7 @@ class QuesionaireController extends Controller
             'title' => 'required',
             'description' => 'required',
             'expired_option' => 'required',
+            'expired_value' => 'required',
         ];
 
         $messages = [];
@@ -126,8 +127,8 @@ class QuesionaireController extends Controller
 
         $expired_option = '';
         $expired_value = '';
-        if ($inputs['expired_option']) {
-            $expired_data = explode('_', $inputs['expired_option']);
+        if ($inputs['expired_value']) {
+            $expired_data = explode('_', $inputs['expired_value']);
             $expired_option = $expired_data[0];
             $expired_value = $expired_data[1];
         }
@@ -170,6 +171,7 @@ class QuesionaireController extends Controller
         if ($Quesionaire->save()) {
             $response = [
                 'success' => true,
+                'quesionaire_id' => $Quesionaire->id,
                 'message' => 'Quesionaire Added successfull',
             ];
         } else {
@@ -188,10 +190,10 @@ class QuesionaireController extends Controller
     public function edit($id)
     {
         $quesionaire = Quesionaire::find($id);
-
+        $questionarie = Quesionaire::get();
         $response = [
             'success' => true,
-            'html' => view('admin.quesionaire.edit', compact('quesionaire'))->render(),
+            'html' => view('admin.quesionaire.edit', compact('quesionaire', 'questionarie', 'id'))->render(),
         ];
 
         return response()->json($response, 200);
@@ -211,6 +213,7 @@ class QuesionaireController extends Controller
             'title' => 'required',
             'description' => 'required',
             'expired_option' => 'required',
+            'expired_value' => 'required',
         ];
 
         $messages = [];
@@ -231,16 +234,16 @@ class QuesionaireController extends Controller
         // }
         $expired_option = '';
         $expired_value = '';
-        if ($inputs['expired_option']) {
-            $expired_data = explode('_', $inputs['expired_option']);
-            $expired_option = $expired_data[0];
+        if ($inputs['expired_value']) {
+            $expired_data = explode('_', $inputs['expired_value']);
+            $expired_option = ucfirst($inputs['expired_option']);
             $expired_value = $expired_data[1];
         }
         $Quesionaire = Quesionaire::find($id);
         $Quesionaire->user_id = Auth::id();
         $Quesionaire->title = $inputs['title'];
         $Quesionaire->description = $inputs['description'];
-        $Quesionaire->expired_option = $expired_option;
+        $Quesionaire->expired_option = ucfirst($inputs['expired_option']);
         $Quesionaire->expired_value = $expired_value;
         $Quesionaire->restriction = $inputs['restriction'];
         $Quesionaire->start_date = date('Y-m-d');
@@ -292,11 +295,51 @@ class QuesionaireController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        if (Quesionaire::find($id)->delete()) {
 
-            return ['status' => 'success', 'message' => 'Successfully deleted Quesionaire'];
+        $OfficeAsset = OfficeAsset::Where('quesionaire_id', 'like', '%' . $id . '%')->get();
+
+        if ($OfficeAsset->isEmpty()) {
+
+            $modal_type = "delete_questions";
+            $response = [
+                'success' => true,
+                'html' => view('modal_content', compact('modal_type', 'id'))->render(),
+            ];
+
+            return response()->json($response, 200);
+
         } else {
-            return ['status' => 'failed', 'message' => 'Failed delete Quesionaire'];
+            $modal_type = "deleted_failed";
+            $response = [
+                'success' => false,
+                'exist_inassets' => 1,
+                'html' => view('modal_content', compact('modal_type'))->render(),
+            ];
+
+            return response()->json($response, 400);
+
+        }
+    }
+
+    /**
+     * [destroy_questions description]
+     * @param  Request $request [description]
+     * @param  [type]  $id      [description]
+     * @return [type]           [description]
+     */
+    public function destroy_questions(Request $request, $id)
+    {
+        // $office_assets = OfficeAsset::where('quesionaire_id', $id)->first();
+        // $office_assets->quesionaire_id = JSON_REMOVE('quesionaire_id', replace(json_search('quesionaire_id', 'one', $id), '"', ''));
+        // $office_assets->save();
+
+        $questionarie = Quesionaire::find($id)->delete();
+        if ($questionarie) {
+            Question::where('quesionaire_id', $id)->delete();
+
+            return ['status' => 'success', 'message' => 'Successfully deleted quesionaire and quesions'];
+        } else {
+            return ['status' => 'failed', 'message' => 'Failed delete quesionaire and quesions'];
         }
     }
 

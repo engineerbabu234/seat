@@ -8,7 +8,7 @@ The images used in this repo is `php:7.2-apache` and `mysql:5.7`. The goal is to
 ## Up and running
 Clone the repo:
 ```
-$ git https://github.com/paulforan/seat_interactive_new.git
+$ git clone https://github.com/paulforan/seat_interactive_new.git
 $ cd seat_interactive_new
 ```
 
@@ -17,11 +17,17 @@ Copy `.env.example` to `.env`
 $ cp .env.example .env 
 ```
 
-Build the images and start the services:
+Option1: Build the images and start the services (Remove filesystems):
 ```
 docker-compose down -v --remove-orphans
 docker-compose build
 docker-compose up -d -V
+```
+Option2: Build the images and start the services (keep filesystems):
+```
+docker-compose down
+docker-compose build
+docker-compose up -d
 ```
 
 Build the Vewndor folder the first time

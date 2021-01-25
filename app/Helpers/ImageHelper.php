@@ -8,17 +8,34 @@ use url;
 
 class ImageHelper
 {
+    public static $getLogoImagePath = 'uploads/logo/';
     public static $getProfileImagePath = 'uploads/profiles/';
     public static $getOfficeImagePath = 'uploads/office_image/';
     public static $getSelfieImagePath = 'uploads/selfie_image/';
     public static $getDriverDocumentImagePath = 'uploads/document/';
     public static $getVehicleTypeImagePath = 'uploads/vehicle_type/';
     public static $userPlaceholderImage = 'uploads/others/user_placeholder.png';
+    public static $LogoPlaceholderImage = 'uploads/others/logo.png';
     public static $getOfficeAssetsImagePath = 'uploads/office_asset/';
 
     /*public static function store($path = null , $fileName = null , $sizes = array()){
     Image::make($path.'/'.$fileName)->resize(150, 100)->save($path.'/'.$fileName);
     }*/
+
+    /**
+     * [getLogoImage description]
+     * @param  [type] $image [description]
+     * @return [type]        [description]
+     */
+    public static function getLogoImage($image)
+    {
+        if ($image) {
+            if (file_exists(static::$getLogoImagePath . $image)) {
+                return url(static::$getLogoImagePath . $image);
+            }
+        }
+        return url(static::$LogoPlaceholderImage);
+    }
 
     /**
      * [getProfileImage description]

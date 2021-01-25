@@ -1,9 +1,9 @@
 <head>
-	<title>Seat Reservation</title>
+	<title>Workspace Manangment System</title>
 	<meta charset="UTF-8">
 	<meta name="keywords" content="">
-	<meta name="author" content="Codemeg Solution Pvt. Ltd., info@codemeg.com">
-	<meta name="url" content="http://codemeg.com">
+	<meta name="author" content="Nxsol team, info@nxsol.com">
+	<meta name="url" content="http://nxsol.com">
 	<meta content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no" name="viewport">
 	<meta name="csrf-token" content="{{ csrf_token() }}">
 	<!--css-->

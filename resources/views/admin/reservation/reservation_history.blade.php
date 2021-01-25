@@ -41,32 +41,20 @@
 							<table class="table table-striped" id="laravel_datatable">
 								<thead>
 									<tr>
-										<th>Reservation ID</th>
-										<th>Building</th>
-										<th>Office</th>
-										<th>Employee </th>
-										<th>Email </th>
-										<th>Profile Image </th>
-										<th>Seat No.</th>
-										<th>Date</th>
-										<th>Status</th>
-										<th>Action</th>
+										<th><span class="iconWrap iconSize_32" title="Reservation ID"   data-trigger="hover"  data-content="Reservation ID" data-placement="left"><img src="{{asset('admin_assets')}}/images/id.png" class="icon bl-icon" width="30" ></span> </th>
+										<th><span class="iconWrap iconSize_32" title="Building"   data-trigger="hover" data-content="Building" data-placement="left"><img src="{{asset('admin_assets')}}/images/building.png" class="icon bl-icon" width="30" ></span></th>
+										<th><span class="iconWrap iconSize_32" title="Office"   data-trigger="hover"  data-content="Office"  data-placement="left"><img src="{{asset('admin_assets')}}/images/offices.png" class="icon bl-icon" width="30" ></span></th>
+										<th><span class="iconWrap iconSize_32" title="Employee"   data-trigger="hover" data-content="Employee"  data-placement="left"><img src="{{asset('admin_assets')}}/images/employee.png" class="icon bl-icon" width="30" ></span> </th>
+										<th><span class="iconWrap iconSize_32" title="Email"   data-trigger="hover" data-content="Email" data-placement="left"><img src="{{asset('admin_assets')}}/images/email.png" class="icon bl-icon" width="30" ></span>  </th>
+										<th><span class="iconWrap iconSize_32" title="Profile Image"   data-trigger="hover" data-content="Profile Image" data-placement="left"><img src="{{asset('admin_assets')}}/images/progile-image.png" class="icon bl-icon" width="30" ></span>  </th>
+										<th><span class="iconWrap iconSize_32" title="Seat No."   data-trigger="hover" data-content="Seat No" data-placement="left"><img src="{{asset('admin_assets')}}/images/seat-no.png" class="icon bl-icon" width="30" ></span> </th>
+										<th><span class="iconWrap iconSize_32" title="Date"   data-trigger="hover" data-content="Date" data-placement="left"><img src="{{asset('admin_assets')}}/images/order_date.png" class="icon bl-icon" width="30" ></span> </th>
+										<th><span class="iconWrap iconSize_32" title="Status"   data-trigger="hover" data-content="Status" data-placement="left"><img src="{{asset('admin_assets')}}/images/status.png" class="icon bl-icon" width="30" ></span></th>
+										<th><span class="iconWrap iconSize_32" title="Action"   data-trigger="hover"  data-content="Action" data-placement="left"><img src="{{asset('admin_assets')}}/images/action.png" class="icon bl-icon" width="30" ></span> </th>
 									</tr>
 								</thead>
 								<tbody >
 									<tr>
-										<td>17575</td>
-										<td>Pukharaj Corporate</td>
-										<td> Codemeg Soft </td>
-										<td> John Cartor </td>
-										
-										<td>5</td>
-										<td>14/08/2020, 11:40 AM</td>
-										<td>
-											<label class="label canceled">Cancelled</label>
-											<p>(By User1)</p>
-										</td>
-										<td>Action</td>
 									</tr> <!--end-->
 								</tbody>
 							</table>

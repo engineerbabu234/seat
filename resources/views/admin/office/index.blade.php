@@ -4,16 +4,16 @@
 	<div class="inner-body">
 		<!--header-->
 		<div class="header">
-			<div class="row">
-				<div class="col-md-6 col-sm-6 col-xs-6">
 					<div class="title">
+			<div class="row align-items-center">
+				<div class="col-md-6 col-sm-6 col-xs-6">
 						<h2>Office List</h2>
-					</div>
 				</div>
 				<div class="col-md-6 col-sm-6 col-xs-12">
 					<div class="btns">
 						<a href="#" class="add-asset btn btn-info"  data-toggle="modal" data-target="#add_office"><i class="fas fa-plus"></i></a>
 
+					</div>
 					</div>
 				</div>
 			</div>
@@ -27,13 +27,13 @@
 				<table class="table table-striped text-center" id="laravel_datatable">
 					<thead>
 						<tr>
-							<th>Office ID.</th>
-						    <th>Building</th>
-							<th>Office No.</th>
-							<th>Office Name</th>
-							<th>Total Office assets</th>
-							<th>Date/Time </th>
-							<th nowrap>Action</th>
+							<th><span class="iconWrap iconSize_32" title=" Office ID." data-content="Office ID"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/id.png" class="icon bl-icon" width="30" ></span></th>
+						    <th><span class="iconWrap iconSize_32" data-content="Building" title="Building"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/building.png" class="icon bl-icon" width="30" ></span> </th>
+							<th><span class="iconWrap iconSize_32" data-content="Office No." title="Office No."  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/no-label.png" class="icon bl-icon" width="30" ></span>  </th>
+							<th><span class="iconWrap iconSize_32" data-content="Office Name" title="Office Name"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/offices.png" class="icon bl-icon" width="30" ></span> </th>
+							<th><span class="iconWrap iconSize_32" data-content="Total Office Assets" title="Total Office assets"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/total-office.png" class="icon bl-icon" width="30" ></span> </th>
+							<th><span class="iconWrap iconSize_32" data-content="Update Date" title="Update Date"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/order_date.png" class="icon bl-icon" width="30" ></span> </th>
+							<th nowrap><span class="iconWrap iconSize_32" data-content="Action" title="Action"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/action.png" class="icon bl-icon" width="30" ></span> </th>
 						</tr>
 					</thead>
 					<tbody>
@@ -68,7 +68,7 @@
 					<div class="row">
 						<div class="col-sm-6">
 						<div class="form-group">
-							<h6 class="sub-title">Building <span class="text-danger">*</span></h6>
+							<h6 class="sub-title"><span class="iconWrap iconSize_32" title="Building"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/building.png" class="icon bl-icon" width="30" ></span> <span class="text-danger">*</span></h6>
 							<select class="form-control" name="building_id" required>
 							@if($buildings->isEmpty())
 								<option value="">Record Not Found</option>
@@ -87,14 +87,14 @@
 
 						<div class="col-sm-6">
 						<div class="form-group">
-							<h6 class="sub-title">Office Name <span class="text-danger">*</span></h6>
+							<h6 class="sub-title"><span class="iconWrap iconSize_32" title="Office Name"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/offices.png" class="icon bl-icon" width="30" ></span>  <span class="text-danger">*</span></h6>
 							<input type="text" class="form-control" placeholder="Office Name" name="office_name" required>
 							 <span class="error" id="office_name_error"></span>
 						</div>
 						</div>
 						<div class="col-sm-6">
 						<div class="form-group">
-							<h6 class="sub-title">Office Number <span class="text-danger">*</span></h6>
+							<h6 class="sub-title"><span class="iconWrap iconSize_32" title="Office Number"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/no-label.png" class="icon bl-icon" width="30" ></span> <span class="text-danger">*</span></h6>
 							<input type="text" class="form-control" placeholder="Office Number" name="office_number" required>
 							 <span class="error" id="office_number_error"></span>
 						</div>
@@ -102,7 +102,7 @@
 
 						<div class="col-sm-6">
 						<div class="form-group">
-							<h6 class="sub-title">Description </h6>
+							<h6 class="sub-title"><span class="iconWrap iconSize_32" title="Description"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/description.png" class="icon bl-icon" width="25" ></span>  </h6>
 							<textarea rows="4" class="form-control" placeholder="Write here..." name="description">{{old('description')}}</textarea>
 							 <span class="error" id="description_error"></span>
 						</div>
@@ -182,11 +182,11 @@
 						return '<a href="#"  class="button accept">'+column.seats+'</a>';
 						}
 					} },
-				{ data: 'created_at', name: 'created_at' },
+				{ data: 'updated_at', name: 'updated_at' },
 				{ data: 'office_id', name: 'office_id' ,
 					render: function (data, type, column, meta) {
-						return '<a  href="#" data-id="'+column.office_id+'" class="button accept edit_office_request">Edit</a>'+
-	 					'<button class="button reject btn-delete" data-url="'+base_url+'/admin/office/delete/'+column.office_id+'">Delete</button>';
+						return '<a  href="#" data-id="'+column.office_id+'" class="button btn-wh   edit_office_request"><img src="'+base_url+'/admin_assets/images/edit.png"   title="edit" class="white-img"></a>'+
+	 					'<button class="button btn-wh   btn-delete" data-url="'+base_url+'/admin/office/delete/'+column.office_id+'"><img src="'+base_url+'/admin_assets/images/delete.png"  title="delete" class="white-img"></button>';
 					}
 				}
 			]
@@ -226,7 +226,7 @@
 	 	  var url = $(this).attr('data-url');
   	 	 swal({
 		  title: "Are you sure?",
-		  text: "Once deleted, you will not be able to recover this office data!",
+		  text: "Are you sure you want to delete office and related office assets?",
 		  icon: "warning",
 		  buttons: true,
 		  dangerMode: true,
@@ -245,12 +245,14 @@
 				},
 				'success' : function(response){
 					if(response.status == 'success'){
-						swal("Success!",response.message, "success");
+						success_alert(response.message);
+						//swal("Success!",response.message, "success");
 					    var redrawtable = jQuery('#laravel_datatable').dataTable();
 						redrawtable.fnDraw();
 					}
 					if(response.status == 'failed'){
-						swal("Failed!",response.message, "error");
+						error_alert(response.message);
+						//swal("Failed!",response.message, "error");
 					}
 				},
 				'error' : function(error){
@@ -289,7 +291,8 @@ $(document).on("click", ".add_office", function(e) {
 		success: function(response) {
 			if (response.success) {
 				$("form#add-office-form")[0].reset();
-				swal("Success!", response.message, "success");
+				success_alert(response.message);
+				//swal("Success!", response.message, "success");
 				var redrawtable = jQuery('#laravel_datatable').dataTable();
 				redrawtable.fnDraw();
 				$('.error').removeClass('text-danger');
@@ -325,7 +328,8 @@ $(document).on("click", ".edit_office", function(e) {
 		success: function(response) {
 			if (response.success) {
 				$("form#edit-office-form")[0].reset();
-				swal("Success!", response.message, "success");
+				success_alert(response.message);
+				//swal("Success!", response.message, "success");
 				var redrawtable = jQuery('#laravel_datatable').dataTable();
 				redrawtable.fnDraw();
 				$('.error').removeClass('text-danger');

@@ -21,16 +21,19 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        $user_role = array('2' => 'User', '3' => 'Cleaner');
         if ($request->ajax()) {
             $users = DB::table('users as u')
                 ->select('u.*')
-                ->where('u.role', '=', "2")
+                ->whereIn('u.role', ['2', '3'])
                 ->whereIn('u.approve_status', ['0', '1'])
                 ->orderBy('u.id', 'desc')
                 ->get();
             $number_key = 1;
             foreach ($users as $key => $value) {
                 $value->number_key = $number_key;
+                $value->role = @$user_role[$value->role];
+                $value->updated_at = date('d/m/Y', strtotime($value->updated_at));
                 $number_key++;
                 $value->profile_image = ImageHelper::getProfileImage($value->profile_image);
             }
@@ -52,6 +55,48 @@ class UserController extends Controller
 
         $data['js'] = ['user/show.js'];
         return view('admin.user.show', compact('data'));
+    }
+
+    /**
+     * [edit description]
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
+    public function edit($id)
+    {
+        $users = User::find($id);
+
+        $response = [
+            'success' => true,
+            'html' => view('admin.user.edit', compact('users'))->render(),
+        ];
+
+        return response()->json($response, 200);
+    }
+
+    /**
+     * [update description]
+     * @param  Request $request [description]
+     * @param  [type]  $id      [description]
+     * @return [type]           [description]
+     */
+    public function update(Request $request, $id)
+    {
+        $inputs = $request->all();
+        $users = user::find($id);
+
+        $users->role = $inputs['role'];
+        $users->api_access = $inputs['api_access'];
+        if ($users->save()) {
+            $response = [
+                'success' => true,
+                'message' => 'users Role Updated successfully',
+            ];
+        } else {
+            return back()->with('error', 'users update failed,please try again');
+        }
+
+        return response()->json($response, 200);
     }
 
     /**
@@ -104,6 +149,11 @@ class UserController extends Controller
             //$User->deleted_at        = $change_status;
         } else {
             $User->approve_status = $change_status;
+        }
+
+        $admin = User::where('role', 1)->first();
+        if ($admin->api_access == 1) {
+            $User->api_access = 1;
         }
 
         if ($User->update()) {

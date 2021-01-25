@@ -32,12 +32,10 @@ use Illuminate\Support\Facades\Session;
 					<div class="custom-col-left">
 						<div class="bg-wrapper">
 						@php
-						$logo=env('Logo');
-						if($logo){
-							$Admin = \App\Models\User::where('role','1')->first();
-
+						$Admin = \App\Models\User::where('role','1')->first();
+					 	if($Admin->logo_status == 1){
 							@endphp
-							<img src="{{ImageHelper::getProfileImage($Admin->logo_image)}}" class="logo">
+							<img src="{{ImageHelper::getlogoImage($Admin->logo_image)}}" class="logo">
 							@php
 						}else{
 							@endphp
@@ -45,6 +43,7 @@ use Illuminate\Support\Facades\Session;
 							@php
 						}
 						@endphp
+
 						</div>
 					</div>
 
