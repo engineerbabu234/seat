@@ -168,7 +168,7 @@ class HomeController extends Controller{
          );
 
         if(DB::table('users')->where('id',$inputs['tenantID'])->update($updateData)){
-         return ['status'=>true,'message'=>'Successfully removed','data'=>$inputs];
+         return ['status'=>true,'message'=>'Successfully removed'];
         }
         return ['status'=>false,'message'=>'Failed to remove'];
     }

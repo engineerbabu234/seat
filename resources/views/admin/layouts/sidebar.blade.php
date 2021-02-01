@@ -56,6 +56,9 @@ use Illuminate\Support\Facades\Session;
 
 					<a class="@if((substr(strrchr(url()->current(),"/"),1)=='asset')){{'active'}}@endif" href="{{url('admin/office/asset')}}"><i class="fas fa-list"></i> <span>Offices Assets</span></a>
 					</li>
+					<li>
+						<a href="{{route('admin.team.index')}}"><i class="fa fa-users"></i> <span>Teams</span></a>
+					</li>
 
 					<li>
 					<a class="@if((substr(strrchr(url()->current(),"/"),1)=='quesionaire')){{'active'}}@endif" href="{{url('admin/quesionaire')}}"><i class="fas fa-list"></i> <span>Quesionaire</span></a>

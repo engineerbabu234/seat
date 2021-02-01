@@ -75,7 +75,7 @@ $(document).ready(function(){
 
 $(document).on("click", ".add_building", function(e) {
 	e.preventDefault();
-	 
+
 	var data = jQuery(this).parents('form:first').serialize();
 	 
 	$.ajax({

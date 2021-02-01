@@ -130,23 +130,29 @@ class OfficeAssetController extends Controller
             return response()->json($response, 400);
         }
 
-        $image_64 = null;
-        $image_64 = $inputs['preview_image'];
+        // $image_64 = null;
+        // $image_64 = $inputs['preview_image'];
 
-        $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
-        $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+        // $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+        // $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
 
-        $image = str_replace($replace, '', $image_64);
+        // $image = str_replace($replace, '', $image_64);
 
-        $image = str_replace(' ', '+', $image);
+        // $image = str_replace(' ', '+', $image);
 
-        $imageName = str_random('10') . '_' . time() . '.' . $extension;
-        $destinationPath = ImageHelper::$getOfficeAssetsImagePath;
+        // $imageName = str_random('10') . '_' . time() . '.' . $extension;
+        // $destinationPath = ImageHelper::$getOfficeAssetsImagePath;
 
-        $uploadPath = $destinationPath . '/' . $imageName;
+        // $uploadPath = $destinationPath . '/' . $imageName;
 
-        if (file_put_contents($uploadPath, base64_decode($image))) {
-            $preview_image = $imageName;
+        // if (file_put_contents($uploadPath, base64_decode($image))) {
+        //     $preview_image = $imageName;
+        // }
+
+        $fileName = null;
+        if ($request->hasFile('preview_image')) {
+            $fileName = str_random('10') . '_' . time() . '.' . request()->preview_image->getClientOriginalExtension();
+            request()->preview_image->move(public_path('uploads/office_asset/'), $fileName);
         }
 
         $OfficeAsset = new OfficeAsset();
@@ -156,7 +162,7 @@ class OfficeAssetController extends Controller
         $OfficeAsset->title = $inputs['title'];
         $OfficeAsset->description = $inputs['description'];
 
-        $OfficeAsset->preview_image = $preview_image;
+        $OfficeAsset->preview_image = $fileName ?? NUll;
         if ($OfficeAsset->save()) {
             $response = [
                 'success' => true,
@@ -220,34 +226,43 @@ class OfficeAssetController extends Controller
             return response()->json($response, 400);
         }
 
-        if ($inputs['preview_image']) {
+        // if ($inputs['preview_image']) {
 
-            $oldimage = OfficeAsset::find($assetId);
-            $new_image = explode('office_asset/', $inputs['preview_image']);
+        //     $oldimage = OfficeAsset::find($assetId);
+        //     $new_image = explode('office_asset/', $inputs['preview_image']);
 
-            if (isset($new_image[1]) && ($oldimage->preview_image == $new_image[1])) {
-            } else {
-                $image_64 = null;
-                $image_64 = $inputs['preview_image'];
+        //     if (isset($new_image[1]) && ($oldimage->preview_image == $new_image[1])) {
+        //     } else {
+        //         $image_64 = null;
+        //         $image_64 = $inputs['preview_image'];
 
-                $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
-                $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
-                $image = str_replace($replace, '', $image_64);
-                $image = str_replace(' ', '+', $image);
-                $imageName = str_random('10') . '_' . time() . '.' . $extension;
-                $destinationPath = ImageHelper::$getOfficeAssetsImagePath;
+        //         $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+        //         $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+        //         $image = str_replace($replace, '', $image_64);
+        //         $image = str_replace(' ', '+', $image);
+        //         $imageName = str_random('10') . '_' . time() . '.' . $extension;
+        //         $destinationPath = ImageHelper::$getOfficeAssetsImagePath;
 
-                $uploadPath = $destinationPath . '/' . $imageName;
+        //         $uploadPath = $destinationPath . '/' . $imageName;
 
-                //remove old image
-                $this->remove_office_assets_image($assetId);
+        //         //remove old image
+        //         $this->remove_office_assets_image($assetId);
 
-                if (file_put_contents($uploadPath, base64_decode($image))) {
-                    $preview_image = $imageName;
-                }
-            }
+        //         if (file_put_contents($uploadPath, base64_decode($image))) {
+        //             $preview_image = $imageName;
+        //         }
+        //     }
+        // }
+
+        $fileName = null;
+        if ($request->hasFile('preview_image')) {
+            $fileName = str_random('10') . '_' . time() . '.' . request()->preview_image->getClientOriginalExtension();
+            request()->preview_image->move(public_path('uploads/office_asset/'), $fileName);
         }
 
+        return $fileName;
+        
+        $preview_image = $fileName;
         $OfficeAsset = OfficeAsset::find($assetId);
         $OfficeAsset->user_id = Auth::id();
         $OfficeAsset->building_id = $inputs['building_id'];
