@@ -4,11 +4,10 @@
 	<div class="inner-body">
 		<!--header-->
 		<div class="header">
-			<div class="row">
-				<div class="col-md-6 col-sm-6 col-xs-6">
 					<div class="title">
+			<div class="row align-items-center">
+				<div class="col-md-6 col-sm-6 col-xs-6">
 						<h2>Building List</h2>
-					</div>
 				</div>
 				<div class="col-md-6 col-sm-6 col-xs-12">
 					<div class="btns">
@@ -16,6 +15,7 @@
 					</div>
 				</div>
 			</div>
+					</div>
 		</div><!--END header-->
 
 		<!--my tenders-->
@@ -27,11 +27,11 @@
 							<table class="table table-striped text-center" id="laravel_datatable">
 								<thead>
 									<tr>
-										<th>Serial No.</th>
-										<th>Building Name</th>
-										<th>Total Office</th>
-										<th>Date/Time </th>
-										<th>Action</th>
+										<th><span class="iconWrap iconSize_32" title="Serial No."  data-trigger="hover" data-content="Serial No of Building" data-placement="left"><img src="{{asset('admin_assets')}}/images/number.png" class="icon bl-icon" width="20" ></span> </th>
+										<th><span class="iconWrap iconSize_32" title="Building" data-content="Building Name"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/building.png" class="icon bl-icon" width="30" ></span> </th>
+										<th><span class="iconWrap iconSize_32" data-content="Total Office for This Building" title="Total Office"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/offices.png" class="icon bl-icon" width="30" ></span></th>
+										<th><span class="iconWrap iconSize_32" data-content="Update Date " title="Update Date"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/reservation_request.png" class="icon bl-icon" width="30" > </th>
+										<th><span class="iconWrap iconSize_32" data-content="Action For Building" title="Action"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/action.png" class="icon bl-icon" width="30" ></span></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -75,14 +75,14 @@
 					<div class="row">
 						<div class="col-sm-6">
 						<div class="form-group">
-							<h6 class="sub-title">Building Name <span class="text-danger">*</span></h6>
+							<h6 class="sub-title"><span class="iconWrap iconSize_32" data-content="Building Name" title="Building Name"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/building.png" class="icon bl-icon" width="30" ></span> <span class="text-danger">*</span></h6>
 							<input type="text" class="form-control" placeholder="Building Name" name="building_name" value="{{old('building_name')}}">
 							 <span class="error" id="building_name_error"></span>
 						</div>
 						</div>
 						<div class="col-sm-6">
 						<div class="form-group">
-							<h6 class="sub-title">Building Address <span class="text-danger">*</span></h6>
+							<h6 class="sub-title"><span class="iconWrap iconSize_32" data-content="Building Address"  title="Building Address"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/address.png" class="icon bl-icon" width="30" ></span>  <span class="text-danger">*</span></h6>
 							<input type="text" class="form-control" placeholder="Building Address" name="building_address" value="{{old('building_address')}}">
 							 <span class="error" id="building_address_error"></span>
 						</div>
@@ -90,7 +90,7 @@
 
 						<div class="col-sm-12">
 						<div class="form-group">
-							<h6 class="sub-title">Description <span class="text-danger">*</span></h6>
+							<h6 class="sub-title"><span class="iconWrap iconSize_32"  data-content="Building Description"  title="Description"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/description.png" class="icon bl-icon" width="30" ></span>  <span class="text-danger">*</span></h6>
 							<textarea rows="4" class="form-control" placeholder="Write here..." name="description">{{old('description')}}</textarea>
 							 <span class="error" id="description_error"></span>
 						</div>

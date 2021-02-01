@@ -43,7 +43,7 @@ $(document).ready(function(){
             { data: 'reservation_id', name: 'reservation_id' , 
                 render: function (data, type, column, meta) {
                     if(column.current_date!=column.reserve_date){
-                        return '<button class="button reject delete-status" reserve_seat_id="'+column.reserve_seat_id+'" >Delete</button>';
+                        return '<button class="button btn-wh delete-status" title="Delete"  reserve_seat_id="'+column.reserve_seat_id+'" ><img src="'+base_url+'/admin_assets/images/delete.png" class="white-img"></button>';
                     }else{
                         return '<button class="button reject" >Not Deleted</button>';
                     } 
@@ -79,8 +79,11 @@ $(document).ready(function(){
                 },
                 'success' : function(response){
                     if(response.status){
-                        swal(success_status ,response.message, 'success');
-                        location.reload();
+                        success_alert(response.message);
+                      //  swal(success_status ,response.message, 'success');
+                        //location.reload();
+                        var redrawtable = jQuery('#laravel_datatable').dataTable();
+                        redrawtable.fnDraw();
                     }
                 },
                 'error' :  function(errors){

@@ -6,6 +6,7 @@ Route::get('/ajax/seats/{id?}', 'Admin\TeamController@ajaxGetSeat');
 Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::group(['prefix' => 'admin'], function () {
 
+<<<<<<< HEAD
         Route::get('/teams', 'Admin\TeamController@index')->name('admin.team.index');
         Route::get('/create/team', 'Admin\TeamController@create')->name('admin.team.create');
         Route::post('/store/team', 'Admin\TeamController@store')->name('admin.team.store');
@@ -15,6 +16,8 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         Route::get('/team/access/rules/{id?}', 'Admin\TeamController@teamAccessRule')->name('admin.team.access.rule');
         Route::post('/team/block', 'Admin\TeamController@teamBlock')->name('admin.team.block');
         Route::delete('/team/block/delete/{id}', 'Admin\TeamController@teamBlockDelete')->name('admin.team.block.delete');
+=======
+>>>>>>> 252f4c84e0907d67aebc027398a519746f504877
 
         Route::get('dashboard', 'Admin\HomeController@index')->name('dashboard');
         Route::get('profile', 'Admin\ProfileController@show')->name('profile');
@@ -27,10 +30,40 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         Route::get('invite/users', 'Admin\HomeController@inviteUsers')->name('invite.users');
         Route::get('create/invitation/link', 'Admin\HomeController@createInvitatinLink')->name('create.invitation.link');
         Route::post('store/invitation/link', 'Admin\HomeController@storeInvitationLink')->name('store.invitation.link');
+        Route::get('get_new_time', 'HomeController@get_new_time')->name('get_new_time');
+       
+
+        // Seat Label
+        Route::group(['prefix' => 'settings'], function () {
+            Route::get('/', 'SettingsController@index')->name('index');
+            Route::post('store', 'SettingsController@store')->name('store');
+            Route::post('update/{id?}', 'SettingsController@update')->name('update');
+            Route::get('show/{id?}', 'SettingsController@show')->name('show');
+            Route::get('edit_settings/{id?}', 'SettingsController@edit')->name('edit_settings');
+
+        });
+
+        // Seat Label
+        Route::group(['prefix' => 'seat_label'], function () {
+            Route::get('/', 'SeatLabelController@index')->name('index');
+            Route::get('add_seat_label', 'SeatLabelController@create')->name('add_seat_label');
+            Route::post('store', 'SeatLabelController@store')->name('store');
+            Route::get('show/{id?}', 'SeatLabelController@show')->name('show');
+            Route::get('edit_seat_label/{id?}', 'SeatLabelController@edit')->name('edit_seat_label');
+            Route::post('update/{id?}', 'SeatLabelController@update')->name('update');
+            Route::get('/filter_office_list/{id}', 'SeatLabelController@filterofficeList');
+            Route::get('/filter_office_assets_list/{id}', 'SeatLabelController@filterofficeassetsList');
+            Route::get('/filter_seat_list/{id}', 'SeatLabelController@filterseatslist');
+            Route::get('get_deploy_info/{id?}', 'SeatLabelController@get_deploy_info')->name('get_deploy_info');
+            Route::get('deploy_label', 'SeatLabelController@deploy_label')->name('deploy_label');
+            Route::get('change_deploy_seat/{id?}', 'SeatLabelController@change_deploy_seat')->name('change_deploy_seat');
+
+        });
 
         // building
         Route::group(['prefix' => 'building'], function () {
             Route::get('/', 'Admin\BuildingController@index')->name('index');
+<<<<<<< HEAD
             Route::get('add_building', 'Admin\BuildingController@create')->name('add_building');
             Route::post('store', 'Admin\BuildingController@store')->name('store');
 
@@ -39,6 +72,15 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
             Route::get('edit_building/{id?}', 'Admin\BuildingController@edit')->name('edit_building');
             Route::post('update/{id?}', 'Admin\BuildingController@update')->name('update');
             Route::post('delete/{id}', 'Admin\BuildingController@destroy')->name('destroy');
+=======
+            Route::get('add_building', 'BuildingController@create')->name('add_building');
+            Route::post('store', 'BuildingController@store')->name('store');
+            Route::get('office_list/{id?}', 'BuildingController@officeList')->name('office_list');
+            Route::get('show/{id?}', 'BuildingController@show')->name('show');
+            Route::get('edit_building/{id?}', 'BuildingController@edit')->name('edit_building');
+            Route::post('update/{id?}', 'BuildingController@update')->name('update');
+            Route::post('delete/{id}', 'BuildingController@destroy')->name('destroy');
+>>>>>>> 252f4c84e0907d67aebc027398a519746f504877
         });
 
         // office
@@ -116,7 +158,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
                     'uses' => 'Admin\OfficeAssetController@getAssetsSeats',
                 ]);
 
-                Route::post('/question_logic', [
+                Route::post('/question_logic/{id?}', [
                     'as' => 'office.asset.question_logic',
                     'uses' => 'Admin\OfficeAssetController@question_logic',
                 ]);
@@ -134,6 +176,11 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
                 Route::post('/get_question_list/', [
                     'as' => 'office.asset.get_question_list',
                     'uses' => 'Admin\OfficeAssetController@get_question_list',
+                ]);
+
+                Route::get('/block_notification/{asset_id}/{dots_id}', [
+                    'as' => 'office.asset.block_notification',
+                    'uses' => 'OfficeAssetController@block_notification',
                 ]);
 
             });
@@ -161,8 +208,19 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
 
         });
 
+        // Api connections
+        Route::group(['prefix' => 'apiconnections'], function () {
+            Route::get('/', 'ApiConnectionsController@index')->name('index');
+            Route::get('get_api_provider_list/{id?}', 'ApiConnectionsController@get_api_provider_list')->name('get_api_provider_list');
+            Route::post('store', 'ApiConnectionsController@store')->name('store');
+            Route::get('edit_apiconnections/{id?}', 'ApiConnectionsController@edit')->name('edit_apiconnections');
+            Route::post('update/{id?}', 'ApiConnectionsController@update')->name('update');
+            Route::get('delete/{id}', 'ApiConnectionsController@destroy')->name('destroy');
+        });
+
         // quesionaire
         Route::group(['prefix' => 'quesionaire'], function () {
+
 
             Route::get('/', 'Admin\QuesionaireController@index')->name('index');
             Route::post('store', 'Admin\QuesionaireController@store')->name('store');
@@ -170,6 +228,7 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
             Route::get('edit_quesionaire/{id?}', 'Admin\QuesionaireController@edit')->name('edit_quesionaire');
             Route::post('update/{id?}', 'Admin\QuesionaireController@update')->name('update');
             Route::get('delete/{id}', 'Admin\QuesionaireController@destroy')->name('destroy');
+            Route::get('destroy_questions/{id}', 'QuesionaireController@destroy_questions');
 
         });
 

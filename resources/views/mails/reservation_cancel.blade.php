@@ -45,7 +45,7 @@
                                                           <p style="margin: 0;">Hello! {{$data['first_name']}}</p>
                                                           <p style="margin: 0; padding: 15px 0">Welcome and thank you for being a part of the weBook Family and sorry because for some reason your seat is being canceled.</p>
                                                           <p style="margin: 0; padding: 15px 0">Reservation ID : {{$data['data']->reservation_id}}</p>
-                                                          <p style="margin: 0; padding: 15px 0">Reservation Date : {{$data['data']->reserve_date}}</p>
+                                                          <p style="margin: 0; padding: 15px 0">Reservation Date : {{date('d-m-Y',strtotime($data['data']->reserve_date))}}</p>
                                                           <p style="margin: 0; padding: 15px 0">Building Name : {{$data['data']->building_name}}</p>
 
                                                           <p style="margin: 0; padding: 15px 0">Office Name : {{$data['data']->office_name}}</p>
@@ -53,10 +53,10 @@
                                                           <p style="margin: 0; padding: 15px 0">Seat Number : {{$data['data']->seat_no}}</p>
 
                                                           <div style="clear: both; height: 20px;"></div>
-                                                        </div>  
-                                                        
+                                                        </div>
 
-                                                       
+
+
 
                                                         <div id="body_content_inner" style="color: #192435; text-align: left; font-size: 14px; line-height: 25px; font-family: &quot;Lucida Sans Unicode&quot;, &quot;Lucida Grande&quot;, sans-serif; font-weight: 400;">
                                                           <p style="margin: 0; padding: 15px 0">
@@ -64,7 +64,7 @@
                                                             weBOOK Support Team
                                                           </p>
                                                           <div style="clear: both; height: 1px;"></div>
-                                                        </div> 
+                                                        </div>
                                                     </td>
                                                  </tr>
                                               </tbody>

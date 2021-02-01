@@ -13,18 +13,18 @@ $(document).ready(function(){
 			{ data: 'building_id', name: 'building_id',
 				render: function (data, type, column, meta) {
 					if(column.office_count > 0 ){
-					return ' <a target="_blank" href="'+base_url+'/admin/office/'+column.building_id+'" class="button accept">'+column.office_count+'</a>';
+					return ' <a target="_blank" href="'+base_url+'/admin/office/'+column.building_id+'" class="button accept mb-0">'+column.office_count+'</a>';
 					 } else{
-					 	return ' <a   href="#" class="button accept">'+column.office_count+'</a>';
+					 	return ' <a   href="#" class="button accept mb-0">'+column.office_count+'</a>';
 					
 					 }
 				} 
 			},
-			{ data: 'created_at', name: 'created_at' }, 
+			{ data: 'updated_at', name: 'updated_at' }, 
 			{ data: 'building_id', name: 'building_id' , 
 				render: function (data, type, column, meta) {
-					return '<a  data-id="'+column.building_id+'" href="#" class="button accept edit_building_request">Edit</a>'+
-					 '<button class="button reject btn-delete" data-url="'+base_url+'/admin/building/delete/'+column.building_id+'">Delete</button>';
+					return '<a  title="Edit"  data-id="'+column.building_id+'" href="#" class="button btn-wh edit_building_request"><img src="'+base_url+'/admin_assets/images/edit.png"  class="white-img"></a>'+
+					 '<button  title="Delete" class="button btn-wh btn-delete" data-url="'+base_url+'/admin/building/delete/'+column.building_id+'"><img src="'+base_url+'/admin_assets/images/delete.png"  class="white-img"></button>';
 				}
 			}
 		]
@@ -53,8 +53,10 @@ $(document).ready(function(){
 				},
 				'success' : function(response){
 					if(response.status == 'success'){
-						swal("Success!",response.message, "success");
-						location.reload();
+						success_alert(response.message);
+						//swal("Success!",response.message, "success");
+						var redrawtable = jQuery('#laravel_datatable').dataTable();
+				redrawtable.fnDraw();
 					    //getOffices();
 					}
 					if(response.status == 'failed'){
@@ -97,7 +99,8 @@ $(document).on("click", ".add_building", function(e) {
 		success: function(response) {
 			if (response.success) {
 				$("form#add-building-form")[0].reset();
-				swal("Success!", response.message, "success");
+				success_alert(response.message);
+				//swal("Success!", response.message, "success");
 				var redrawtable = jQuery('#laravel_datatable').dataTable();
 				redrawtable.fnDraw();
 				$('#add_building').modal('hide');
@@ -132,7 +135,8 @@ $(document).on("click", ".edit_building", function(e) {
 		success: function(response) {
 			if (response.success) {
 				$("form#edit-building-form")[0].reset();
-				swal("Success!", response.message, "success");
+				success_alert(response.message);
+				//swal("Success!", response.message, "success");
 				var redrawtable = jQuery('#laravel_datatable').dataTable();
 				redrawtable.fnDraw();
 				$('.error').removeClass('text-danger');

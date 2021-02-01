@@ -28,14 +28,14 @@
 				<table class="table table-striped text-center" id="laravel_datatable">
 					<thead>
 						<tr>
-							<th class="text-left">Quesionaire ID.</th>
-						    <th>Title</th>
-							<th>Description</th>
-							<th>Expired option</th>
-							<th>Expired Value</th>
-							<th>Restriction</th>
-							<th>Quetions</th>
-							<th nowrap>Action</th>
+							<th class="text-left"><span class="iconWrap iconSize_32" title="ID."  data-trigger="hover" data-content="Id" data-placement="left"><img src="{{asset('admin_assets')}}/images/id.png" class="icon bl-icon" width="25" ></span> </th>
+						    <th><span class="iconWrap iconSize_32" title="Title" data-content="Title" data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/title.png" class="icon bl-icon" width="30" ></span> </th>
+							<th><span class="iconWrap iconSize_32" title="Description" data-content="Description" data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/description.png" class="icon bl-icon" width="25" ></span> </th>
+							<th><span class="iconWrap iconSize_32" title="Update Date" data-content="Update Date"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/order_date.png" class="icon bl-icon" width="25" ></span>  </th>
+							<th><span class="iconWrap iconSize_32" title="Expire User After"  data-trigger="hover" data-content="Expire User After" data-placement="left"><img src="{{asset('admin_assets')}}/images/expire_after.png" class="icon bl-icon" width="25" ></span> </th>
+							<th><span class="iconWrap iconSize_32" title="Restrict Seat" data-content="Restrict Seat"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/restrict-seat.png" class="icon bl-icon" width="25" ></span> </th>
+							<th><span class="iconWrap iconSize_32" title="No Quetions"  data-content="No Quetions"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/no-label.png" class="icon bl-icon" width="25" ></span> </th>
+							<th nowrap><span class="iconWrap iconSize_32" title="Action" data-content="Action" data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/action.png" class="icon bl-icon" width="25" ></span> </th>
 						</tr>
 					</thead>
 					<tbody>
@@ -71,7 +71,7 @@
 
 						<div class="col-sm-4">
 							<div class="form-group">
-								<h6 class="sub-title">Title<span class="text-danger">*</span></h6>
+								<h6 class="sub-title" ><span class="iconWrap iconSize_32" title="Title"  data-trigger="hover" data-content="Title" data-placement="left"><img src="{{asset('admin_assets')}}/images/title.png" class="icon bl-icon" width="40" ></span> <span class="text-danger">*</span></h6>
 								<input type="text" class="form-control" placeholder="Title" id="title" name="title" required>
 								 <span class="error" id="title_error"></span>
 							</div>
@@ -79,32 +79,46 @@
 
 						<div class="col-sm-4">
 							<div class="form-group">
-								<h6 class="sub-title">Expired Date Option<span class="text-danger">*</span></h6>
-								<select class="form-control" name="expired_option" id="expired_option">
-							        <option>Select Expired Date Option</option>
-							        <optgroup label="Day">
-							        	@for ($i = 1; $i <= 31; $i++)
-							            		<option value="{{ 'Day_'.$i }}">{{ $i }}</option>
-							            @endfor
-							        </optgroup>
-							        <optgroup label="Month">
-							          @for ($i = 1; $i <= 12; $i++)
-							            		<option value="{{  'Month_'.$i }}">{{ $i }}</option>
-							            @endfor
-							        </optgroup>
-							         <optgroup label="Week">
-							          	@for ($i = 1; $i <= 52; $i++)
-							            		<option value="{{  'Week_'.$i }}">{{ $i }}</option>
-							            @endfor
-							        </optgroup>
-							    </select>
+								<h6 class="sub-title"><span class="iconWrap iconSize_32" title="Expire After" data-content="Expire After" data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/expire_after.png" class="icon bl-icon" width="30" ></span> <span class="text-danger">*</span></h6>
+								<div class="row">
+									<div class="col-sm-6">
+											<select class="form-control" name="expired_value" id="expired_value">
+												 <optgroup id="option_day" label="days">
+							        		 		 @for ($i = 1; $i <= 31; $i++)
+								            		<option value="{{ 'Day_'.$i }}">{{ $i }}</option>
+								            		@endfor
+							            	     </optgroup>
+							            	      <optgroup id="option_month" label="Month">
+							        		 		   @for ($i = 1; $i <= 12; $i++)
+								            		<option value="{{ 'Month_'.$i }}">{{ $i }}</option>
+								            		@endfor
+							            	     </optgroup>
+							            	      <optgroup id="option_week" label="Week">
+							        		 		 @for ($i = 1; $i <= 52; $i++)
+								            		<option value="{{ 'Week_'.$i }}">{{ $i }}</option>
+								            		@endfor
+							            	     </optgroup>
+							    		</select>
+
+
+									</div>
+									<div class="col-sm-6">
+										<select class="form-control" name="expired_option" id="expired_option">
+									        <option value="day">Day(s)</option>
+									        <option value="month">Month(s)</option>
+									        <option value="week">Week(s)</option>
+									    </select>
+									</div>
+								</div>
+
+
 								 <span class="error" id="expired_option_error"></span>
 							</div>
 						</div>
 
 						<div class="col-sm-4">
 						<div class="form-group">
-							<h6 class="sub-title">Restriction</h6>
+							<h6 class="sub-title"><span class="iconWrap iconSize_32" title="Restric Seat" data-content="Restric Seat"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/restrict-seat.png" class="icon bl-icon" width="22" ></span> </h6>
 							 <select class="form-control" name="restriction" id="restriction">
 							 	<option value="0" selected>No</option>
 							 	<option value="1">Yes</option>
@@ -115,7 +129,7 @@
 
 						<div class="col-sm-12">
 							<div class="form-group">
-								<h6 class="sub-title">Description<span class="text-danger">*</span></h6>
+								<h6 class="sub-title"><span class="iconWrap iconSize_32" title="Description" data-content="Description"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/description.png" class="icon bl-icon" width="25" ></span> <span class="text-danger">*</span></h6>
 								 <textarea class="form-control" name="description" id="description" rows="6"></textarea>
 								 <span class="error" id="description_error"></span>
 							</div>
@@ -142,18 +156,8 @@
 
 <div class="modal" id="edit_quesionaire">
   <div class="modal-dialog modal-lg">
-    <div class="modal-content">
+    <div class="modal-content"  id="edit_quesionaire_info">
 
-      <!-- Modal Header -->
-      <div class="modal-header">
-        <h4 class="modal-title">Edit Quesionaire</h4>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-
-      <!-- Modal body -->
-      <div class="modal-body" id="edit_quesionaire_info">
-
-      </div>
     </div>
   </div>
 </div>
@@ -161,184 +165,64 @@
 
 @endsection
 @push('css')
-
+<style type="text/css">
+	.close_new{
+	    background-color: transparent;
+	    border: 0;
+	    font-size: 26px;
+	}
+</style>
 @endpush
 @push('js')
     <script src="{{asset('admin_assets/')}}/js/jquery-ui.js"></script>
+
+ <script type="text/javascript" src="{{URL::asset('admin_assets/pages')}}/quesionaire/index.js"></script>
  <script type="text/javascript">
+	$('#option_day').show();
+	$('#option_week').hide();
+	$('#option_month').hide();
 
-		 urls = base_url+'/admin/quesionaire/';
+$(document).on('change',"#expired_option",function(){
 
- 		var laravel_datatable =$('#laravel_datatable').DataTable({
-			processing: true,
-			serverSide: true,
-			"ordering": false,
-			destroy: true,
-			ajax:urls ,
+	 $(this).find('option').removeAttr("selected");
+	 $("#expired_value").find('option').removeAttr("selected");
 
-			columns: [
-				{ data: 'number_key', name: 'number_key' },
-				{ data: 'title', name: 'title' },
-				{ data: 'description', name: 'description' },
-				{ data: 'expired_option', name: 'expired_option' },
-				{ data: 'expired_value', name: 'expired_value' },
-				{ data: 'restriction', name: 'restriction' },
-				{ data: 'id', name: 'id',
-					render: function (data, type, column, meta) {
-						if(column.questions > 0 ){
-							return '<a href="'+base_url+'/admin/question/'+column.id+'" target="_blank" class="button accept">'+column.questions+'</a>';
-						} else{
-						return '<a href="#"  class="button accept">'+column.questions+'</a>';
-						}
-					} },
-				{ data: 'id', name: 'id' ,
-					render: function (data, type, column, meta) {
-						return '<a  href="#" data-id="'+column.id+'" class="button accept edit_quesionaire_request">Edit</a>'+
-	 					'<button class="button reject btn-delete" data-url="'+base_url+'/admin/quesionaire/delete/'+column.id+'">Delete</button>';
-					}
-				}
-			]
-		});
+	var options = $(this).find("option:selected");
 
- 	$(function(e){
+	if(options.val() == 'month'){
+		$('#eoption_day').css('display', 'none');
+		$('#eoption_week').css('display', 'none');
+		$('#eoption_month').css('display', 'block');
+		$('#expired_option option[value=1]').attr('selected','selected');
 
-  	 // Departmetn remove confirmation modal
-  	 $('body').on('click','.btn-delete',function(e){
-	 	  var url = $(this).attr('data-url');
-  	 	 swal({
-		  title: "Are you sure?",
-		  text: "Once deleted, you will not be able to recover this Quesionaire data!",
-		  icon: "warning",
-		  buttons: true,
-		  dangerMode: true,
-		 })
-		 .then((willDelete) => {
-			if(!willDelete){
-				return false;
-			}
-				$.ajax({
-					"headers":{
-					'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
-				},
-					'type':'get',
-					'url' : url,
-				beforeSend: function() {
-				},
-				'success' : function(response){
-					if(response.status == 'success'){
-						swal("Success!",response.message, "success");
-					    var redrawtable = jQuery('#laravel_datatable').dataTable();
-						redrawtable.fnDraw();
-					}
-					if(response.status == 'failed'){
-						swal("Failed!",response.message, "error");
-					}
-				},
-				'error' : function(error){
-				},
-				complete: function() {
-				},
-				});
-		 });
-  	 });
+		$('#option_day').hide();
+		$('#option_week').hide();
+		$('#option_month').show();
+	}
 
- 	})
+	if(options.val() == 'day'){
+		$('#eoption_day').css('display', 'block');
+		$('#eoption_week').css('display', 'none');
+		$('#eoption_month').css('display', 'none');
+		$('#expired_option option[value=1]').attr('selected','selected');
 
+		$('#option_day').show();
+		$('#option_week').hide();
+		$('#option_month').hide();
+	}
 
+	if(options.val() == 'week'){
 
-$(document).on("click", ".add_quesionaire_data", function(e) {
-	e.preventDefault();
+		$('#eoption_day').css('display', 'none');
+		$('#eoption_week').css('display', 'block');
+		$('#eoption_month').css('display', 'none');
+		$('#expired_option option[value=1]').attr('selected','selected');
 
-	var data = jQuery(this).parents('form:first').serialize();
+		$('#option_day').hide();
+		$('#option_week').show();
+		$('#option_month').hide();
+	}
 
-	$.ajax({
-		url: base_url + '/admin/quesionaire/store',
-		type: 'post',
-		dataType: 'json',
-		data: data,
-		headers: {
-			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-		},
-		error: function(response) {
-			if (response.status == 400) {
-				$.each(response.responseJSON.errors, function(k, v) {
-					$('#' + k + '_error').text(v);
-					$('#' + k + '_error').addClass('text-danger');
-				});
-			}
-		},
-		success: function(response) {
-			if (response.success) {
-				$("form#add-quesionaire-form")[0].reset();
-				swal("Success!", response.message, "success");
-				var redrawtable = jQuery('#laravel_datatable').dataTable();
-				redrawtable.fnDraw();
-				$('.error').removeClass('text-danger');
-				$('#add_quesionaire').modal('hide');
-			}
-		},
-	});
-});
-
-
-
-$(document).on("click", ".edit_quesionaire", function(e) {
-	e.preventDefault();
-
-	var data = jQuery(this).parents('form:first').serialize();
-	var id = $(this).data('id');
-	$.ajax({
-		url: base_url + '/admin/quesionaire/update/'+id,
-		type: 'post',
-		dataType: 'json',
-		data: data,
-		headers: {
-			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-		},
-		error: function(response) {
-			if (response.status == 400) {
-				$.each(response.responseJSON.errors, function(k, v) {
-					$('#edit_' + k + '_error').text(v);
-					$('#edit_' + k + '_error').addClass('text-danger');
-				});
-			}
-		},
-		success: function(response) {
-			if (response.success) {
-				$("form#edit-quesionaire-form")[0].reset();
-				swal("Success!", response.message, "success");
-				var redrawtable = jQuery('#laravel_datatable').dataTable();
-				redrawtable.fnDraw();
-				$('.error').removeClass('text-danger');
-				$('#edit_quesionaire').modal('hide');
-			}
-		},
-	});
-});
-
-
-$(document).on("click", ".edit_quesionaire_request", function(e) {
-	e.preventDefault();
-	var id = $(this).data('id');
-
-	var aurls = base_url + "/admin/quesionaire/edit_quesionaire/" + id;
-	jQuery.ajax({
-		url: aurls,
-		type: 'get',
-		dataType: 'json',
-		headers: {
-			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-		},
-		success: function(response) {
-
-			if (response.success) {
-				$('#edit_quesionaire_info').html(response.html);
-
-				$('#edit_quesionaire').modal('show');
-
-			}
-		},
-	});
 });
 
 

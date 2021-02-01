@@ -4,8 +4,8 @@
     <section class="banner">
         <div class="container">
             <div class="text">
-                <h3>Lorem Ipsum is simply Of the printing and typesetting</h3>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Lorem ipsum dolor sit amet, consectetur</p>
+                <h3>Seat Reservation System</h3>
+                <p>Welcome to the Seat Reservation system where you can reserve a seat within your organisation.</p>
             </div>
         </div>
     </section>
@@ -17,7 +17,8 @@
             <div class="building-office-list">
                 <div class="heading">
                     <h1>Office List</h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Lorem ipsum dolor sit amet, consectetur consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Lorem ipsum dolor sit amet, consectetur</p>
+                    <p>Below is a list of offices inside the selected building.</p>
+                    <p>Click on one of the offices below to view the office assets associated inside.</p>
                 </div>
                 <div class="search-box">
                     <i class="fas fa-search"></i>
@@ -58,8 +59,8 @@
                         $.each(response.data, function( key , value ) {
                             html+='<div class="col-md-6 col-xs-12 col-sm-12">';
                             html+='<div class="single-list">';
-                            html+='<h2><span>Office:</span>'+value.office_name+'</h2>';
-                            html+='<p><span>Office Number:</span>'+value.office_number+'</p>';
+                            html+='<h2><span><img src="'+base_url+'/admin_assets/images/offices.png" alt="offices" class="bl-icon" width="30" ></span>'+value.office_name+'</h2>';
+                            html+='<p><span><img src="'+base_url+'/admin_assets/images/number.png" alt="office number" class="bl-icon" width="20" style="width: 13px;" ></span>'+value.office_number+'</p>';
                             //html+='<a href="'+base_url+'/reserve_seat?office_id='+value.office_id+'"> See Office</a>';
                             html+='<a href="'+base_url+'/assets_list?office_id='+value.office_id+'"> See Assets</a>';
                             html+='</div>';
@@ -107,8 +108,8 @@
                                 $.each(response.data, function( key , value ) {
                                     html+='<div class="col-md-6 col-xs-12 col-sm-12">';
                                     html+='<div class="single-list">';
-                                    html+='<h2><span>Office:</span>'+value.office_name+'</h2>';
-                                    html+='<p><span>Office Number:</span>'+value.office_number+'</p>';
+                                    html+='<h2><span><img src="'+base_url+'/admin_assets/images/offices.png" alt="offices" class="bl-icon" width="30" ></span>'+value.office_name+'</h2>';
+                                    html+='<p><span><img src="'+base_url+'/admin_assets/images/number.png" alt="office number" class="bl-icon" width="20" style="width: 13px;" ></span>'+value.office_number+'</p>';
                                     //html+='<a href="'+base_url+'/reserve_seat?office_id='+value.office_id+'"> See Office</a>';
                                      html+='<a href="'+base_url+'/assets_list?office_id='+value.office_id+'"> See Assets</a>';
                                     html+='</div>';

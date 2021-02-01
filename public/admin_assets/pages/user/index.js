@@ -15,12 +15,14 @@ $(document).ready(function(){
 		//"lengthMenu": [ 10, 50, 100, 500],
 		columns: [
 			{ data: 'id', name: 'id' },
-
-			
-
-			{ data: 'user_name', name: 'user_name' },
-			{ data: 'job_profile', name: 'job_profile' },
-			
+			{ data: 'user_name', name: 'approve_status',
+				render: function (data, type, column, meta) { 
+			 	return '<button class="btn btn-link edit_users_request" data-id="'+column.id+'" >'+column.user_name+'</button>';
+						 					
+				}
+			},  
+			{ data: 'job_profile', name: 'job_profile' }, 
+			{ data: 'role', name: 'role' }, 
 			{ data: 'email', name: 'email' },
 			{ data: 'profile_image', name: 'profile_image' , 
 				render: function (data, type, column, meta) {
@@ -29,23 +31,20 @@ $(document).ready(function(){
 					'</div>' ;
 				}
 			},
-			{ data: 'created_at', name: 'created_at' },
-
-			
-
+			{ data: 'updated_at', name: 'updated_at' }, 
 			{ data: 'approve_status', name: 'approve_status',
 				render: function (data, type, column, meta) {
 					if(column.email_verify_status!='1'){
 						return '<button class="button reject">Pending Email Verification</button>';
 					}else{
 						if(column.approve_status=='0'){
-							return '<button class="button accept approve-status-change"  user_id="'+column.id+'" status="1">Approve</button>'+
-							'<button class="button reject reject-status-change" user_id="'+column.id+'" status="2">Delete</button>';
+							return '<button class="button btn-wh approve-status-change"  user_id="'+column.id+'" status="1"><span class="iconWrap iconSize_32"  title="Approve"  data-content="Approve Profile" data-trigger="hover"><img src="'+base_url+'/admin_assets/images/question.png"  class="white-img"></span></button>'+
+							'<button class="button btn-wh   btn-delete  reject-status-change" user_id="'+column.id+'" status="2"><span class="iconWrap iconSize_32"  title="Delete"    data-content="Delete Record"  data-trigger="hover"><img src="'+base_url+'/admin_assets/images/delete.png"  class="white-img"></span></button>';
 						}else if(column.approve_status=='1'){
-							return '<button class="button accept" >Approved</button>'+
-							'<button class="button reject reject-status-change" user_id="'+column.id+'" status="2">Delete</button>';
+							return '<button class="button  btn-wh" ><span class="iconWrap iconSize_32"  title="Approved"  data-content="Approved Profile" data-trigger="hover"><img src="'+base_url+'/admin_assets/images/status.png"  class="white-img"></span></button>'+
+							'<button class="button btn-wh   btn-delete  reject-status-change" user_id="'+column.id+'" status="2"><span class="iconWrap iconSize_32"  title="Delete"    data-content="Delete Record"  data-trigger="hover"><img src="'+base_url+'/admin_assets/images/delete.png"  class="white-img"></span></button>';
 						}else if(column.approve_status=='2'){
-							return '<button class="button reject">Delete</button>';
+							return '<button class="button btn-wh   btn-delete "><span class="iconWrap iconSize_32"  title="Delete"   data-content="Delete Record"  data-trigger="hover"><img src="'+base_url+'/admin_assets/images/delete.png" class="white-img"></span></button>';
 						}
 					}
 					
@@ -85,14 +84,18 @@ $(document).ready(function(){
 
 				},
 				'success' : function(response){
+
 					if(response.status == 'success'){
 						if(status=='1'){
-							swal('Approved' ,response.message, 'success');
+							success_alert(response.message);
+							//swal('Approved' ,response.message, 'success');
 						}else{
-							swal('Rejected' ,response.message, 'success');
+							success_alert(response.message);
+							//swal('Rejected' ,response.message, 'success');
 						}
-						
-						location.reload();
+						var redrawtable = jQuery('#laravel_datatable').dataTable();
+						redrawtable.fnDraw();
+						 
 					}
 				},
 				'error' :  function(errors){
@@ -138,12 +141,15 @@ $(document).ready(function(){
 				'success' : function(response){
 					if(response.status == 'success'){
 						if(status=='1'){
-							swal('Approved' ,response.message, 'success');
+							success_alert(response.message);
+							//swal('Approved' ,response.message, 'success');
 						}else{
-							swal('Rejected' ,response.message, 'success');
-						}
-						
-						location.reload();
+							success_alert(response.message);
+							//swal('Rejected' ,response.message, 'success');
+						} 
+						var redrawtable = jQuery('#laravel_datatable').dataTable();
+						redrawtable.fnDraw();
+						 
 					}
 				},
 				'error' :  function(errors){
@@ -155,4 +161,75 @@ $(document).ready(function(){
 			});
 		});
 	});
+
+
+	$(document).on("click", ".edit_users", function(e) {
+	e.preventDefault();
+
+			var data = jQuery(this).parents('form:first').serialize();
+			var id = $(this).data('id');
+			$.ajax({
+				url: base_url + '/admin/user/update/'+id,
+				type: 'put',
+				dataType: 'json',
+				data: data,
+				headers: {
+					'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+				},
+				error: function(response) {
+					if (response.status == 400) {
+						$.each(response.responseJSON.errors, function(k, v) {
+							$('#edit_' + k + '_error').text(v);
+							$('#edit_' + k + '_error').addClass('text-danger');
+						});
+					}
+				},
+				success: function(response) {
+					if (response.success) {
+						$("form#edit-users-form")[0].reset();
+						success_alert(response.message);
+					 
+						var redrawtable = jQuery('#laravel_datatable').dataTable();
+						redrawtable.fnDraw();
+						$('.error').removeClass('text-danger');
+						$('#edit_users').modal('hide');
+					}
+				},
+			});
+		});
+
+
+		$(document).on("click", ".edit_users_request", function(e) {
+			e.preventDefault();
+			var id = $(this).data('id');
+
+			var aurls = base_url + "/admin/user/edit/" + id;
+			jQuery.ajax({
+				url: aurls,
+				type: 'get',
+				dataType: 'json',
+				headers: {
+					'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+				},
+				success: function(response) {
+
+					if (response.success) {
+						$('#edit_users_info').html(response.html);
+
+						$('#edit_users').modal('show');
+
+					}
+				},
+			});
+		});
+
+		 $('#usertype_popup').hide();
+
+        $('#usertype_info').popover({
+            content:  $('#usertype_popup').html(),  
+            placement: 'left',
+            html: true
+        });
+ 
 });
+ 

@@ -1,6 +1,6 @@
 $(document).ready(function(){
 	
-	$('#laravel_datatable').DataTable({
+	let request_table = $('#laravel_datatable').DataTable({
 		processing: true,
 		serverSide: true,
 		"ordering": false,
@@ -25,8 +25,8 @@ $(document).ready(function(){
 			{ data: 'reserve_date', name: 'reserve_date' },
 			{ data: 'building_id', name: 'building_id' , 
 				render: function (data, type, column, meta) {
-				return '<button class="button accept accept-status" reserve_seat_id="'+column.reserve_seat_id+'" >Accept</button>'+
-				'<button class="button reject reject-status" reserve_seat_id="'+column.reserve_seat_id+'" >Reject</button>';
+				return '<button class="button btn-wh accept-status" reserve_seat_id="'+column.reserve_seat_id+'" title="Accept"><img src="'+base_url+'/admin_assets/images/booking_mode.png" class="white-img"></button>'+
+				'<button class="button btn-wh reject-status" reserve_seat_id="'+column.reserve_seat_id+'"  title="Reject" ><img src="'+base_url+'/admin_assets/images/delete.png"class="white-img"></button>';
 				}
 			}
 		]
@@ -56,11 +56,14 @@ $('body').on('click','.btn-delete',function(e){
                 },
                 'success' : function(response){
                     if(response.status == 'success'){
-                        swal("Success!",response.message, "success");
-                        location.reload();
+                        success_alert(response.message);
+                       
+                       var redrawtable = jQuery('#laravel_datatable').dataTable();
+                        redrawtable.fnDraw();
                     }
                     if(response.status == 'failed'){
-                        swal("Failed!",response.message, "error");
+                        error_alert(response.message);
+                      
                     }
                 },
                 'error' : function(error){
@@ -93,19 +96,22 @@ $('body').on('click','.btn-delete',function(e){
                 'url' :  base_url + '/' +path,
                 'data' : {  reserve_seat_id : reserve_seat_id},
                 'beforeSend': function() {
-
+                    showPageSpinner();
                 },
                 'success' : function(response){
-                    if(response.status){
-                        swal(success_status ,response.message, 'success');
-                        location.reload();
+                    if(response.status){ 
+                        success_alert(response.message);
+                        //swal(success_status ,response.message, 'success');
+                       var redrawtable = jQuery('#laravel_datatable').dataTable();
+                        redrawtable.fnDraw();
+                         
                     }
                 },
                 'error' :  function(errors){
                     console.log(errors);
                 },
                 'complete': function() {
-
+                    hidePageSpinner();
                 }
             });
         });
@@ -134,19 +140,22 @@ $('body').on('click','.btn-delete',function(e){
                 'url' :  base_url + '/' +path,
                 'data' : {  reserve_seat_id : reserve_seat_id},
                 'beforeSend': function() {
-
+                    showPageSpinner();
                 },
                 'success' : function(response){
                     if(response.status){
-                        swal(success_status ,response.message, 'success');
-                        location.reload();
+                        success_alert(response.message);
+                       // swal(success_status ,response.message, 'success'); 
+                         var redrawtable = jQuery('#laravel_datatable').dataTable();
+                        redrawtable.fnDraw();
                     }
                 },
                 'error' :  function(errors){
                     console.log(errors);
+                    hidePageSpinner();
                 },
                 'complete': function() {
-
+                    hidePageSpinner();
                 }
             });
         });

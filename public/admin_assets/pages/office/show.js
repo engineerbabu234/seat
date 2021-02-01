@@ -27,7 +27,7 @@ $(document).ready(function(){
 					
 				}
 			},
-			{ data: 'created_at', name: 'created_at' },
+			{ data: 'updated_at', name: 'updated_at' },
 			{ data: 'seat_id', name: 'seat_id' , 
 				render: function (data, type, column, meta) {
 					 //return '<a href="edit_office_building.html" class="button accept">Edit</a>'+
@@ -44,7 +44,7 @@ $(document).ready(function(){
 	$('body').on('click','.btn-delete',function(e){
 	 	  var url = $(this).attr('data-url');
   	 	 swal({
-		  title: "Are you sure you want to delete?",
+		  title: "Are you sure you want to delete office and related office assets?",
 		  //text: "Once deleted, you will not be able to recover this office data!",
 		  icon: "warning",
 		  buttons: true,
@@ -64,12 +64,14 @@ $(document).ready(function(){
 				},
 				'success' : function(response){
 					if(response.status == 'success'){
-						swal("Success!",response.message, "success");
+						success_alert(response.message);
+						//swal("Success!",response.message, "success");
 						location.reload();
 					    //getOffices();
 					}
 					if(response.status == 'failed'){
-						swal("Failed!",response.message, "error");
+						error_alert(response.message);
+						//swal("Failed!",response.message, "error");
 					}
 				},
 				'error' : function(error){

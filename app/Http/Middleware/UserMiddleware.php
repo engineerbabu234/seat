@@ -13,12 +13,13 @@ class UserMiddleware
      * @param  \Closure  $next
      * @return mixed
      */
-    public function handle($request, Closure $next){
+    public function handle($request, Closure $next)
+    {
 
-        if(auth()->user()->role == 2){
+        if (auth()->user()->role == 2) {
             return $next($request);
         }
 
-        return redirect('index')->with('error','You are not admin');
+        return redirect('index')->with('error', 'You are not admin');
     }
 }

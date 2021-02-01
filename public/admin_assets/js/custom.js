@@ -26,4 +26,41 @@ $(document).ready(function(){
         myVar = setTimeout(aakashloader, 800);
     }
 
+
+ function showPageSpinner() {
+           $('#loader-wrapper').css("visibility", "visible"); 
+          $('#loader-wrapper').css("opacity", "1");         
+      }
+       
+      function hidePageSpinner() {
+         $('#loader-wrapper').css("visibility", "hidden"); 
+          $('#loader-wrapper').css("opacity", "0"); 
+          
+      }
+
+  function success_alert(messages) {
+     title='Success';
+        message=messages;
+        myalert(title,message)
+        function myalert(title,msg){
+            $.alert(msg, {
+            title: title,
+            closeTime: 3000, 
+            });
+        }
+  }
+
+  function error_alert(messages) {
+       title='Error';
+          message='{{$message}}';
+          myalert(title,message)
+          function myalert(title,msg){
+          $.alert(msg, {
+          title: title,
+          closeTime: 3000,
+          type:'danger', 
+          });
+    }
+  }
+      
 /****end****/

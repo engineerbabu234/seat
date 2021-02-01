@@ -1,5 +1,6 @@
 <script type="text/javascript" src="{{asset('front_end')}}/js/jquery.min.js"></script>
 <script type="text/javascript" src="{{asset('front_end')}}/js/owl.carousel.min.js"></script>
+<script type="text/javascript" src="{{asset('front_end')}}/js/popper.min.js"></script>
 <script type="text/javascript" src="{{asset('front_end')}}/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="{{asset('front_end')}}/js/custom.js"></script>
 <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
@@ -11,6 +12,50 @@
 			$(this).remove();
 		});
     }, 3000);
+
+    $(".iconSize_32 ").on("mouseover", function (e) {
+            var content = $(this).data('content');
+            $('#content_html').text(content);
+            $(this).popover({
+                content:  $('#popover_content').html(),
+                placement: 'left',
+                html: true,
+                trigger: 'hover'
+            });
+    });
+
+    function get_pophover() {
+         $(".iconSize_32 ").on("mouseover", function (e) {
+            var content = $(this).data('content');
+            $('#content_html').text(content);
+            $(this).popover({
+                content:  $('#popover_content').html(),
+                placement: 'left',
+                html: true,
+                trigger: 'hover'
+            });
+        });
+    }
+
+
+    	setInterval(function () {  myTimer() }, 60000);
+    	var base_url = "{{url('/')}}";
+		function myTimer() {
+			 var urls = base_url + "/get_new_time";
+		   jQuery.ajax({
+            url: urls,
+            type: 'get',
+            dataType: 'json',
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+             $('#header_time').text(response.time);
+
+            },
+        });
+
+		}
 </script>
 
 <script type="text/javascript">

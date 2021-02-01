@@ -2,18 +2,18 @@
 @csrf
 
     <div class="container-fluid" style="height: 100%;">
+
             <div class="row" style="height: 100%;">
-                <div class="col-lg-12 col-md-12 col-sm-12" id="main">
+
+
+                <div class="col-lg-12 col-md-12 col-sm-12 border border-success" id="main">
                     <canvas class="content" id="canvas"></canvas>
                 </div>
             </div>
             <hr>
-            <div class="row">
-            <div class="col-sm-6 text-right">  <a href="#" title="Add Seat" class="btn btn-link" id="img-create" >  <img src="{{asset('admin_assets')}}/images/seat_book/green-seat.png" height="50"></a></div>
-            <div class="col-sm-6"><button  class="btn btn-info btn-sm ml-5" id="btnSave" >Add seats</button></div>
-          </div>
-
         </div>
+
+        <input type="hidden"  id="new_seat" value="1">
         <input type="hidden"  id="seat_type" value="">
         <input type="hidden"  id="seat_status" value="">
         <input type="hidden"  id="total_count" value="">
@@ -41,7 +41,7 @@
           <div class="modal-dialog modal-lg">
             <div class="modal-content">
               <div class="modal-header">
-                <h4 class="modal-title">Add Seat <span class="ml-5" id="change-number"></span></h4>
+                <h4 class="modal-title modal_title">Configure Seat</h4>
                 <button type="button" class="close_new seats_cancel"  >&times;</button>
               </div>
               <div class="modal-body" >
@@ -55,7 +55,7 @@
           <div class="modal-dialog modal-lg">
             <div class="modal-content">
               <div class="modal-header">
-                <h4 class="modal-title">Update Seat <span class="ml-5" id="change-number"></span></h4>
+                <h4 class="modal-title update_modal_title">Update Configure Seat</span></h4>
                 <button type="button" class="close_new seats_update_cancel" >&times;</button>
               </div>
               <div class="modal-body" id="edit_office_seats" >

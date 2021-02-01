@@ -36,39 +36,75 @@ class LoginController extends Controller
         //Session::put('url.intended',URL::previous());
         return view('login');
     }
+
+    public function showCleanerLoginForm()
+    {
+        //Session::put('url.intended',URL::previous());
+        return view('cleaner.cleanerlogin');
+    }
+
     public function showLoginFormAdmin()
     {
         //Session::put('url.intended',URL::previous());
         return view('admin.auth.login');
     }
 
-    /**
-     * Attempt to log the user into the application.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return bool
-     */
-    protected function attemptLogin(Request $request)
+    public function SeatrequestLoginForm(Request $request)
     {
 
-        $host = request()->getHost();
-        $hostArr = explode('.',$host);
-        $subDomain = $hostArr[0];
-        $tenantData = \DB::table('tenant_details')->where('sub_domain',$subDomain)->first();
-        
-        $tenantId = null;
-        if($tenantData){
-            $tenantId = $tenantData->tenant_id;
+        $inputs = $request->all();
+
+        $code_type = Session::get('code_type');
+
+        $img = asset("admin_assets/images/browser.png");
+        if (isset($code_type) && $code_type == 'nfccode') {
+            $img = asset("admin_assets/images/nfc.png");
+        } elseif (isset($code_type) && $code_type == 'qrcode') {
+            $img = asset("admin_assets/images/scan.png");
         }
 
-        return $this->guard()->attempt([
-           'email' => $request->email,'password'=>$request->password,'role'=>$request->role,'tenant_id' => $tenantId
-        ],$request->filled('remember')
-        );
+        return view('seat_request.login', compact('img'));
     }
 
     protected function authenticated(Request $request, $user)
     {
+
+        if ($request->session()->has('seat_login')) {
+            Session::forget('seat_login');
+
+            if ($request->session()->has('last_url')) {
+                $url = Session::get('last_url');
+                Session::forget('last_url');
+                Session::forget('code_type');
+
+                if ($user->role == 1) {
+                    return redirect($url);
+                } elseif ($user->role == 2 or $user->role == 3) {
+                    if ($user->email_verify_status != '1') {
+                        $this->guard()->logout();
+                        $request->session()->invalidate();
+                        return back()->with('error', 'Your email not verify , please verify your email');
+                    } else {
+                        if ($user->approve_status == '0') {
+                            $this->guard()->logout();
+                            $request->session()->invalidate();
+                            return back()->with('error', 'Your account is not approved by the admin, please contact your administrator');
+                        } elseif ($user->approve_status == '1') {
+                            return redirect($url);
+                        } elseif ($user->approve_status == '2') {
+                            $this->guard()->logout();
+                            $request->session()->invalidate();
+                            return back()->with('error', 'Your account rejected by admin,Please contact weBook');
+                        }
+                    }
+                }
+
+                return redirect($url);
+            } else {
+                return redirect('/seatrequest');
+            }
+        }
+
         if ($request->role != $user->role) {
             $this->guard()->logout();
             $request->session()->invalidate();
@@ -76,7 +112,7 @@ class LoginController extends Controller
         }
         if ($user->role == 1) {
             return redirect('admin/dashboard');
-        } elseif ($user->role == 2) {
+        } elseif ($user->role == 2 or $user->role == 3) {
             if ($user->email_verify_status != '1') {
                 $this->guard()->logout();
                 $request->session()->invalidate();
@@ -115,6 +151,13 @@ class LoginController extends Controller
      */
     public function logout(Request $request)
     {
+        if (isset($request->seat_request) && $request->seat_request == 1) {
+            $this->guard()->logout();
+            $request->session()->invalidate();
+            $type = $request->type;
+            return view('seat_request.seat_logout', compact('type'));
+        }
+
         if (Auth::user()->role == '1') {
             $this->guard()->logout();
             $request->session()->invalidate();
@@ -128,5 +171,14 @@ class LoginController extends Controller
         // $request->session()->flush();
         // $request->session()->regenerate();
         //return redirect()->guest(route( 'admin.login' ));
+    }
+
+    public function seat_logout(Request $request)
+    {
+
+        $this->guard()->logout();
+        $request->session()->invalidate();
+        return redirect('/seatrequest/seat_logout')->with('success', 'Your account logout successfully');
+
     }
 }

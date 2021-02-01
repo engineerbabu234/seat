@@ -1,0 +1,32 @@
+.slider {
+  margin: 50px 0;
+  font-size: 12px;
+}
+/* These IDs allow changing the colors of the slider ranges
+    s1-color2 controls slider 1 range 2
+They are added dynamically using a JS loop */
+#s1-color1 {
+  background: #27ae60;
+}
+
+#s1-color2 {
+  background: #2980b9;
+}
+
+#s2-color1 {
+  background: #c0392b;
+}
+
+/* edit page */
+#s3-color1 {
+  background: #27ae60;
+}
+
+#s3-color2 {
+  background: #2980b9;
+}
+
+#s4-color1 {
+  background: #c0392b;
+}
+

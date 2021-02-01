@@ -85,8 +85,10 @@ class ReservationController extends Controller
      */
     public function Accpted(Request $request)
     {
+
         $inputs = $request->all();
         $ReserveSeat = ReserveSeat::find($inputs['reserve_seat_id']);
+
         if ($ReserveSeat) {
             $ReserveSeat->status = '1';
         }
@@ -99,7 +101,7 @@ class ReservationController extends Controller
                 ->leftJoin('offices as o', 'o.office_id', '=', 'rs.office_id')
                 ->leftJoin('buildings as b', 'b.building_id', '=', 'o.building_id')
                 ->leftJoin('users as u', 'u.id', '=', 'rs.user_id')
-                ->where('rs.seat_id', $ReserveSeat->seat_id)
+                ->where('rs.reserve_seat_id', $inputs['reserve_seat_id'])
                 ->first();
             if ($reserveSeats) {
                 $logo = env('Logo');
@@ -110,14 +112,15 @@ class ReservationController extends Controller
                 } else {
                     $logo_url = asset('front_end/images/logo.png');
                 }
+
                 $mailData = array(
                     'first_name' => $reserveSeats->user_name,
                     'email' => $reserveSeats->email,
                     'user_name' => $reserveSeats->user_name,
-                    'form_name' => 'Support@gmail.com',
+                    'form_name' => 'paul@datagov.ai',
                     'schedule_name' => 'weBOOK',
                     'template' => 'reservation_accepted',
-                    'subject' => 'weBOOK',
+                    'subject' => 'weBOOK Reservation Accepted',
                     'data' => $reserveSeats,
                     'logo_url' => $logo_url,
                 );
@@ -144,15 +147,13 @@ class ReservationController extends Controller
             $ReserveSeat->status = '2';
         }
         if ($ReserveSeat->save()) {
-            // $Seat = Seat::find($ReserveSeat->seat_id);
-            // $Seat->status='1';
-            // $Seat->save();
+
             $reserveSeats = DB::table('reserve_seats as rs')
                 ->select('rs.*', 'b.building_name', 'o.office_name', 'u.user_name', 'u.email', 'u.job_profile')
                 ->leftJoin('offices as o', 'o.office_id', '=', 'rs.office_id')
                 ->leftJoin('buildings as b', 'b.building_id', '=', 'o.building_id')
                 ->leftJoin('users as u', 'u.id', '=', 'rs.user_id')
-                ->where('rs.seat_id', $ReserveSeat->seat_id)
+                ->where('rs.reserve_seat_id', $inputs['reserve_seat_id'])
                 ->first();
             if ($reserveSeats) {
                 $logo = env('Logo');
@@ -161,6 +162,7 @@ class ReservationController extends Controller
                     $logo_url = ImageHelper::getProfileImage($Admin->logo_image);
 
                 } else {
+
                     $logo_url = asset('front_end/images/logo.png');
                 }
                 $mailData = array(
@@ -170,7 +172,7 @@ class ReservationController extends Controller
                     'form_name' => 'Support@gmail.com',
                     'schedule_name' => 'weBOOK',
                     'template' => 'reservation_cancel',
-                    'subject' => 'weBOOK',
+                    'subject' => 'weBOOK Reservation Reject By Admin',
                     'data' => $reserveSeats,
                     'logo_url' => $logo_url,
                 );

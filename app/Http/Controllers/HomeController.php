@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\User;
 use App\Helpers\ImageHelper;
-use Illuminate\Support\Facades\Mail;
 use App\Mail\NotifyMail;
+use App\User;
+use Illuminate\Support\Facades\Mail;
 
 class HomeController extends Controller
 {
@@ -30,7 +29,8 @@ class HomeController extends Controller
         return view('home');
     }
 
-    public function verifyEmail($id){
+    public function verifyEmail($id)
+    {
 
         try {
 
@@ -53,9 +53,16 @@ class HomeController extends Controller
                         $logo_url =asset('uploads/profiles/'.$Admin->logo_image);
                         $logo_url = ImageHelper::getProfileImage($Admin->logo_image);
 
-                    }else{
-                        $logo_url = asset('front_end/images/logo.png');
-                    }
+
+                        $Admin = User::where('role', '1')->first();
+                        if ($Admin->logo_status == 1) {
+                            //$logo_url =asset('uploads/profiles/'.$Admin->logo_image);
+                            $logo_url = ImageHelper::getLogoImage($Admin->logo_image);
+
+                        } else {
+                            $logo_url = asset('front_end/images/logo.png');
+                        }
+
 
                     $AdminEmail=$Admin->email;
 
@@ -74,7 +81,15 @@ class HomeController extends Controller
 
                     if(!empty($mailData) && !empty($AdminEmail && !is_null($AdminEmail))){
                         Mail::to($AdminEmail)->send(new NotifyMail($mailData));
+                        $data['status'] = '1';
+
+                    } else {
+                        $data['status'] = '2';
                     }
+                } else {
+                    $data['status'] = '0';
+                }
+            } else {
 
                     $data['status'] = '1';
                     return view('verify_email',compact('data'));
@@ -95,6 +110,6 @@ class HomeController extends Controller
             $data['status'] = '2';
             return view('verify_email',compact('data'));
         }
-      return view('verify_email',compact('data'));
+        return view('verify_email', compact('data'));
     }
 }
