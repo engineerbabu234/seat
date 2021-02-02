@@ -6,7 +6,6 @@ Route::get('/ajax/seats/{id?}', 'Admin\TeamController@ajaxGetSeat');
 Route::group(['middleware' => ['auth', 'admin']], function () {
     Route::group(['prefix' => 'admin'], function () {
 
-<<<<<<< HEAD
         Route::get('/teams', 'Admin\TeamController@index')->name('admin.team.index');
         Route::get('/create/team', 'Admin\TeamController@create')->name('admin.team.create');
         Route::post('/store/team', 'Admin\TeamController@store')->name('admin.team.store');
@@ -16,8 +15,9 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         Route::get('/team/access/rules/{id?}', 'Admin\TeamController@teamAccessRule')->name('admin.team.access.rule');
         Route::post('/team/block', 'Admin\TeamController@teamBlock')->name('admin.team.block');
         Route::delete('/team/block/delete/{id}', 'Admin\TeamController@teamBlockDelete')->name('admin.team.block.delete');
-=======
->>>>>>> 252f4c84e0907d67aebc027398a519746f504877
+
+        Route::get('/team/users/{id}', 'Admin\TeamController@teamUsers')->name('admin.team.user');
+        Route::post('/team/users/store', 'Admin\TeamController@teamUserStore')->name('admin.team.user.store');
 
         Route::get('dashboard', 'Admin\HomeController@index')->name('dashboard');
         Route::get('profile', 'Admin\ProfileController@show')->name('profile');
@@ -63,24 +63,13 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         // building
         Route::group(['prefix' => 'building'], function () {
             Route::get('/', 'Admin\BuildingController@index')->name('index');
-<<<<<<< HEAD
             Route::get('add_building', 'Admin\BuildingController@create')->name('add_building');
             Route::post('store', 'Admin\BuildingController@store')->name('store');
-
             Route::get('office_list/{id?}', 'Admin\BuildingController@officeList')->name('office_list');
             Route::get('show/{id?}', 'Admin\BuildingController@show')->name('show');
             Route::get('edit_building/{id?}', 'Admin\BuildingController@edit')->name('edit_building');
             Route::post('update/{id?}', 'Admin\BuildingController@update')->name('update');
             Route::post('delete/{id}', 'Admin\BuildingController@destroy')->name('destroy');
-=======
-            Route::get('add_building', 'BuildingController@create')->name('add_building');
-            Route::post('store', 'BuildingController@store')->name('store');
-            Route::get('office_list/{id?}', 'BuildingController@officeList')->name('office_list');
-            Route::get('show/{id?}', 'BuildingController@show')->name('show');
-            Route::get('edit_building/{id?}', 'BuildingController@edit')->name('edit_building');
-            Route::post('update/{id?}', 'BuildingController@update')->name('update');
-            Route::post('delete/{id}', 'BuildingController@destroy')->name('destroy');
->>>>>>> 252f4c84e0907d67aebc027398a519746f504877
         });
 
         // office

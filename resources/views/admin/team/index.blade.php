@@ -159,7 +159,7 @@
 					{ data: 'created_at', name: 'created_at'},
 					{ data: 'action', name: 'action' , 
 			   	       render: function (data, type, column, meta) {
-						  return '<a href="'+base_url+'/admin/team/access/rules/'+column.id+'" class="button btn-info" data-url="'+base_url+'/admin/edit/team/'+column.id+'">Access Rule</a>&nbsp;<button class="button btn-edit btn-info" data-url="'+base_url+'/admin/edit/team/'+column.id+'">Edit</button> ' +
+						  return '<a href="'+base_url+'/admin/team/users/'+column.id+'" class="button btn-info" data-url="'+base_url+'/admin/team/users/'+column.id+'">Users</a>&nbsp<a href="'+base_url+'/admin/team/access/rules/'+column.id+'" class="button btn-info" data-url="'+base_url+'/admin/edit/team/'+column.id+'">Access Rule</a>&nbsp;<button class="button btn-edit btn-info" data-url="'+base_url+'/admin/edit/team/'+column.id+'">Edit</button> ' +
 						   ' <button class="button reject btn-delete"  data-url="'+base_url+'/admin/delete/team/'+column.id+'">Delete</button>';
 				         }
 		        	}
@@ -288,7 +288,7 @@
 				},
 				});
 		 });
-  	 });
+  	   });
 
 	   $('body').on('click','.btn-edit',function(e){
 		   let url = $(this).attr('data-url');

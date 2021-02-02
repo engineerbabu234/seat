@@ -176,6 +176,37 @@ class TeamController extends Controller
          else
            return ['status'=>'failed','message'=>'Failed to delete'];
     }
+    
+    public function teamUsers($id){
+        $users = \App\User::all();
+        $selectedUsers = \DB::table('team_users')->where('team_id',$id)->get();
+        $selectedUsers = array_column($selectedUsers->toarray(),'user_id');
+        return view('admin.team.user',compact('id','users','selectedUsers'));
+    }
+
+    public function teamUserStore(Request $request){
+
+        DB::beginTransaction();
+        try{
+            $users = $request->users;
+            $storeData = array();
+            if($users){
+                foreach($users as $user){
+                    array_push($storeData,[
+                        'team_id' => $request->id,
+                        'user_id' => $user
+                    ]);
+                }
+                \DB::table('team_users')->where('team_id',$request->id)->delete();
+                \DB::table('team_users')->insert($storeData);
+            }
+            \DB::commit();
+            return back()->with('status','success')->with('message','User successfully added');
+        }catch(\Exception $e){
+            \DB::rollback();
+            return back()->with('status','failed')->with('message','Failed to add user');
+        }
+    }
    
     public function ajaxGetoffice($id){
         $offices = \DB::table('offices')->where('building_id',$id)->whereNull('deleted_at')->get();
