@@ -49,7 +49,7 @@
                                     @if ($today_reservation['status'] == '1' OR $today_reservation['status'] == '4' )
                                     <span class="text-success" id="today_dlt_status">Approved</span>
                                     @elseif( $today_reservation['status'] == '0')
-                                         <span class="text-warning" id="today_dlt_status">Pending</span>
+                                         <span class="text-danger" id="today_dlt_status">Pending</span>
                                     @endif
 
                                     </span>

@@ -261,6 +261,7 @@
                                             <th ><span class="iconWrap iconSize_32" title="Booking Mode" data-trigger="hover" id="bookingmode" data-placement="top"><img src="{{asset('admin_assets')}}/images/booking_mode.png"   class="icon bl-icon"  ></span></th>
                                              <th ><span class="iconWrap iconSize_32" title="Assets Type" data-trigger="hover" id="tbl_assets_type" data-placement="top"><img src="{{asset('admin_assets')}}/images/objects.png"   class="icon bl-icon"  ></span></th>
                                             <th><span class="iconWrap iconSize_32" data-trigger="hover" id="questionarie_hover" data-placement="top" title="Questionaries" ><img src="{{asset('admin_assets')}}/images/questionarie.png"    class="icon bl-icon"  ></span></th>
+                                             <th><span class="iconWrap iconSize_32" data-trigger="hover" id="contract_hover_info" data-placement="top" title="Contract" ><img src="{{asset('admin_assets')}}/images/contract.png" class="icon bl-icon"  ></span></th>
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -341,6 +342,31 @@
             </div>
         </div>
     </div>
+     <div id="user_contract_pophover">
+        <div class="row">
+            <div class="col-sm-12">
+                <div id="user_contract_info"></div>
+                <p>There are <span id="total_contract"></span> Contract Atteched to this seat </p>
+                <p> </p>
+            </div>
+        </div>
+    </div>
+
+    <div id="contract_pophover">
+        <div class="row">
+            <div class="col-sm-12">
+            <p>This shows the number of contract that
+                are required to be successfully completed and
+                in data prior to be able to successfully book
+            this seat.</p>
+            <p>
+                Click on the number to show the
+            contract attached</p>
+            </div>
+        </div>
+    </div>
+
+
     <div id="building_popup">
         <div class="row">
             <div class="col-sm-12">

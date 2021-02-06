@@ -60,6 +60,13 @@ $Admin = \App\Models\User::where('role','1')->first();
 					</li>
 					 @endif
 
+					  @if (!Auth::guest())
+					<li>
+						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='contracts')){{'active'}}@endif" href="{{url('/contracts')}}"><img src="{{asset('admin_assets')}}/images/contract.png" class="menu_icons wh-img"> <span>Contracts</span></a>
+					</li>
+				    @endif
+
+
 					 @endif
 
 

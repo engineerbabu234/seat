@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers\Front_End;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Models\City;
 use App\Helpers\ImageHelper;
-use Illuminate\Validation\Rule;
-use Validator;
-use Auth;
-use Hash;
-use Redirect,Response,DB,Config;
-use Datatables;
-use Illuminate\Support\Facades\Mail;
+use App\Http\Controllers\Controller;
 use App\Mail\NotifyMail;
+use App\Models\User;
+use Hash;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Redirect;
+use DB;
 
-class UserController extends Controller{
-    public function index(Request $request){
+class UserController extends Controller
+{
+    public function index(Request $request)
+    {
         $data['js'] = ['user/index.js'];
-        return view('sign_up',compact('data'));
+        return view('sign_up', compact('data'));
     }
 
     public function signProcess(Request $request){
@@ -28,7 +28,7 @@ class UserController extends Controller{
         $hostArr = explode('.',$host);
         $subDomain = $hostArr[0];
         $tenantData = DB::table('tenant_details')->where('sub_domain',$subDomain)->first();
-        
+
         $tenantId = null;
         if($tenantData){
             $tenantId = $tenantData->tenant_id;
@@ -45,9 +45,9 @@ class UserController extends Controller{
 
         $this->validate($request,$rules);
 
-        $profile_image=null;
-        if($request->hasFile('profile_image')) {
-            $profile_image = str_random('10').'_'.time().'.'.request()->profile_image->getClientOriginalExtension();
+        $profile_image = null;
+        if ($request->hasFile('profile_image')) {
+            $profile_image = Str::random('10') . '_' . time() . '.' . request()->profile_image->getClientOriginalExtension();
             request()->profile_image->move(public_path('uploads/profiles/'), $profile_image);
         }
 
@@ -59,12 +59,12 @@ class UserController extends Controller{
         $User->password           = Hash::make($inputs['password']);
         $User->tenant_id          = $tenantId;
 
-        if($profile_image){
-            $User->profile_image  = $profile_image;
+        if ($profile_image) {
+            $User->profile_image = $profile_image;
         }
 
         $User->save();
-        if($User){
+        if ($User) {
             // $admin_mail='ganeshdhamande7@gmail.com';
             // $mailData = array(
             //     // 'first_name'    => $User->user_name,
@@ -86,37 +86,36 @@ class UserController extends Controller{
             //     //return back()->with('error','Seat reservation failed,please try again');
             // }
 
-            $user_email= $inputs['email'];
+            $user_email = $inputs['email'];
             $userId = encrypt($User->id);
-            $logo=env('Logo');
-            if($logo){
-                $Admin = User::where('role','1')->first();
+            $logo = env('Logo');
+            if ($logo) {
+                $Admin = User::where('role', '1')->first();
                 $logo_url = ImageHelper::getProfileImage($Admin->logo_image);
 
-            }else{
+            } else {
                 $logo_url = asset('front_end/images/logo.png');
             }
             $userMailData = array(
-                'name'          => $inputs['user_name'],
-                'email'         => $user_email,
-                'user_name'     => $inputs['user_name'],
-                'form_name'     => 'Support@gmail.com',
+                'name' => $inputs['user_name'],
+                'email' => $user_email,
+                'user_name' => $inputs['user_name'],
+                'form_name' => 'Support@gmail.com',
                 'schedule_name' => 'weBOOK',
-                'template'      => 'user_verification',
-                'subject'       => 'Verify Email',
-                'data'          => $User,
-                'base_url'      => url('/verify/email/'.$userId),
-                'logo_url'      => $logo_url,
+                'template' => 'user_verification',
+                'subject' => 'Verify Email',
+                'data' => $User,
+                'base_url' => url('/verify/email/' . $userId),
+                'logo_url' => $logo_url,
             );
-            if(!empty($userMailData) && !empty($user_email && !is_null($user_email))){
+            if (!empty($userMailData) && !empty($user_email && !is_null($user_email))) {
                 Mail::to($user_email)->send(new NotifyMail($userMailData));
-            }else{
+            } else {
                 //return back()->with('error','Seat reservation failed,please try again');
             }
-            return Redirect('/login')->with('success','Your registration successfully,please check your email and verify your email');
-        }else{
-            return Redirect('/sign_up')->with('error','Your registration failed,please try again');
+            return Redirect('/login')->with('success', 'Your registration successfully,please check your email and verify your email');
+        } else {
+            return Redirect('/sign_up')->with('error', 'Your registration failed,please try again');
         }
     }
 }
-

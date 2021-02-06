@@ -8,6 +8,7 @@ use App\Models\User;
 use Auth;
 use Hash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class ProfileController extends Controller
 {
@@ -188,7 +189,7 @@ class ProfileController extends Controller
 
         $image = str_replace(' ', '+', $image);
 
-        $imageName = str_random('10') . '_' . time() . '.' . $extension;
+        $imageName = Str::random('10') . '_' . time() . '.' . $extension;
         $destinationPath = ImageHelper::$getProfileImagePath;
 
         $uploadPath = $destinationPath . '/' . $imageName;
@@ -211,7 +212,7 @@ class ProfileController extends Controller
         $file = $_FILES['profile_image'];
         $file_ext = pathinfo($file['name'], PATHINFO_EXTENSION);
         $file_tmp = $_FILES['profile_image']['tmp_name'];
-        $imagename = str_random('10') . '_' . time() . '.' . $file_ext;
+        $imagename = Str::random('10') . '_' . time() . '.' . $file_ext;
         $destinationPath = ImageHelper::$getProfileImagePath;
         #echo $destinationPath;die;
         if (move_uploaded_file($file_tmp, $destinationPath . '/' . $imagename)) {

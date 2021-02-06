@@ -2,21 +2,26 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ApiHelper;
 use App\Helpers\ImageHelper;
 use App\Http\Controllers\Controller;
 use App\Mail\NotifyMail;
 use App\Models\ApiConnections;
 use App\Models\Building;
+use App\Models\ContractDocuments;
 use App\Models\Office;
 use App\Models\OfficeAsset;
 use App\Models\OfficeSeat;
 use App\Models\Quesionaire;
 use App\Models\Question;
 use App\Models\ReserveSeat;
+use App\Models\User;
+use App\Models\UserContract;
 use Auth;
 use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Validator;
 
@@ -48,7 +53,7 @@ class OfficeAssetController extends Controller
                 $whereStr .= " OR buildings.building_name like '%{$search}%'";
             }
 
-            $columns = ['office_asset.id', 'office_asset.is_covid_test', 'office_asset.office_id', 'office_asset.updated_at', 'offices.office_name as office_name', 'buildings.building_name as building_name', 'office_asset.title', 'office_asset.description', 'office_asset.quesionaire_id', 'office_asset.asset_type'];
+            $columns = ['office_asset.id', 'office_asset.document_attech', 'office_asset.is_covid_test', 'office_asset.office_id', 'office_asset.updated_at', 'offices.office_name as office_name', 'buildings.building_name as building_name', 'office_asset.title', 'office_asset.description', 'office_asset.quesionaire_id', 'office_asset.asset_type'];
 
             $officeAssets = OfficeAsset::select($columns)->leftJoin("offices", "offices.office_id", "office_asset.office_id")->leftJoin("buildings", "buildings.building_id", "office_asset.building_id")->whereRaw($whereStr, $whereParams)->orderBy('id', 'desc');
 
@@ -83,7 +88,17 @@ class OfficeAssetController extends Controller
             $total_quesionaire = 0;
             $number_key = 1;
             foreach ($officeAssets as $key => $value) {
+                $document_attech_total = '';
                 $total_seats = OfficeSeat::where('office_asset_id', $value->id)->whereNull('deleted_at')->get();
+
+                if (isset($value->document_attech) && $value->document_attech != '') {
+                    $document_attech_info = explode(",", $value->document_attech);
+                    $document_attech_total = count($document_attech_info);
+
+                } else {
+                    $document_attech_total = 0;
+                }
+
                 if (isset($value->quesionaire_id) && $value->quesionaire_id != '') {
                     $quesionaire_info = explode(",", $value->quesionaire_id);
                     $quesionaire_total = count($quesionaire_info);
@@ -109,7 +124,7 @@ class OfficeAssetController extends Controller
                 $final[$key]['title'] = $value->title;
                 $final[$key]['total_seats'] = count($total_seats);
                 $final[$key]['total_quesionaire'] = $quesionaire_total;
-                $final[$key]['total_documents'] = 0;
+                $final[$key]['total_documents'] = $document_attech_total;
                 $final[$key]['is_covid_test'] = $value->is_covid_test;
                 $final[$key]['asset_type'] = $asset_type;
                 $final[$key]['updated_at'] = date('d/m/Y', strtotime($value->updated_at));
@@ -203,19 +218,16 @@ class OfficeAssetController extends Controller
 
         // $image = str_replace(' ', '+', $image);
 
-        // $imageName = str_random('10') . '_' . time() . '.' . $extension;
-        // $destinationPath = ImageHelper::$getOfficeAssetsImagePath;
+        $imageName = Str::random('10') . '_' . time() . '.' . $extension;
 
-        // $uploadPath = $destinationPath . '/' . $imageName;
+        $destinationPath = ImageHelper::$getOfficeAssetsImagePath;
 
-        // if (file_put_contents($uploadPath, base64_decode($image))) {
-        //     $preview_image = $imageName;
-        // }
+        ApiHelper::makeDir($destinationPath, true);
+        $uploadPath = $destinationPath . $imageName;
 
-        $fileName = null;
-        if ($request->hasFile('preview_image')) {
-            $fileName = str_random('10') . '_' . time() . '.' . request()->preview_image->getClientOriginalExtension();
-            request()->preview_image->move(public_path('uploads/office_asset/'), $fileName);
+        if (file_put_contents($uploadPath, base64_decode($image))) {
+
+            $preview_image = $imageName;
         }
 
         $checkin_start_time = '';
@@ -224,10 +236,10 @@ class OfficeAssetController extends Controller
         $checkout_end_time = '';
         $required_after_checkout = '';
         if ($inputs['checkin'] == 1) {
-            $checkin_start_time = date('H:i A', strtotime($inputs['checkin_start_time']));
-            $checkin_end_time = date('H:i A', strtotime($inputs['checkin_end_time']));
-            $checkout_start_time = date('H:i A', strtotime($inputs['checkout_start_time']));
-            $checkout_end_time = date('H:i A', strtotime($inputs['checkout_end_time']));
+            $checkin_start_time = date('H:i', strtotime($inputs['checkin_start_time']));
+            $checkin_end_time = date('H:i', strtotime($inputs['checkin_end_time']));
+            $checkout_start_time = date('H:i', strtotime($inputs['checkout_start_time']));
+            $checkout_end_time = date('H:i', strtotime($inputs['checkout_end_time']));
             $required_after_checkout = isset($inputs['required_after_checkout']) ? 1 : 0;
         } else {
             $checkin_start_time = '';
@@ -241,15 +253,15 @@ class OfficeAssetController extends Controller
         $cleanend_time = '';
 
         if ($inputs['seat_clean'] == 1) {
-            $cleanstart_time = date('H:i A', strtotime($inputs['cleanstart_time']));
-            $cleanend_time = date('H:i A', strtotime($inputs['cleanend_time']));
+            $cleanstart_time = date('H:i', strtotime($inputs['cleanstart_time']));
+            $cleanend_time = date('H:i', strtotime($inputs['cleanend_time']));
         } else {
             $cleanstart_time = '';
             $cleanend_time = '';
         }
 
-        $email_user_link = '';
-        $conference_endpoint = '';
+        $email_user_link = 0;
+        $conference_endpoint = 0;
         $teleconferance_name = '';
         $conference_management = 0;
         if (isset($inputs['conference_management']) && $inputs['conference_management'] == 1) {
@@ -258,8 +270,8 @@ class OfficeAssetController extends Controller
             $teleconferance_name = $inputs['teleconferance_name'];
             $email_user_link = isset($inputs['email_user_link']) ? 1 : 0;
         } else {
-            $email_user_link = '';
-            $conference_endpoint = '';
+            $email_user_link = 0;
+            $conference_endpoint = 0;
             $teleconferance_name = '';
             $conference_management = 0;
         }
@@ -431,28 +443,24 @@ class OfficeAssetController extends Controller
         //         $image_64 = null;
         //         $image_64 = $inputs['preview_image'];
 
-        //         $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
-        //         $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
-        //         $image = str_replace($replace, '', $image_64);
-        //         $image = str_replace(' ', '+', $image);
-        //         $imageName = str_random('10') . '_' . time() . '.' . $extension;
-        //         $destinationPath = ImageHelper::$getOfficeAssetsImagePath;
+                $extension = explode('/', explode(':', substr($image_64, 0, strpos($image_64, ';')))[1])[1];
+                $replace = substr($image_64, 0, strpos($image_64, ',') + 1);
+                $image = str_replace($replace, '', $image_64);
+                $image = str_replace(' ', '+', $image);
+                $imageName = Str::random('10') . '_' . time() . '.' . $extension;
 
-        //         $uploadPath = $destinationPath . '/' . $imageName;
+                $destinationPath = ImageHelper::$getOfficeAssetsImagePath;
+                ApiHelper::makeDir($destinationPath, true);
+                $uploadPath = $destinationPath . $imageName;
 
         //         //remove old image
         //         $this->remove_office_assets_image($assetId);
 
-        //         if (file_put_contents($uploadPath, base64_decode($image))) {
-        //             $preview_image = $imageName;
-        //         }
-        //     }
-        // }
+                if (file_put_contents(public_path($uploadPath), base64_decode($image))) {
+                    $preview_image = $imageName;
 
-        $fileName = null;
-        if ($request->hasFile('preview_image')) {
-            $fileName = str_random('10') . '_' . time() . '.' . request()->preview_image->getClientOriginalExtension();
-            request()->preview_image->move(public_path('uploads/office_asset/'), $fileName);
+                }
+            }
         }
 
         $checkin_start_time = '';
@@ -461,10 +469,10 @@ class OfficeAssetController extends Controller
         $checkout_end_time = '';
         $required_after_checkout = '';
         if ($inputs['checkin'] == 1) {
-            $checkin_start_time = date('H:i A', strtotime($inputs['checkin_start_time']));
-            $checkin_end_time = date('H:i A', strtotime($inputs['checkin_end_time']));
-            $checkout_start_time = date('H:i A', strtotime($inputs['checkout_start_time']));
-            $checkout_end_time = date('H:i A', strtotime($inputs['checkout_end_time']));
+            $checkin_start_time = date('H:i', strtotime($inputs['checkin_start_time']));
+            $checkin_end_time = date('H:i', strtotime($inputs['checkin_end_time']));
+            $checkout_start_time = date('H:i', strtotime($inputs['checkout_start_time']));
+            $checkout_end_time = date('H:i', strtotime($inputs['checkout_end_time']));
             $required_after_checkout = isset($inputs['required_after_checkout']) ? 1 : 0;
         } else {
             $checkin_start_time = '';
@@ -478,15 +486,15 @@ class OfficeAssetController extends Controller
         $cleanend_time = '';
 
         if ($inputs['seat_clean'] == 1) {
-            $cleanstart_time = date('H:i A', strtotime($inputs['cleanstart_time']));
-            $cleanend_time = date('H:i A', strtotime($inputs['cleanend_time']));
+            $cleanstart_time = date('H:i', strtotime($inputs['cleanstart_time']));
+            $cleanend_time = date('H:i', strtotime($inputs['cleanend_time']));
         } else {
             $cleanstart_time = '';
             $cleanend_time = '';
         }
 
-        $email_user_link = '';
-        $conference_endpoint = '';
+        $email_user_link = 0;
+        $conference_endpoint = 0;
         $teleconferance_name = '';
         $conference_management = 0;
         if ($inputs['conference_management'] == 1) {
@@ -496,8 +504,8 @@ class OfficeAssetController extends Controller
             $email_user_link = isset($inputs['email_user_link']) ? 1 : 0;
         } else {
             $conference_management = 0;
-            $email_user_link = '';
-            $conference_endpoint = '';
+            $email_user_link = 0;
+            $conference_endpoint = 0;
             $teleconferance_name = '';
         }
 
@@ -545,6 +553,13 @@ class OfficeAssetController extends Controller
         }
 
         if ($OfficeAsset->save()) {
+
+            if ($OfficeAsset->document_attech == 0) {
+
+                $OfficeAsset->document_attech = null;
+                $OfficeAsset->save();
+            }
+
             $response = [
                 'success' => true,
                 'message' => 'Office Asset Updated success',
@@ -1186,6 +1201,183 @@ class OfficeAssetController extends Controller
         ];
 
         return response()->json($response, 200);
+    }
+
+    public function view_contract_template(Request $request, $office_assets_id)
+    {
+        $office_assets = OfficeAsset::find($office_assets_id);
+        if ($office_assets) {
+            $building = Building::find($office_assets->building_id);
+            $office = Office::find($office_assets->office_id);
+            $contract = ContractDocuments::leftJoin("contract_templates", "contract_templates.contract_document_id", "contract_documents.id")->where('contract_templates.contract_restrict_seat', 1)->get();
+
+            $user_contract = UserContract::get();
+
+            $user_list = User::where('role', 2)->get();
+
+            $response = [
+                'success' => true,
+                'html' => view($this->viewPath . 'resend_contract', compact('building', 'office_assets', 'office', 'office_assets_id', 'contract', 'user_list'))->render(),
+            ];
+
+            return response()->json($response, 200);
+
+        } else {
+            $response = [
+                'success' => false,
+            ];
+
+            return response()->json($response, 400);
+        }
+    }
+
+    /**
+     * [send_request description]
+     * @param  Request $request    [description]
+     * @param  [type]  $assetId [description]
+     * @return [type]              [description]
+     */
+    public function send_contract_signature_request(Request $request)
+    {
+        $inputs = $request->all();
+
+        $rules = [
+            'user_id' => 'required',
+            'document_id' => 'required',
+            'office_asset_id' => 'required',
+        ];
+
+        $messages = [];
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            $response = [
+                'success' => false,
+                'errors' => $validator->errors()->toArray(),
+            ];
+            return response()->json($response, 400);
+        }
+
+        if ($inputs['document_id']) {
+            $UserContract = UserContract::where('user_id', $inputs['user_id'])->where('document_id', $inputs['document_id'])->first();
+
+            if ($UserContract) {
+                //$resend_envolop = $this->resend_request($inputs['document_id'], $UserContract->envolop_id);
+                $response = [
+                    'success' => true,
+                    'message' => 'Contract already sent to user',
+                ];
+                return response()->json($response, 200);
+
+            } else {
+                $envelope_id = $this->send_request($inputs['document_id'], $inputs['user_id']);
+
+                $UserContract = new UserContract();
+                $UserContract->user_id = $inputs['user_id'];
+                $UserContract->document_id = $inputs['document_id'];
+                if ($envelope_id) {
+                    $UserContract->envolop_id = $envelope_id;
+                }
+
+                if ($UserContract->save()) {
+                    $response = [
+                        'success' => true,
+                        'message' => 'Contract Added successfull, Please check your Email for signature',
+                    ];
+                    return response()->json($response, 200);
+                } else {
+                    $response = [
+                        'success' => true,
+                        'message' => 'Contract Not Added successfull Please Contact Admin',
+                    ];
+                    return response()->json($response, 400);
+                }
+
+            }
+        }
+
+    }
+
+    public function send_request($document_id, $user_id)
+    {
+
+        if ($document_id) {
+
+            $document = ContractDocuments::where('id', $document_id)->first();
+            $provider_name = ApiConnections::find($document->api_connection_id);
+            if ($provider_name->api_provider == 1 and isset($provider_name->username) and $provider_name->username != '' && $provider_name->password != '' && $provider_name->integrator_key != '' && $provider_name->host != '') {
+                # Create the document model
+                $username = $provider_name->username;
+                $password = $provider_name->password;
+                $integrator_key = $provider_name->integrator_key;
+                $host = $provider_name->host;
+
+                $docusign = new \DocuSign\Rest\Client([
+                    'username' => $username,
+                    'password' => $password,
+                    'integrator_key' => $integrator_key,
+                    'host' => $host,
+                ]);
+
+                $users = User::find($user_id);
+
+                $envelope_definition = $docusign->envelopeDefinition([
+                    'status' => 'sent', 'template_id' => $document->template_id, 'email_subject' => 'Please Sign This Document',
+                ]);
+
+                $signer = $docusign->TemplateRole([
+                    'email' => $users->email, 'name' => $users->user_name,
+                    'role_name' => 'signer',
+                ]);
+
+                $envelope_definition->setTemplateRoles([$signer]);
+
+                $results = $docusign->envelopes->createEnvelope($envelope_definition);
+
+                $envelope_id = $results->getEnvelopeId();
+                return $envelope_id;
+            }
+
+        } else {
+            return false;
+        }
+
+    }
+
+    public function resend_request($document_id, $envelop_id)
+    {
+
+        if ($document_id) {
+
+            $document = ContractDocuments::where('id', $document_id)->first();
+            $provider_name = ApiConnections::find($document->api_connection_id);
+            if ($provider_name->api_provider == 1 and isset($provider_name->username) and $provider_name->username != '' && $provider_name->password != '' && $provider_name->integrator_key != '' && $provider_name->host != '') {
+                # Create the document model
+                $username = $provider_name->username;
+                $password = $provider_name->password;
+                $integrator_key = $provider_name->integrator_key;
+                $host = $provider_name->host;
+
+                $docusign = new \DocuSign\Rest\Client([
+                    'username' => $username,
+                    'password' => $password,
+                    'integrator_key' => $integrator_key,
+                    'host' => $host,
+                ]);
+
+                $envelope_definition = $docusign->envelopeDefinition([
+                    'status' => 'sent', 'template_id' => $document->template_id,
+                ]);
+
+                $results = $docusign->envelopes->updateRecipients($envelop_id);
+
+                return $results;
+            }
+
+        } else {
+            return false;
+        }
+
     }
 
 }

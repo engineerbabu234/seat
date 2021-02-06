@@ -6,7 +6,9 @@ use App\Helpers\ApiHelper;
 use App\Helpers\ImageHelper;
 use App\Http\Controllers\Controller;
 use App\Mail\NotifyMail;
+use App\Models\ApiConnections;
 use App\Models\Building;
+use App\Models\ContractTemplates;
 use App\Models\Office;
 use App\Models\OfficeAsset;
 use App\Models\OfficeImage;
@@ -17,6 +19,7 @@ use App\Models\ReserveSeat;
 use Illuminate\Validation\Rule;
 use App\Models\Seat;
 use App\Models\User;
+use App\Models\UserContract;
 use App\Models\UserExamHistory;
 use Auth;
 use DB;
@@ -785,6 +788,8 @@ class HomeController extends Controller
             if (!isset($ReserveSeat) and $ReserveSeat == '') {
 
                 $restrictions_ids = array();
+                $contract_ids = array();
+                $has_contract = array();
                 $has_exam = array();
 
                 if (isset($office_assets_info) and $office_assets_info->quesionaire_id != '') {
@@ -820,6 +825,58 @@ class HomeController extends Controller
                     }
                 }
 
+                if (isset($office_assets_info) and $office_assets_info->document_attech != '') {
+
+                    $qcolumns = ['contract_templates.id', 'contract_templates.contract_id', 'contract_templates.contract_restrict_seat', 'contract_templates.contract_document_id'];
+
+                    $ContractTemplates = ContractTemplates::select($qcolumns)->whereIn('contract_document_id', json_decode($office_assets_info->document_attech))->get();
+
+                    $contract_status = array();
+                    foreach ($ContractTemplates as $ckey => $cvalue) {
+
+                        if ($cvalue->contract_restrict_seat == 1 && $cvalue->contract_document_id != '') {
+
+                            $usercontrat_info = UserContract::where('user_id', Auth::User()->id)->get();
+
+                            $UserContract = UserContract::where('document_id', $cvalue->contract_document_id)->where('user_id', Auth::User()->id)->first();
+
+                            $provider_name = ApiConnections::find($cvalue->contract_id);
+
+                            if ($usercontrat_info->count() > 0 && $ContractTemplates->count() == $usercontrat_info->count()) {
+
+                                $username = $provider_name->username;
+                                $password = $provider_name->password;
+                                $integrator_key = $provider_name->integrator_key;
+                                $host = $provider_name->host;
+
+                                $docusign = new \DocuSign\Rest\Client([
+                                    'username' => $username,
+                                    'password' => $password,
+                                    'integrator_key' => $integrator_key,
+                                    'host' => $host,
+                                ]);
+                                if (isset($UserContract->envolop_id) && $UserContract->envolop_id != '') {
+                                    $envelopeSummary = $docusign->envelopes->getEnvelope($UserContract->envolop_id);
+
+                                    if ($envelopeSummary->getStatus() != 'completed') {
+
+                                        $contract_ids[$ckey] = $cvalue->id;
+
+                                    }
+
+                                }
+
+                            } else {
+
+                                $contract_ids[$ckey] = $cvalue->id;
+
+                            }
+                        }
+
+                    }
+
+                }
+
                 if ($restrictions_ids) {
                     $qscolumns = ['quesionaire.id', 'quesionaire.title'];
                     $Quesionaireinfo = Quesionaire::select($qscolumns)->whereIn('id', $restrictions_ids)->get();
@@ -837,6 +894,15 @@ class HomeController extends Controller
 
                     return response()->json($response, 400);
 
+                } elseif ($contract_ids) {
+
+                    $modal_type = "contract_failed";
+                    $response = [
+                        'success' => false,
+                        'html' => view('modal_content', compact('modal_type'))->render(),
+                    ];
+
+                    return response()->json($response, 400);
                 } else {
                     $unique_id = 'RA' . time() . ApiHelper::otpGenrator(4);
                     $ReserveSeats = new ReserveSeat();
@@ -1407,7 +1473,7 @@ class HomeController extends Controller
                 $whereStr .= " OR buildings.building_name like '%{$search}%' ";
             }
 
-            $columns = ['office_asset.id', 'office_asset.is_covid_test', 'office_asset.asset_type', 'office_asset.office_id', 'office_asset.updated_at', 'offices.office_name as office_name', 'buildings.building_name as building_name', 'office_asset.title', 'office_asset.description', 'office_asset.quesionaire_id', 'seats.booking_mode', 'seats.seat_id', 'seats.seat_no', 'seats.office_asset_id', 'seats.monitor', 'seats.dokingstation', 'seats.adjustableheight', 'seats.privatespace', 'seats.wheelchair', 'seats.usbcharger', 'seats.seat_type', 'seats.privacy', 'seats.underground', 'seats.pole_information', 'seats.wheelchair_accessable', 'seats.parking_difficulty', 'seats.whiteboard_avaialble', 'seats.teleconference_screen', 'seats.is_white_board_interactive', 'seats.telephone', 'seats.telephone_number', 'seats.number_of_spare_power_sockets', 'seats.kanban_board', 'seats.whiteboard', 'seats.interactive_whiteboard', 'seats.standing_only', 'seats.telecomference_screen', 'seats.meeting_indicator_mounted_on_wall'];
+            $columns = ['office_asset.id', 'office_asset.is_covid_test', 'office_asset.asset_type', 'office_asset.office_id', 'office_asset.updated_at', 'offices.office_name as office_name', 'buildings.building_name as building_name', 'office_asset.title', 'office_asset.description', 'office_asset.quesionaire_id', 'office_asset.document_attech', 'seats.booking_mode', 'seats.seat_id', 'seats.seat_no', 'seats.office_asset_id', 'seats.monitor', 'seats.dokingstation', 'seats.adjustableheight', 'seats.privatespace', 'seats.wheelchair', 'seats.usbcharger', 'seats.seat_type', 'seats.privacy', 'seats.underground', 'seats.pole_information', 'seats.wheelchair_accessable', 'seats.parking_difficulty', 'seats.whiteboard_avaialble', 'seats.teleconference_screen', 'seats.is_white_board_interactive', 'seats.telephone', 'seats.telephone_number', 'seats.number_of_spare_power_sockets', 'seats.kanban_board', 'seats.whiteboard', 'seats.interactive_whiteboard', 'seats.standing_only', 'seats.telecomference_screen', 'seats.meeting_indicator_mounted_on_wall'];
 
             $officeAssets = OfficeSeat::select($columns)->leftJoin("office_asset", "office_asset.id", "seats.office_asset_id")->leftJoin("offices", "offices.office_id", "office_asset.office_id")->leftJoin("buildings", "buildings.building_id", "office_asset.building_id")->whereNull('buildings.deleted_at')->whereNull('offices.deleted_at')->whereNull('office_asset.deleted_at')->whereRaw($whereStr, $whereParams);
 
@@ -1592,6 +1658,14 @@ class HomeController extends Controller
                     $quesionaire_total = 0;
                 }
 
+                if (isset($value->document_attech) && $value->document_attech != '') {
+                    $contract_info = explode(",", $value->document_attech);
+                    $contract_total = count($contract_info);
+
+                } else {
+                    $contract_total = 0;
+                }
+
                 if ($value->booking_mode == 2) {
                     $booking_mode = '<button title="Auto" class="btn btn-success booking_mode_css" style="border-radius: 50px;background:#83AB4F;">A</button>';
                 } else {
@@ -1612,6 +1686,7 @@ class HomeController extends Controller
                 $final[$key]['status'] = $booking_status;
                 $final[$key]['booking_mode'] = $booking_mode;
                 $final[$key]['total_quesionaire'] = $quesionaire_total;
+                $final[$key]['contract_total'] = $contract_total;
                 $final[$key]['office_asset_id'] = $value->office_asset_id;
                 $final[$key]['asset_type'] = $value->asset_type;
                 $final[$key]['underground'] = $value->underground;

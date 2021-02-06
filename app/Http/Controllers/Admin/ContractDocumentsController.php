@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ApiHelper;
 use App\Http\Controllers\Controller;
 use App\Models\Building;
+use App\Models\ContractDocuments;
 use App\Models\Office;
 use App\Models\OfficeAsset;
 use Illuminate\Http\Request;
@@ -34,7 +36,7 @@ class ContractDocumentsController extends Controller
             $columns = ['contract_documents.id', 'contract_documents.document_title', 'contract_documents.document_name', 'contract_documents.document_description'];
 
             if (isset($office_asset_id) && $office_asset_id != "") {
-                $ContractDocuments = ContractDocuments::select($columns)->leftJoin("quesionaire", "quesionaire.id", "contract_documents.office_asset_id")->whereRaw($whereStr, $whereParams);
+                $ContractDocuments = ContractDocuments::select($columns)->leftJoin("office_asset", "office_asset.id", "contract_documents.office_asset_id")->whereRaw($whereStr, $whereParams);
                 $ContractDocuments = $ContractDocuments->where("contract_documents.office_asset_id", $office_asset_id);
 
             }
@@ -67,9 +69,9 @@ class ContractDocumentsController extends Controller
 
                 $final[$key]['number_key'] = $number_key;
                 $final[$key]['id'] = $value->id;
-                $final[$key]['document_description'] = $value->document_description;
                 $final[$key]['document_title'] = $value->document_title;
                 $final[$key]['document_name'] = $value->document_name;
+                $final[$key]['document_description'] = $value->document_description;
                 $number_key++;
             }
 
@@ -92,9 +94,10 @@ class ContractDocumentsController extends Controller
     public function store(Request $request)
     {
         $inputs = $request->all();
+
         $rules = [
             'document_title' => 'required',
-            'document_name' => 'required:mimes:doc,pdf,docx',
+            'document_name' => 'required|mimes:doc,pdf,docx',
             'office_asset_id' => 'required',
         ];
 
@@ -109,15 +112,30 @@ class ContractDocumentsController extends Controller
             return response()->json($response, 400);
         }
 
-        $assets_id = $this->
-            $document_name = null;
         if ($request->hasFile('document_name')) {
+            $file = $request->file('document_name');
             $office_assets = OfficeAsset::find($inputs['office_asset_id']);
             $building = Building::find($office_assets->building_id);
             $office = Office::find($office_assets->office_id);
+            $document_path = public_path() . '/uploads/documents/';
+            $filename = ApiHelper::getUniqueFileName() . '.' . $request->file('document_name')->extension();
+            $building_path = $document_path . (str_replace(' ', '_', $building->building_name));
 
-            $filename = time() . '.' . $request->file('document_name')->extension();
-            $filePath = public_path() . '/'.(str_replace(' ','_', $building->building_name). '/'.(str_replace(' ','_', $office->office_name). '/'.(str_replace(' ','_', $office_assets->name));
+            $office_path = $document_path . (str_replace(' ', '_', $building->building_name)) . '/' . (str_replace(' ', '_', $office->office_name));
+            $assets_path = $document_path . (str_replace(' ', '_', $building->building_name)) . '/' . (str_replace(' ', '_', $office->office_name)) . '/' . (str_replace(' ', '_', $office_assets->title));
+            if (!file_exists($building_path)) {
+                ApiHelper::makeDir($building_path, true);
+            }
+
+            if (!file_exists($office_path)) {
+                ApiHelper::makeDir($office_path, true);
+            }
+
+            if (!file_exists($assets_path)) {
+                ApiHelper::makeDir($assets_path, true);
+
+            }
+            $filePath = $assets_path;
             $file->move($filePath, $filename);
         }
 
@@ -147,12 +165,52 @@ class ContractDocumentsController extends Controller
      */
     public function edit($id)
     {
-        $ContractDocuments = ContractDocuments::find($id);
+        $document = ContractDocuments::find($id);
+
+        $office_assets = OfficeAsset::find($document->office_asset_id);
+        $building = Building::find($office_assets->building_id);
+        $office = Office::find($office_assets->office_id);
+        $document_path = public_path() . '/uploads/documents/';
+        $assets_path = $document_path . (str_replace(' ', '_', $building->building_name)) . '/' . (str_replace(' ', '_', $office->office_name)) . '/' . (str_replace(' ', '_', $office_assets->title));
+        $path = public_path($assets_path . '/' . $document->document_name);
 
         $response = [
             'success' => true,
-            'html' => view('admin.contract_documents.edit', compact('ContractDocuments'))->render(),
+            'html' => view('admin.contract_document.edit', compact('document', 'assets_path'))->render(),
         ];
+
+        return response()->json($response, 200);
+
+    }
+
+    /**
+     * [edit description]
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
+    public function document_details($id)
+    {
+
+        $office_assets = OfficeAsset::find($id);
+        $columns = ['contract_documents.id', 'contract_templates.contract_document_id', 'contract_documents.document_title', 'contract_documents.document_name', 'contract_documents.document_description'];
+
+        $documents = ContractDocuments::select($columns)->leftJoin("contract_templates", "contract_templates.contract_document_id", "contract_documents.id")->whereNotNull('api_connection_id')->where("contract_templates.contract_restrict_seat", 1)->get();
+
+        if (isset($office_assets->document_attech) && $office_assets->document_attech != '') {
+
+            $document_attech = array_values(json_decode($office_assets->document_attech, true));
+            $response = [
+                'success' => true,
+                'document_attech' => $document_attech,
+                'html' => view('admin.contract_document.view_documents', compact('documents', 'id'))->render(),
+            ];
+
+        } else {
+            $response = [
+                'success' => true,
+                'html' => view('admin.contract_document.view_documents', compact('documents', 'id'))->render(),
+            ];
+        }
 
         return response()->json($response, 200);
 
@@ -169,7 +227,7 @@ class ContractDocumentsController extends Controller
         $inputs = $request->all();
         $rules = [
             'document_title' => 'required',
-            'document_name' => 'required:mimes:doc,pdf,docx',
+            'document_name' => 'mimes:doc,pdf,docx',
             'office_asset_id' => 'required',
         ];
 
@@ -185,9 +243,36 @@ class ContractDocumentsController extends Controller
         }
 
         $ContractDocuments = ContractDocuments::find($id);
-        $ContractDocuments->user_id = Auth::id();
+
+        if ($request->hasFile('document_name')) {
+            $file = $request->file('document_name');
+            $office_assets = OfficeAsset::find($inputs['office_asset_id']);
+            $building = Building::find($office_assets->building_id);
+            $office = Office::find($office_assets->office_id);
+            $document_path = public_path() . '/uploads/documents/';
+            $filename = ApiHelper::getUniqueFileName() . '.' . $request->file('document_name')->extension();
+            $building_path = $document_path . (str_replace(' ', '_', $building->building_name));
+
+            $office_path = $document_path . (str_replace(' ', '_', $building->building_name)) . '/' . (str_replace(' ', '_', $office->office_name));
+            $assets_path = $document_path . (str_replace(' ', '_', $building->building_name)) . '/' . (str_replace(' ', '_', $office->office_name)) . '/' . (str_replace(' ', '_', $office_assets->title));
+            if (!file_exists($building_path)) {
+                ApiHelper::makeDir($building_path, true);
+            }
+
+            if (!file_exists($office_path)) {
+                ApiHelper::makeDir($office_path, true);
+            }
+
+            if (!file_exists($assets_path)) {
+                ApiHelper::makeDir($assets_path, true);
+
+            }
+            $filePath = $assets_path;
+            $file->move($filePath, $filename);
+            $ContractDocuments->document_name = $filename;
+        }
+
         $ContractDocuments->document_title = $inputs['document_title'];
-        $ContractDocuments->document_name = $inputs['document_name'];
         $ContractDocuments->document_description = $inputs['document_description'];
         $ContractDocuments->office_asset_id = $inputs['office_asset_id'];
         if ($ContractDocuments->save()) {
@@ -217,5 +302,46 @@ class ContractDocumentsController extends Controller
         } else {
             return ['status' => 'failed', 'message' => 'Failed delete Contract Documents'];
         }
+    }
+
+    /**
+     * [save_documets_attech description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function save_documets_attech(Request $request)
+    {
+        $inputs = $request->all();
+
+        $rules = [
+            'document_attech' => 'required',
+
+        ];
+
+        $messages = [];
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            $response = [
+                'success' => false,
+                'errors' => $validator->errors()->toArray(),
+            ];
+            return response()->json($response, 400);
+        }
+
+        $document_attech_info = OfficeAsset::find($inputs['office_assets_id']);
+
+        $document_attech_info->document_attech = json_encode($inputs['document_attech']);
+        if ($document_attech_info->save()) {
+            $response = [
+                'success' => true,
+                'message' => 'Document Attech updated successfull',
+            ];
+        } else {
+            return back()->with('error', 'Document Attech updated failed,please try again');
+        }
+
+        return response()->json($response, 200);
+
     }
 }
