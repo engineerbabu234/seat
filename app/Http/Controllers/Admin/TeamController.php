@@ -25,6 +25,12 @@ class TeamController extends Controller
             $teams = Team::whereNull('deleted_at')
                 ->where('user_id',auth::id())
                 ->get();
+            if($teams->toArray()){
+               foreach($teams as $key => $team){
+                   $users = DB::table('team_users')->where('team_id',$team->id)->count();
+                   $teams[$key]->number_of_users = $users;
+               }
+            }
             return datatables()->of($teams)->make(true);
         }
         $totalTeams = Team::whereNull('deleted_at')

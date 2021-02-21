@@ -151,11 +151,7 @@
 				columns: [
 					{ data: 'id', name: 'id' },
 					{ data: 'title', name: 'title' },
-					{ data: 'users', name: 'users',    
-	   			   	     render: function (data, type, column, meta) {
-                              return '10';
-				         }
-					 },
+					{ data: 'number_of_users', name: 'number_of_users'},
 					{ data: 'created_at', name: 'created_at'},
 					{ data: 'action', name: 'action' , 
 			   	       render: function (data, type, column, meta) {
