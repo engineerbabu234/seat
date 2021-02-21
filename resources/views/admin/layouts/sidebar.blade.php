@@ -89,6 +89,11 @@ $Admin = \App\Models\User::where('role','1')->first();
 						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='seat_label')){{'active'}}@endif" href="{{url('admin/seat_label')}}"><img src="{{asset('admin_assets')}}/images/scan.png" class="menu_icons  wh-img"> <span>Contactless Requests</span></a>
 					</li>
 
+
+					<li>
+					<a class="@if((substr(strrchr(url()->current(),"/"),1)=='contract_templates')){{'active'}}@endif" href="{{url('admin/contract_templates')}}"><img src="{{asset('admin_assets')}}/images/contract.png" class="menu_icons  wh-img"><span> Contract Templates</span></a>
+					</li>
+
 					<li>
 						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='apiconnections')){{'active'}}@endif" href="{{url('admin/apiconnections')}}"><img src="{{asset('admin_assets')}}/images/api.png" class="menu_icons  wh-img"> <span>Api Connections</span></a>
 					</li>

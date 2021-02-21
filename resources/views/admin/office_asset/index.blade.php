@@ -30,11 +30,12 @@
 										<th><span class="iconWrap iconSize_32" data-content="Office Name"  title="Office Name"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/offices.png" class="icon bl-icon" width="30" ></span></th>
 										<th><span class="iconWrap iconSize_32" data-content="Assets Name" title="Assets Name"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/assets.png" class="icon bl-icon" width="30" ></span> </th>
 										<th><span class="iconWrap iconSize_32" data-content="Total Seats" title="Total Seats"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/seat-no.png" class="icon bl-icon" width="30" ></span>  </th>
+										<th><span class="iconWrap iconSize_32" id="contract_template" title="Contract Template"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/contract.png" class="icon bl-icon" width="30" ></span>  </th>
 										<th><span class="iconWrap iconSize_32"  data-content="Quesionaire"  title="Quesionaire"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/questionarie.png" class="icon bl-icon" width="30" ></span>  </th>
-										<th><span class="iconWrap iconSize_32"  data-content="Document Upload"  title="Document Upload"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/document_upload.png" class="icon bl-icon" width="30" ></span>  </th>
 										<th><span class="iconWrap iconSize_32" title="Office Assets Type"  title="Status"  data-trigger="hover" id="assets_type" data-placement="left"><img src="{{asset('admin_assets')}}/images/objects.png" class="icon bl-icon" width="30" ></span> </th>
 										<th><span class="iconWrap iconSize_32" data-content="Update Date"  title="Update Date"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/order_date.png" class="icon bl-icon" width="30" ></span> </th>
 										<th nowrap><span class="iconWrap iconSize_32" data-content="Action"  title="Action"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/action.png" class="icon bl-icon" width="30" ></span></th>
+										<th nowrap><span class="iconWrap iconSize_32" data-content="Contract Template"  title="Contract Template"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/contract_template.png" class="icon bl-icon" width="30" ></span></th>
 									</tr>
 								</thead>
 								<tbody>
@@ -337,6 +338,21 @@
 				</div>
 			</div>
 		</div>
+
+		<!-- Contract Template -->
+		<div class="modal" id="contract_template_modal">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Contract Template</h4>
+						<button type="button" class="close " data-dismiss="modal">&times;</button>
+					</div>
+					<div class="modal-body" id="contract_tempalte_info">
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<!-- End display assets -->
 		<!-- Start Display assets -->
 		<div class="modal" id="assets_seat_modal">
@@ -375,7 +391,7 @@
 				</div>
 			</div>
 		</div>
-		<div class="modal"   id="question_logic_modal">
+		<div class="modal" id="question_logic_modal">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
 					<!-- Modal Header -->
@@ -385,6 +401,21 @@
 					</div>
 					<!-- Modal body -->
 					<div class="modal-body" id="question_logic_info">
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="modal" id="view_document">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<!-- Modal Header -->
+					<div class="modal-header">
+						<h4 class="modal-title">Attech Contract Template : to Office Assets</h4>
+						<button type="button" class="close " data-dismiss="modal">&times;</button>
+					</div>
+					<!-- Modal body -->
+					<div class="modal-body" id="view_documents">
 					</div>
 				</div>
 			</div>
@@ -526,6 +557,14 @@ closer than this limit</p>
 			</div>
 		</div>
 
+		<div id="contract_template_pophover">
+			<div class="row">
+				<div class="col-sm-12">
+					<p> This represents the contract templates attached to the office asset.</p>
+				</div>
+			</div>
+		</div>
+
 		<div id="assets_type_pophover">
 			<div class="row">
 				<div class="col-sm-12">
@@ -610,6 +649,7 @@ closer than this limit</p>
 			<script src="{{asset('admin_assets/')}}/js/jquery-ui.js"></script>
 			<script src="{{asset('admin_assets/')}}/js/slider.js"></script>
 			<script type="text/javascript" src="{{URL::asset('admin_assets/pages')}}/office_assets/index.js"></script>
+			<script type="text/javascript" src="{{URL::asset('admin_assets/pages')}}/office_assets/document.js"></script>
 			<script type="text/javascript">
 				$(function() {
 			var drEvent = $('.dropify-event').dropify();

@@ -33,7 +33,7 @@ class ApiConnectionsController extends Controller
 
             }
 
-            $columns = ['api_connections.id', 'api_connections.updated_at', 'api_connections.created_at', 'api_connections.api_title', 'api_connections.api_type', 'api_connections.api_key', 'api_connections.api_secret', '.api_connections.api_provider'];
+            $columns = ['api_connections.id', 'api_connections.updated_at', 'api_connections.created_at', 'api_connections.api_title', 'api_connections.api_type', 'api_connections.api_key', 'api_connections.api_secret', 'api_connections.api_provider', 'api_connections.username', 'api_connections.password', 'api_connections.integrator_key', 'api_connections.host'];
 
             $ApiConnections = ApiConnections::select($columns)->whereRaw($whereStr, $whereParams);
             $ApiConnections = $ApiConnections->orderBy('id', 'desc');
@@ -78,6 +78,10 @@ class ApiConnectionsController extends Controller
                 $final[$key]['api_title'] = $value->api_title;
                 $final[$key]['api_key'] = $value->api_key;
                 $final[$key]['api_secret'] = $value->api_secret;
+                $final[$key]['username'] = $value->username;
+                $final[$key]['password'] = $value->password;
+                $final[$key]['integrator_key'] = $value->integrator_key;
+                $final[$key]['host'] = $value->host;
                 $final[$key]['updated_at'] = date('d/m/Y', strtotime($value->updated_at));
                 $number_key++;
             }
@@ -105,9 +109,15 @@ class ApiConnectionsController extends Controller
             'api_type' => 'required',
             'api_provider' => 'required',
             'api_title' => 'required',
-            'api_key' => 'required',
-            'api_secret' => 'required',
+
         ];
+
+        if (($inputs['api_type'] == '2' or $inputs['api_provider'] == '1')) {
+            $rules['username'] = 'required';
+            $rules['password'] = 'required';
+            $rules['integrator_key'] = 'required';
+            $rules['host'] = 'required';
+        }
 
         $messages = [];
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -127,6 +137,10 @@ class ApiConnectionsController extends Controller
         $ApiConnections->api_description = $inputs['api_description'];
         $ApiConnections->api_key = $inputs['api_key'];
         $ApiConnections->api_secret = $inputs['api_secret'];
+        $ApiConnections->username = $inputs['username'];
+        $ApiConnections->password = $inputs['password'];
+        $ApiConnections->integrator_key = $inputs['integrator_key'];
+        $ApiConnections->host = $inputs['host'];
         if ($ApiConnections->save()) {
             $response = [
                 'success' => true,
@@ -154,6 +168,8 @@ class ApiConnectionsController extends Controller
         $api_type = array('1' => 'Teleconference', '2' => 'Contract');
         $response = [
             'success' => true,
+            'api_type' => $apiconnections->api_type,
+            'api_provider' => $apiconnections->api_provider,
             'html' => view('admin.apiconnections.edit', compact('apiconnections', 'api_teleconference', 'api_contract', 'api_type'))->render(),
         ];
 
@@ -174,9 +190,15 @@ class ApiConnectionsController extends Controller
             'api_type' => 'required',
             'api_provider' => 'required',
             'api_title' => 'required',
-            'api_key' => 'required',
-            'api_secret' => 'required',
+
         ];
+
+        if (($inputs['api_type'] == '2' or $inputs['api_provider'] == '1')) {
+            $rules['username'] = 'required';
+            $rules['password'] = 'required';
+            $rules['integrator_key'] = 'required';
+            $rules['host'] = 'required';
+        }
 
         $messages = [];
         $validator = Validator::make($request->all(), $rules, $messages);
@@ -196,6 +218,10 @@ class ApiConnectionsController extends Controller
         $ApiConnections->api_description = $inputs['api_description'];
         $ApiConnections->api_key = $inputs['api_key'];
         $ApiConnections->api_secret = $inputs['api_secret'];
+        $ApiConnections->username = $inputs['username'];
+        $ApiConnections->password = $inputs['password'];
+        $ApiConnections->integrator_key = $inputs['integrator_key'];
+        $ApiConnections->host = $inputs['host'];
         if ($ApiConnections->save()) {
             $response = [
                 'success' => true,
@@ -245,6 +271,53 @@ class ApiConnectionsController extends Controller
         ];
 
         return response()->json($response, 200);
+    }
+
+    public function check_api(Request $request)
+    {
+
+        $inputs = $request->all();
+
+        if (($inputs['api_type'] == '2' and $inputs['api_provider'] == '1')) {
+            $rules['username'] = 'required';
+            $rules['password'] = 'required';
+            $rules['integrator_key'] = 'required';
+            $rules['host'] = 'required';
+        }
+
+        $messages = [];
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            $response = [
+                'success' => false,
+                'errors' => $validator->errors()->toArray(),
+            ];
+            return response()->json($response, 400);
+        }
+
+        $docusign = new \DocuSign\Rest\Client([
+            'username' => $inputs['username'],
+            'password' => $inputs['password'],
+            'integrator_key' => $inputs['integrator_key'],
+            'host' => $inputs['host'],
+        ]);
+
+        if (is_numeric($docusign->getAccountId())) {
+            $response = [
+                'success' => true,
+                'message' => 'Api Connection successfull',
+            ];
+            return response()->json($response, 200);
+        } else {
+            $response = [
+                'success' => false,
+                'message' => 'Api Connection failed',
+            ];
+
+            return response()->json($response, 400);
+        }
+
     }
 
 }

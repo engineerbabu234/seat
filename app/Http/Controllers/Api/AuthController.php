@@ -14,6 +14,7 @@ use App\Models\VehicleType;
 use Hash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Response;
 use Validator;
@@ -139,7 +140,7 @@ class AuthController extends Controller
         //===================Image Upload Hear============
         $profile_image = null;
         if ($request->hasFile('profile_image')) {
-            $profile_image = str_random('10') . '_' . time() . '.' . request()->profile_image->getClientOriginalExtension();
+            $profile_image = Str::random('10') . '_' . time() . '.' . request()->profile_image->getClientOriginalExtension();
             request()->profile_image->move(public_path('uploads/profiles/'), $profile_image);
         }
 
@@ -246,7 +247,7 @@ class AuthController extends Controller
                 } else {
                     $ext1 = 'png';
                 }
-                $vehicle_image = str_random('10') . '_' . time() . '.' . $ext1;
+                $vehicle_image = Str::random('10') . '_' . time() . '.' . $ext1;
                 request()->vehicle_image->move(public_path('uploads/vehicle_image/'), $vehicle_image);
             }
 
@@ -257,7 +258,7 @@ class AuthController extends Controller
                 } else {
                     $ext2 = 'png';
                 }
-                $selfie_image = str_random('10') . '_' . time() . '.' . $ext2;
+                $selfie_image = Str::random('10') . '_' . time() . '.' . $ext2;
                 request()->selfie_image->move(public_path('uploads/selfie_image/'), $selfie_image);
             }
 
@@ -268,7 +269,7 @@ class AuthController extends Controller
                 } else {
                     $ext3 = 'png';
                 }
-                $image1 = str_random('10') . '_' . time() . '.' . $ext3;
+                $image1 = Str::random('10') . '_' . time() . '.' . $ext3;
                 request()->image1->move(public_path('uploads/document/'), $image1);
             }
 
@@ -279,7 +280,7 @@ class AuthController extends Controller
                 } else {
                     $ext4 = 'png';
                 }
-                $image2 = str_random('10') . '_' . time() . '.' . $ext4;
+                $image2 = Str::random('10') . '_' . time() . '.' . $ext4;
                 request()->image2->move(public_path('uploads/document/'), $image2);
             }
 
@@ -290,7 +291,7 @@ class AuthController extends Controller
                 } else {
                     $ext5 = 'png';
                 }
-                $image3 = str_random('10') . '_' . time() . '.' . $ext5;
+                $image3 = Str::random('10') . '_' . time() . '.' . $ext5;
                 request()->image3->move(public_path('uploads/document/'), $image3);
             }
 
@@ -301,7 +302,7 @@ class AuthController extends Controller
                 } else {
                     $ext6 = 'png';
                 }
-                $image4 = str_random('10') . '_' . time() . '.' . $ext6;
+                $image4 = Str::random('10') . '_' . time() . '.' . $ext6;
                 request()->image4->move(public_path('uploads/document/'), $image4);
             }
             $imageData = [];
@@ -534,7 +535,7 @@ class AuthController extends Controller
             //===================Image Upload Hear============
             $profile_image = null;
             if ($request->hasFile('profile_image')) {
-                $profile_image = str_random('10') . '_' . time() . '.' . request()->profile_image->getClientOriginalExtension();
+                $profile_image = Str::random('10') . '_' . time() . '.' . request()->profile_image->getClientOriginalExtension();
                 request()->profile_image->move(public_path('uploads/profiles/'), $profile_image);
             }
 

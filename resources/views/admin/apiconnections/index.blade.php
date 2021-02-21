@@ -79,6 +79,7 @@
 						 <span class="error" id="api_type_error"></span>
 						</div>
 						</div>
+
 						<div class="col-sm-6">
 						<div class="form-group">
 							<h6 class="sub-title"><span class="iconWrap iconSize_32" data-content="Api Provider" title="Api Provider"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/api-type.png" class="icon bl-icon" width="30" ></span> <span class="text-danger">*</span></h6>
@@ -89,21 +90,57 @@
 						 <span class="error" id="api_provider_error"></span>
 						</div>
 						</div>
+
 						<div class="col-sm-12">
-						<div class="form-group">
-							<h6 class="sub-title"><span class="iconWrap iconSize_32" data-content="Api Description" title="Description"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/description.png" class="icon bl-icon" width="30" ></span>  </h6>
-							 <textarea class="form-control" name="api_description" id="api_description"></textarea>
-							 <span class="error" id="api_description_error"></span>
+							<div class="form-group">
+								<h6 class="sub-title"><span class="iconWrap iconSize_32" data-content="Api Description" title="Description"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/description.png" class="icon bl-icon" width="30" ></span>  </h6>
+								 <textarea class="form-control" name="api_description" id="api_description"></textarea>
+								 <span class="error" id="api_description_error"></span>
+							</div>
 						</div>
-						</div>
+
 						<div class="col-sm-6">
+							<div class="form-group">
+								<h6 class="sub-title"><span class="iconWrap iconSize_32" data-content="Username" title="Username"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/user-name.png" class="icon bl-icon" width="30" ></span>  </h6>
+								<input type="text" class="form-control" placeholder="Username" name="username"  >
+								 <span class="error" id="username_error"></span>
+							</div>
+						</div>
+
+						<div class="col-sm-6">
+							<div class="form-group">
+								<h6 class="sub-title"><span class="iconWrap iconSize_32" data-content="Password" title="Password"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/password.png" class="icon bl-icon" width="30" ></span>  </h6>
+								<input type="text" class="form-control" placeholder="Password" name="password" required>
+								 <span class="error" id="password_error"></span>
+							</div>
+						</div>
+
+						<div class="col-sm-6">
+							<div class="form-group">
+								<h6 class="sub-title"><span class="iconWrap iconSize_32" title="Integrator Key"  data-trigger="hover" data-content="Integrator Key" data-placement="left"><img src="{{asset('admin_assets')}}/images/secrect_key.png" class="icon bl-icon" width="25" ></span>  </h6>
+								<input type="text" class="form-control" placeholder="Integrator Key" name="integrator_key"  >
+								 <span class="error" id="integrator_key_error"></span>
+							</div>
+						</div>
+
+						<div class="col-sm-6">
+							<div class="form-group">
+								<h6 class="sub-title"><span class="iconWrap iconSize_32" title="Host"  data-trigger="hover" data-content="Host" data-placement="left"><img src="{{asset('admin_assets')}}/images/host.png" class="icon bl-icon" width="25" ></span>  </h6>
+								<input type="text" class="form-control" placeholder="Host" name="host"  >
+								 <span class="error" id="host_error"></span>
+							</div>
+						</div>
+
+
+
+						<div class="col-sm-4">
 						<div class="form-group">
 							<h6 class="sub-title"><span class="iconWrap iconSize_32" data-content="Api Title" title="Title"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/Name.png" class="icon bl-icon" width="30" ></span>  <span class="text-danger">*</span></h6>
 							<input type="text" class="form-control" placeholder="Title" name="api_title" required>
 							 <span class="error" id="api_title_error"></span>
 						</div>
 						</div>
-						<div class="col-sm-6">
+						<div class="col-sm-4">
 						<div class="form-group">
 							<h6 class="sub-title"><span class="iconWrap iconSize_32" data-content="Api Key" title="Api Key"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/api-access.png" class="icon bl-icon" width="30" ></span> <span class="text-danger">*</span></h6>
 							<input type="text" class="form-control" placeholder="Api Key" name="api_key" required>
@@ -111,7 +148,7 @@
 						</div>
 						</div>
 
-						<div class="col-sm-6">
+						<div class="col-sm-4">
 						<div class="form-group">
 							<h6 class="sub-title"><span class="iconWrap iconSize_32" title="Api Secret"  data-trigger="hover" data-content="Api Secret" data-placement="left"><img src="{{asset('admin_assets')}}/images/secrect_key.png" class="icon bl-icon" width="25" ></span>  </h6>
 							<input type="text" class="form-control" placeholder="Api Secret" name="api_secret" required>
@@ -120,7 +157,13 @@
 						</div>
 
 						<div class="col-sm-12">
-						<div class="add-product-btn text-center">
+							<div class=" text-center">
+								<button class="btn btn-info test_apiconnections"> Ping</button>
+							</div>
+					 	</div>
+
+						<div class="col-sm-12">
+						<div class="  text-center">
 							<button class="btn btn-info add_apiconnections" type="submit"> Add Api Connections</button>
 						</div>
 					 </div>
@@ -309,6 +352,7 @@ $(document).on("click", ".edit_aapiconnections", function(e) {
 				var redrawtable = jQuery('#laravel_datatable').dataTable();
 				redrawtable.fnDraw();
 				$('.error').removeClass('text-danger');
+
 				$('#edit_apiconnections').modal('hide');
 			}
 		},
@@ -334,13 +378,22 @@ $(document).on("click", ".edit_apiconnections_request", function(e) {
 				$('#edit_apiconnections_info').html(response.html);
 
 				$('#edit_apiconnections').modal('show');
+				get_pophover()
 				get_api_provider();
+				if(response.api_type == 2 && response.api_provider == 1){
+					$('.test_apiconnections').show();
+					$('.edit_aapiconnections').hide();
+				} else {
+					$('.test_apiconnections').hide();
+					$('.edit_aapiconnections').show();
+				}
+
+
 
 			}
 		},
 	});
 });
-
 
 get_api_provider();
 function get_api_provider(){
@@ -377,6 +430,61 @@ $('.api_type').on('change', function(event) {
             }
 });
 }
+
+$('.test_apiconnections').hide();
+test_api_provider();
+function test_api_provider(){
+$('.api_provider').on('change', function(event) {
+
+	event.preventDefault();
+	var api_provider = jQuery(this).val();
+        if(api_provider == 1){
+        		$('.test_apiconnections').show();
+        		$('.add_apiconnections').hide();
+        } else{
+        		$('.test_apiconnections').hide();
+        		$('.add_apiconnections').show();
+        }
+});
+}
+
+
+
+
+$(document).on("click", ".test_apiconnections", function(e) {
+	e.preventDefault();
+	showPageSpinner();
+	var data = jQuery(this).parents('form:first').serialize();
+	$('.error').text('');;
+	$('.error').removeClass('text-danger');
+	$.ajax({
+		url: base_url + '/admin/apiconnections/check_api',
+		type: 'post',
+		dataType: 'json',
+		data: data,
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		},
+		error: function(response) {
+			if (response.status == 400) {
+				$.each(response.responseJSON.errors, function(k, v) {
+					$('#' + k + '_error').text(v);
+					$('#' + k + '_error').addClass('text-danger');
+				});
+			}
+			hidePageSpinner();
+		},
+		success: function(response) {
+			if (response.success) {
+				success_alert(response.message);
+				$('.test_apiconnections').hide();
+        		$('.add_apiconnections').show();
+        		$('.edit_aapiconnections').show();
+        		hidePageSpinner();
+			}
+		},
+	});
+});
 
  </script>
 @endpush
