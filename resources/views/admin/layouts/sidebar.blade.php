@@ -97,6 +97,15 @@ $Admin = \App\Models\User::where('role','1')->first();
 					<li>
 						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='apiconnections')){{'active'}}@endif" href="{{url('admin/apiconnections')}}"><img src="{{asset('admin_assets')}}/images/api.png" class="menu_icons  wh-img"> <span>Api Connections</span></a>
 					</li>
+
+					<li>
+					<a class="@if((substr(strrchr(url()->current(),"/"),1)=='notification_categories')){{'active'}}@endif" href="{{url('admin/notification_categories')}}"><img src="{{asset('admin_assets')}}/images/notification.png" class="menu_icons  wh-img"> <span>Notification categories</span></a>
+					</li>
+
+					<li>
+					<a class="@if((substr(strrchr(url()->current(),"/"),1)=='notification_questions')){{'active'}}@endif" href="{{url('admin/notification_questions')}}"><img src="{{asset('admin_assets')}}/images/question.png" class="menu_icons  wh-img"> <span>Notification Questions</span></a>
+					</li>
+
 					<li>
 						<a class="@if((substr(strrchr(url()->current(),"/"),1)=='settings')){{'active'}}@endif" href="{{url('admin/settings')}}"><img src="{{asset('admin_assets')}}/images/settings.png" class="menu_icons  wh-img"> <span>Settings</span></a>
 					</li>

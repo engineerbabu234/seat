@@ -31,7 +31,14 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
         Route::get('create/invitation/link', 'Admin\HomeController@createInvitatinLink')->name('create.invitation.link');
         Route::post('store/invitation/link', 'Admin\HomeController@storeInvitationLink')->name('store.invitation.link');
         Route::get('get_new_time', 'HomeController@get_new_time')->name('get_new_time');
-       
+        Route::get('dashboard', 'HomeController@index')->name('dashboard');
+        Route::get('profile', 'ProfileController@show')->name('profile');
+        Route::post('update', 'ProfileController@update')->name('admin_profile_change');
+        Route::put('update', 'ProfileController@update')->name('admin_profile_update');
+        Route::put('update_password', 'ProfileController@updatePassword')->name('admin_update_password');
+        Route::post('update_profile_image', 'ProfileController@updateProfileImage')->name('update_profile_image');
+        Route::post('update_reminder_configration', 'ProfileController@UpdateNotificationReminder')->name('update_reminder_configration');
+        Route::put('update_logo_image', 'ProfileController@updateLogoImage')->name('update_logo_image');
 
         // Seat Label
         Route::group(['prefix' => 'settings'], function () {
@@ -172,6 +179,16 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
                     'uses' => 'OfficeAssetController@block_notification',
                 ]);
 
+                Route::post('/view_contract_template/{id}', [
+                    'as' => 'office.asset.view_contract_template',
+                    'uses' => 'OfficeAssetController@view_contract_template',
+                ]);
+
+                Route::post('/send_contract_signature_request', [
+                    'as' => 'office.asset.send_contract_signature_request',
+                    'uses' => 'OfficeAssetController@send_contract_signature_request',
+                ]);
+
             });
 
             Route::get('/{building_id?}', 'Admin\OfficeController@index')->name('index');
@@ -197,6 +214,19 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
 
         });
 
+        // office
+        Route::group(['prefix' => 'document'], function () {
+            Route::get('/{assets_id?}', 'ContractDocumentsController@index')->name('index');
+            Route::get('add_question', 'ContractDocumentsController@create')->name('add_document');
+            Route::post('store', 'ContractDocumentsController@store')->name('store');
+            Route::get('document_details/{id?}', 'ContractDocumentsController@document_details')->name('document_details');
+            Route::get('edit_document/{id?}', 'ContractDocumentsController@edit')->name('edit_document');
+            Route::post('update/{id?}', 'ContractDocumentsController@update')->name('update');
+            Route::get('delete/{id}', 'ContractDocumentsController@destroy')->name('destroy');
+            Route::post('save_documets_attech', 'ContractDocumentsController@save_documets_attech')->name('save_documets_attech');
+
+        });
+
         // Api connections
         Route::group(['prefix' => 'apiconnections'], function () {
             Route::get('/', 'ApiConnectionsController@index')->name('index');
@@ -205,6 +235,20 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
             Route::get('edit_apiconnections/{id?}', 'ApiConnectionsController@edit')->name('edit_apiconnections');
             Route::post('update/{id?}', 'ApiConnectionsController@update')->name('update');
             Route::get('delete/{id}', 'ApiConnectionsController@destroy')->name('destroy');
+            Route::post('check_api', 'ApiConnectionsController@check_api')->name('check_api');
+        });
+
+        // contract templates
+        Route::group(['prefix' => 'contract_templates'], function () {
+            Route::get('/', 'ContractTemplatesController@index')->name('index');
+            Route::get('get_api_provider_list/{id?}', 'ContractTemplatesController@get_api_provider_list')->name('get_api_provider_list');
+            Route::post('store', 'ContractTemplatesController@store')->name('store');
+            Route::get('edit_contracttemplates/{id?}', 'ContractTemplatesController@edit')->name('edit_contracttemplates');
+            Route::post('update/{id?}', 'ContractTemplatesController@update')->name('update');
+            Route::get('delete/{id}', 'ContractTemplatesController@destroy')->name('destroy');
+            Route::post('add_document', 'ContractTemplatesController@add_document')->name('add_document');
+            Route::get('get_document_list/{id}', 'ContractTemplatesController@get_document_list')->name('get_document_list');
+            Route::post('check_api', 'ContractTemplatesController@check_api')->name('check_api');
         });
 
         // quesionaire
@@ -219,6 +263,24 @@ Route::group(['middleware' => ['auth', 'admin']], function () {
             Route::get('delete/{id}', 'Admin\QuesionaireController@destroy')->name('destroy');
             Route::get('destroy_questions/{id}', 'QuesionaireController@destroy_questions');
 
+        });
+
+        // notification  categories
+        Route::group(['prefix' => 'notification_categories'], function () {
+            Route::get('/', 'NotificationCategoriesController@index')->name('index');
+            Route::post('store', 'NotificationCategoriesController@store')->name('store');
+            Route::get('edit/{id?}', 'NotificationCategoriesController@edit')->name('edit');
+            Route::post('update/{id?}', 'NotificationCategoriesController@update')->name('update');
+            Route::get('delete/{id}', 'NotificationCategoriesController@destroy')->name('destroy');
+        });
+
+        // notification questions
+        Route::group(['prefix' => 'notification_questions'], function () {
+            Route::get('/', 'NotificationQuestionsController@index')->name('index');
+            Route::post('store', 'NotificationQuestionsController@store')->name('store');
+            Route::get('edit/{id?}', 'NotificationQuestionsController@edit')->name('edit');
+            Route::post('update/{id?}', 'NotificationQuestionsController@update')->name('update');
+            Route::get('delete/{id}', 'NotificationQuestionsController@destroy')->name('destroy');
         });
 
         // reservation

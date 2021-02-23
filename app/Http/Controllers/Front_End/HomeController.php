@@ -386,8 +386,8 @@ class HomeController extends Controller
                 $total = $ReserveSeat->get();
             }
 
-            if ($request->has('iDisplayStart') && $request->get('iDisplayLength') != '-1') {
-                $ReserveSeat = $ReserveSeat->take($request->get('iDisplayLength'))->skip($request->get('iDisplayStart'));
+            if ($request->has('start') && $request->get('length') != '-1') {
+                $ReserveSeat = $ReserveSeat->take($request->get('length'))->skip($request->get('start'));
             }
 
             if ($request->has('iSortCol_0')) {
@@ -842,7 +842,7 @@ class HomeController extends Controller
 
                             $provider_name = ApiConnections::find($cvalue->contract_id);
 
-                            if ($usercontrat_info->count() > 0 && $ContractTemplates->count() == $usercontrat_info->count()) {
+                            if ($usercontrat_info->count() > 0 && $usercontrat_info->count() >= $ContractTemplates->count()) {
 
                                 $username = $provider_name->username;
                                 $password = $provider_name->password;
@@ -855,15 +855,25 @@ class HomeController extends Controller
                                     'integrator_key' => $integrator_key,
                                     'host' => $host,
                                 ]);
-                                if (isset($UserContract->envolop_id) && $UserContract->envolop_id != '') {
+                                if ($UserContract != '' && isset($UserContract->envolop_id) && $UserContract->envolop_id != '') {
+                                    $envelopeSummary = $docusign->envelopes->getEnvelope($UserContract->envolop_id);
+
+                                    $expire_date = date('Y-m-d', strtotime($envelopeSummary->getExpireDateTime()));
+                                    $today = date('Y-m-d');
+                                    $expire_after = $envelopeSummary->getExpireAfter();
+                                    $voided_envelop = $envelopeSummary->getVoidedDateTime();
+                                    if ($voided_envelop != '' or $expire_after == 0 or $expire_date < $today) {
+
+                                        $this->remove_expired_contract($UserContract->envolop_id, $docusign);
+                                    }
                                     $envelopeSummary = $docusign->envelopes->getEnvelope($UserContract->envolop_id);
 
                                     if ($envelopeSummary->getStatus() != 'completed') {
-
                                         $contract_ids[$ckey] = $cvalue->id;
-
                                     }
 
+                                } else {
+                                    $contract_ids[$ckey] = $cvalue->id;
                                 }
 
                             } else {
@@ -1069,8 +1079,8 @@ class HomeController extends Controller
                 $total = $UserExamHistory->get();
             }
 
-            if ($request->has('iDisplayStart') && $request->get('iDisplayLength') != '-1') {
-                $UserExamHistory = $UserExamHistory->take($request->get('iDisplayLength'))->skip($request->get('iDisplayStart'));
+            if ($request->has('start') && $request->get('length') != '-1') {
+                $UserExamHistory = $UserExamHistory->take($request->get('length'))->skip($request->get('start'));
             }
 
             if ($request->has('iSortCol_0')) {
@@ -1625,8 +1635,8 @@ class HomeController extends Controller
                 $total = $officeAssets->get();
             }
 
-            if ($request->has('iDisplayStart') && $request->get('iDisplayLength') != '-1') {
-                $officeAssets = $officeAssets->take($request->get('iDisplayLength'))->skip($request->get('iDisplayStart'));
+            if ($request->has('start') && $request->get('length') != '-1') {
+                $officeAssets = $officeAssets->take($request->get('length'))->skip($request->get('start'));
             }
 
             if ($request->has('iSortCol_0')) {
@@ -1735,9 +1745,16 @@ class HomeController extends Controller
 
             $qcolumns = ['quesionaire.id', 'quesionaire.title as quesionaire_name'];
             $Quesionaires = Quesionaire::select($qcolumns)->whereIn('id', json_decode($office_assets_info->quesionaire_id))->get();
+
+            $questions = '';
+            foreach ($Quesionaires as $key => $value) {
+                $questions .= '<p  class="font-weight-bold">' . $value->quesionaire_name . '<p>';
+            }
+
             $exam_status = array('0' => '<span class="btn question_css btn-danger"> Fail </span>', '1' => '<span class="btn question_css btn-success">  Pass </span>');
             if ($UserExamHistory) {
-                $question = "<p>There are " . count($Quesionaire) . "  questionaries attached to this seat, below are your customized results</p>";
+
+                $question = "<p>There are " . $questions . "  questionaries attached to this seat, below are your customized results</p>";
                 $active_status = '';
                 $search_date = $inputs['date'];
                 foreach ($UserExamHistory as $key => $value) {
@@ -1840,7 +1857,7 @@ class HomeController extends Controller
 
      public function inviteUserRegistrationStore(Request $request){
         $inputs   = $request->all();
-        
+
         $tenantId = $this->getTenantIdBYHost();
 
         $rules = [
@@ -1873,13 +1890,13 @@ class HomeController extends Controller
         }else{
               return back()->with('status',false)->with('message','Your registration failed,please try again');
         }
-         
+
         $inviteDate = date('Y-m-d H:i:s', strtotime($data['invited_time']. ' + 48 days'));
 
         if(strtotime($inviteDate) < strtotime(date('Y-m-d H:i:s'))){
               return back()->with('status',false)->with('message','This page is expire');
         }
-        
+
         $User                     = new User;
         $User->role               = '2';
         $User->user_name          = $inputs['user_name'];
@@ -1926,5 +1943,20 @@ class HomeController extends Controller
         }
         return $tenantId;
      }
+    public function remove_expired_contract($envelop_id, $docusign)
+    {
+
+        $user_contract = UserContract::where('envolop_id', $envelop_id)->first();
+        $user_contract->is_expire = 1;
+        $user_contract->save();
+
+        $user_contract_de = UserContract::where('envolop_id', $envelop_id)->delete();
+
+        $envelope_definition = $docusign->envelopeDefinition();
+        $envelope_definition->setStatus('voided');
+        $envelope_definition->setVoidedReason('Remove for expired envelope');
+        $docusign->envelopes->update($envelop_id, $envelope_definition);
+        return true;
+    }
 
 }
