@@ -43,6 +43,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::put('/seat_reservation', 'Front_End\HomeController@seatReservation')->name('seat_reservation');
     Route::get('/get_history', 'Front_End\HomeController@getHistory');
     Route::get('/reservation_status_change', 'Front_End\HomeController@reservationStatusChange')->name('reservation_status_change');
+    Route::post('/update_mobile_number', 'Front_End\ProfileController@update_mobile_number');
 
     Route::get('get_new_time', 'Front_End\HomeController@get_new_time')->name('get_new_time');
     Route::get('/index', 'Front_End\HomeController@index')->name('index');
@@ -76,6 +77,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/get_reservation_info', 'Front_End\HomeController@get_reservation_info');
     Route::get('/get_assets_info/{id}', 'Front_End\HomeController@get_assets_info');
 
+    Route::get('/contracts', 'Front_End\ContractController@index');
+    Route::post('/add_contract', 'Front_End\ContractController@add_contract');
+    Route::get('/get_user_contract_sign_result/{id}', 'Front_End\ContractController@get_user_contract_sign_result');
 });
 
 Route::get('invite/user/registration/{id}', 'Front_End\HomeController@inviteUserRegistrationForm');

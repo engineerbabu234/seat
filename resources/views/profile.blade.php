@@ -5,14 +5,13 @@
         <div class="container">
             <div class="building-office-list">
                 <div class="heading">
-                    <h1>Change Password or Profile Details</h1>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Lorem ipsum dolor sit amet, consectetur consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua Lorem ipsum dolor sit amet, consectetur</p>
+                    <h1>Profile</h1>
                 </div>
 
                 <div class="profile-page">
                     <div class="row">
                         <!--Acount details-->
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="profile-details">
                                 <div class="header">
                                     <h2>Update Account details</h2>
@@ -47,7 +46,7 @@
                         </div><!--end-->
 
                         <!--Password details-->
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="profile-details">
                                 <div class="header">
                                     <h2>Update Password</h2>
@@ -92,7 +91,7 @@
                             </div>
                         </div><!--end-->
 
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="profile-details">
                                 <div class="header">
                                     <h2>Update Profile Picture</h2>
@@ -121,6 +120,59 @@
                                 </div>
                             </div>
                         </div>
+
+                        <div class="col-md-3">
+                            <div class="profile-details">
+                                <div class="header">
+                                    <h2>Notification</h2>
+                                </div>
+                                <div class="body">
+                                    <form method="POST" action=""  id="notification_whatsapp_no" >
+                                        @csrf
+
+                                          <div class="form-group">
+                                            <label>Country Phone Prefix <span class="text-danger">*</span></label>
+                                                <select class="form-control"  name="phone_prefix" id="phone_prefix" required>
+                                                    @if($phone_prefix_list == '')
+                                                        <option value="">Record Not Found</option>
+                                                    @else
+                                                        <option value="">-- Select Country Prefix -- </option>
+                                                        @foreach($phone_prefix_list as $key => $value)
+                                                            @if($key == 0)
+                                                             <option value="">-- Select Country Prefix--</option>
+                                                            @endif
+                                                            <option " @if($data['user']->phone_prefix == $key) {{'selected'}} @endif value="{{$key}}" >{{$value}}</option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                                <span class="error" id="phone_prefix_error"></span>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label>Whatsapp Mobile Number <span class="text-danger">*</span></label>
+                                            <input type="number" class="form-control" placeholder="Mobile Number" name="phone_number" min="1" max="10" value="{{$data['user']->phone_number}}">
+                                            <span class="error" id="phone_number_error"></span>
+                                        </div>
+
+
+                                        <div class="form-group">
+                                            <label>Whatsapp Notification </label>
+                                            <select class="form-control" name="whatsapp_subscription_status">
+                                                <option value="">-- Select Whatsapp Notification Subscription -- </option>
+                                                <option @if($data['user']->whatsapp_subscription_status == 1) {{'selected'}} @endif value="1">Opt in</option>
+                                                <option @if($data['user']->whatsapp_subscription_status == 0) {{'selected'}} @endif value="0">Opt Out</option>
+                                            </select>
+                                             <span class="error" id="whatsapp_subscription_status_error"></span>
+                                        </div>
+
+                                        <div class="form-group text-center">
+                                            <button type="submit" class="same-btn1 update_mobile">Save</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
 
                     </div>
                 </div>
@@ -288,38 +340,88 @@ $('#upload_image').click(function(){ $('#upload-photo-1').trigger('click'); });
     });
 
 
-                        $uploadCrop = $('#upload-demo').croppie({
-                            viewport: { width: 200, height:200, type: 'circle' },
-                            enforceBoundary: false,
-                            enableExif: true
-                        });
+    $uploadCrop = $('#upload-demo').croppie({
+        viewport: { width: 200, height:200, type: 'circle' },
+        enforceBoundary: false,
+        enableExif: true
+    });
 
-                        $('#cropImagePop').on('shown.bs.modal', function(){
-                            // alert('Shown pop');
-                            $('#show-image-1').attr('src', rawImg);
-                            var image1 =  $('#show-image-1').attr('src');
-                            $uploadCrop.croppie('bind', {
+    $('#cropImagePop').on('shown.bs.modal', function(){
+        // alert('Shown pop');
+        $('#show-image-1').attr('src', rawImg);
+        var image1 =  $('#show-image-1').attr('src');
+        $uploadCrop.croppie('bind', {
 
-                                url: image1
-                            }).then(function(){
-                                console.log('jQuery bind complete');
-                            });
-                        });
+            url: image1
+        }).then(function(){
+            console.log('jQuery bind complete');
+        });
+    });
 
-                        $('#upload-photo-1').on('change', function () { imageId = $(this).data('id'); tempFilename = $(this).val();
+    $('#upload-photo-1').on('change', function () { imageId = $(this).data('id'); tempFilename = $(this).val();
 
-                         $('#cancelCropBtn').data('id', imageId); readFile(this); });
-                        $('#cropImageBtn').on('click', function (ev) {
-                            $uploadCrop.croppie('result', {
-                                type: 'base64',
-                                format: 'png',
-                                size: {width: 400, height: 400}
-                            }).then(function (resp) {
-                                $('#show-image-1').attr('src',resp);
-                                $('#item-img-output').attr('src', resp);
-                                 $('#profile_base64').val(resp);
-                                $('#cropImagePop').modal('hide');
-                            });
-                        });
+     $('#cancelCropBtn').data('id', imageId); readFile(this); });
+    $('#cropImageBtn').on('click', function (ev) {
+        $uploadCrop.croppie('result', {
+            type: 'base64',
+            format: 'png',
+            size: {width: 400, height: 400}
+        }).then(function (resp) {
+            $('#show-image-1').attr('src',resp);
+            $('#item-img-output').attr('src', resp);
+             $('#profile_base64').val(resp);
+            $('#cropImagePop').modal('hide');
+        });
+    });
+
+
+
+$(document).on("click", ".update_mobile", function(e) {
+    e.preventDefault();
+    showPageSpinner();
+    $('.error').text('');
+    $('.error').removeClass('text-danger');
+
+    var data = jQuery(this).parents('form:first').serialize();
+    var aurls = base_url + "/update_mobile_number";
+
+    jQuery.ajax({
+        url: aurls,
+        type: 'post',
+        dataType: 'json',
+        data: data,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        error: function(response) {
+            if (response.status == 400) {
+                $.each(response.responseJSON.errors, function(k, v) {
+                    $('#' + k + '_error').text(v);
+                    $('#' + k + '_error').addClass('text-danger');
+                });
+            }
+            hidePageSpinner();
+        },
+        success: function(response) {
+            if (response.success) {
+                 hidePageSpinner();
+              $('#success_modal').show();
+              $('#success_modal').modal({ backdrop: 'static', keyboard: false});
+              $('#success_modal_text').html(response.html);
+
+            }
+        },
+
+    });
+});
+
+
+function myalert(title,msg){
+    $.alert(msg, {
+    title: title,
+    closeTime: 3000,
+
+    });
+}
 </script>
 @endpush

@@ -1464,3 +1464,41 @@ span.iconWrap img.icon.bl-icon {
     font-size: 16px;
     margin-right: 10px;
 }
+.view_answare{
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    width: 100%;
+    margin-bottom: 20px;
+}
+.admore-fields {
+    flex:0 0 100%;
+    margin-bottom: 20px;
+    padding: 10px 10px 0;
+    background-color: #f5f5f5;
+}
+
+.add-more-feild {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 0;
+}
+.fieldsaddmore-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom:10px;
+}
+.fieldsaddmore-row input[type="text"] {
+    flex: 1;
+    margin-right: 12px;
+}
+.add-more-feild {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-color: #f5f5f5;
+    padding: 10px;
+}

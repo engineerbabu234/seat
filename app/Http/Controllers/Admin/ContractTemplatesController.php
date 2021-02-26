@@ -33,7 +33,7 @@ class ContractTemplatesController extends Controller
                 $whereStr .= " AND contract_documents.document_title like '%{$search}%'";
             }
 
-            $columns = ['contract_templates.id', 'api_connections.api_title as contract_provider', 'contract_documents.document_title', 'contract_templates.updated_at', 'contract_templates.created_at', 'contract_templates.contract_title', 'contract_templates.contract_id', 'contract_templates.contract_restrict_seat', 'contract_templates.contract_description', '.contract_templates.contract_document_id'];
+            $columns = ['contract_templates.id', 'api_connections.api_title as contract_provider', 'contract_documents.document_title', 'contract_templates.updated_at', 'contract_templates.created_at', 'contract_templates.contract_title', 'contract_templates.contract_id', 'contract_templates.contract_restrict_seat', 'contract_templates.contract_description', '.contract_templates.contract_document_id', 'contract_templates.expired_option', 'contract_templates.expired_value', 'contract_templates.expired_date', 'contract_templates.expired_date'];
 
             $ContractTemplates = ContractTemplates::select($columns)->leftJoin("contract_documents", "contract_documents.id", "contract_templates.contract_document_id")->leftJoin("api_connections", "api_connections.id", "contract_documents.api_connection_id")->whereRaw($whereStr, $whereParams);
             $ContractTemplates = $ContractTemplates->orderBy('id', 'desc');
@@ -75,6 +75,7 @@ class ContractTemplatesController extends Controller
                 $final[$key]['contract_provider'] = $value->contract_provider;
                 $final[$key]['document_title'] = $value->document_title;
                 $final[$key]['contract_title'] = $value->contract_title;
+                $final[$key]['expired_option'] = $value->expired_value . ' ' . $value->expired_option;
                 $final[$key]['contract_restrict_seat'] = $restrict;
                 $final[$key]['contract_description'] = $value->contract_description;
                 $final[$key]['updated_at'] = date('d/m/Y', strtotime($value->updated_at));
@@ -104,10 +105,12 @@ class ContractTemplatesController extends Controller
 
         $rules = [
             'contract_id' => 'required',
-            'contract_document_id' => 'required|unique:contract_templates,contract_document_id,contract_title', $request->contract_id,
-            'contract_title' => 'required|unique:contract_templates',
+            'contract_document_id' => 'required',
+            'contract_title' => 'required|unique:contract_templates,contract_title',
             'contract_restrict_seat' => 'required',
             'contract_description' => 'required',
+            'expired_option' => 'required',
+            'expired_value' => 'required',
         ];
 
         $messages = [];
@@ -121,12 +124,50 @@ class ContractTemplatesController extends Controller
             return response()->json($response, 400);
         }
 
+        $expired_option = '';
+        $expired_value = '';
+        if ($inputs['expired_value']) {
+            $expired_data = explode('_', $inputs['expired_value']);
+            $expired_option = $expired_data[0];
+            $expired_value = $expired_data[1];
+        }
+
         $ContractTemplates = new ContractTemplates();
         $ContractTemplates->contract_id = $inputs['contract_id'];
         $ContractTemplates->contract_document_id = $inputs['contract_document_id'];
         $ContractTemplates->contract_title = $inputs['contract_title'];
         $ContractTemplates->contract_restrict_seat = $inputs['contract_restrict_seat'];
         $ContractTemplates->contract_description = $inputs['contract_description'];
+        $ContractTemplates->expired_option = $expired_option;
+        $ContractTemplates->expired_value = $expired_value;
+        $ContractTemplates->start_date = date('Y-m-d');
+
+        if ($expired_option == 'Day') {
+            if ($expired_value > 1) {
+                $expired_date = date('Y-m-d H:i:s', strtotime('+ ' . $expired_value . ' days'));
+            } else {
+                $expired_date = date('Y-m-d H:i:s', strtotime('+1 day'));
+            }
+            $ContractTemplates->expired_date = date('Y-m-d', strtotime($expired_date));
+
+        } else if ($expired_option == 'Month') {
+
+            if ($expired_value > 1) {
+                $expired_date = date('Y-m-d H:i:s', strtotime('+ ' . $expired_value . ' months'));
+            } else {
+                $expired_date = date('Y-m-d H:i:s', strtotime('+1 month'));
+            }
+            $ContractTemplates->expired_date = date('Y-m-d', strtotime($expired_date));
+
+        } else if ($expired_option == 'Week') {
+            if ($expired_value > 1) {
+                $expired_date = date('Y-m-d H:i:s', strtotime('+ ' . $expired_value . ' weeks'));
+            } else {
+                $expired_date = date('Y-m-d H:i:s', strtotime('+1 week'));
+            }
+            $ContractTemplates->expired_date = date('Y-m-d', strtotime($expired_date));
+        }
+
         if ($ContractTemplates->save()) {
             $response = [
                 'success' => true,
@@ -173,9 +214,11 @@ class ContractTemplatesController extends Controller
         $rules = [
             'contract_id' => 'required',
             'contract_document_id' => 'required',
-            'contract_title' => 'required',
+            'contract_title' => 'required|unique:contract_templates,contract_title,' . $id,
             'contract_restrict_seat' => 'required',
             'contract_description' => 'required',
+            'expired_option' => 'required',
+            'expired_value' => 'required',
         ];
 
         $messages = [];
@@ -189,12 +232,50 @@ class ContractTemplatesController extends Controller
             return response()->json($response, 400);
         }
 
+        $expired_option = '';
+        $expired_value = '';
+        if ($inputs['expired_value']) {
+            $expired_data = explode('_', $inputs['expired_value']);
+            $expired_option = $expired_data[0];
+            $expired_value = $expired_data[1];
+        }
+
         $ContractTemplates = ContractTemplates::find($id);
         $ContractTemplates->contract_id = $inputs['contract_id'];
         $ContractTemplates->contract_document_id = $inputs['contract_document_id'];
         $ContractTemplates->contract_title = $inputs['contract_title'];
         $ContractTemplates->contract_restrict_seat = $inputs['contract_restrict_seat'];
         $ContractTemplates->contract_description = $inputs['contract_description'];
+        $ContractTemplates->expired_option = $expired_option;
+        $ContractTemplates->expired_value = $expired_value;
+        $ContractTemplates->start_date = date('Y-m-d');
+
+        if ($expired_option == 'Day') {
+            if ($expired_value > 1) {
+                $expired_date = date('Y-m-d H:i:s', strtotime('+ ' . $expired_value . ' days'));
+            } else {
+                $expired_date = date('Y-m-d H:i:s', strtotime('+1 day'));
+            }
+            $ContractTemplates->expired_date = date('Y-m-d', strtotime($expired_date));
+
+        } else if ($expired_option == 'Month') {
+
+            if ($expired_value > 1) {
+                $expired_date = date('Y-m-d H:i:s', strtotime('+ ' . $expired_value . ' months'));
+            } else {
+                $expired_date = date('Y-m-d H:i:s', strtotime('+1 month'));
+            }
+            $ContractTemplates->expired_date = date('Y-m-d', strtotime($expired_date));
+
+        } else if ($expired_option == 'Week') {
+            if ($expired_value > 1) {
+                $expired_date = date('Y-m-d H:i:s', strtotime('+ ' . $expired_value . ' weeks'));
+            } else {
+                $expired_date = date('Y-m-d H:i:s', strtotime('+1 week'));
+            }
+            $ContractTemplates->expired_date = date('Y-m-d', strtotime($expired_date));
+        }
+
         if ($ContractTemplates->save()) {
             $response = [
                 'success' => true,
@@ -218,11 +299,9 @@ class ContractTemplatesController extends Controller
     {
         $document_info = ContractTemplates::find($id);
         if (ContractTemplates::find($id)->delete()) {
-            $OfficeAsset = OfficeAsset::Where('document_attech', 'like', '%' . $document_info->contract_document_id . '%')->get();
-            $OfficeAsset->isEmpty();
-            return ['status' => 'success', 'message' => 'Successfully deleted ContractTemplates  '];
+            return ['status' => 'success', 'message' => 'Successfully deleted Contract Templates  '];
         } else {
-            return ['status' => 'failed', 'message' => 'Failed delete ContractTemplates and ContractTemplates assets'];
+            return ['status' => 'failed', 'message' => 'Failed delete Contract Templates and Contract Templates Assets'];
         }
     }
 

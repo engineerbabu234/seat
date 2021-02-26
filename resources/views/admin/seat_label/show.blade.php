@@ -37,4 +37,4 @@
 			</div>
 		</div>
 	</div>
-		</div><!--END my tenders-->
+		</div>

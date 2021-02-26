@@ -478,6 +478,18 @@
                        
                         return questionaries;
                     },
+                },{
+                    "Data": "contract_total",
+                    Width: "5%",
+                    Class: "text-center",
+                    mRender: function(v, t, o) {
+                         let contract = '';
+                        if (o.contract_total) {
+                            contract =  '<span data-assets="'+o.office_asset_id+'"   title="Contract Sign"     class="btn btn-link   user_contract">'+o.contract_total+'</span>';
+                        }
+                       
+                        return contract;
+                    },
                 },
                 { "mData": "viewseat",bSortable: true,sWidth: "20%"},
 
@@ -485,29 +497,40 @@
                 fnPreDrawCallback: function() {
                 },
                 fnDrawCallback: function(oSettings) {
-                    $('#user_questionarie_pophover').html('');
-                    $('.user_questionaries').mouseover(function(event) {
-                         var asset_id =  $(this).data('assets');
+                     
+                     $('.user_questionaries').popover({
+                        html: true,
+                        trigger: 'manual',
+                        content: function() {
                           
-                                $.ajax({
-                                 "headers":{
-                                    'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
-                                },
-                               type:"post",
-                               data:{'asset_id':asset_id,'date':$('#search_booking_date').val()},
-                               url:base_url+"/get_user_questionarie_result/", 
-                               success:function(res)
-                               {       
-                                  $('#user_questionarie_pophover').html(res);        
-                                  $('.user_questionaries').popover({
-                                    content:  $('#user_questionarie_pophover').html(),  
-                                    placement: 'left',
-                                    html: true
-                                    });
-                               }
+                         var assets =  $(this).data('assets'); 
+                          return $.ajax({url: base_url+"/get_user_questionarie_result/",
+                                        "headers":{
+                                                'X-CSRF-TOKEN':$('meta[name="csrf-token"]').attr('content')
+                                        },
+                                        data:{'asset_id':assets,'date':$('#search_booking_date').val()},
+                                         type:"post",
+                                         dataType: 'html',
+                                         async: false}).responseText;
+                        }
+                      }).click(function(e) {
+                        $(this).popover('toggle');
+                      });
 
-                            });
-                    });
+                 
+                     $('.user_contract').popover({
+                        html: true,
+                        trigger: 'manual',
+                        content: function() {
+                         var assets =  $(this).data('assets');       
+                          return $.ajax({url: base_url+"/get_user_contract_sign_result/"+assets,
+                                         dataType: 'html',
+                                         async: false}).responseText;
+                        }
+                      }).click(function(e) {
+                        $(this).popover('toggle');
+                      });
+   
  
                 },
                 });
@@ -521,8 +544,7 @@
          $('#questionarie_pophover').hide();
          $('#seat_attribute_pophover').hide();
          $('#status_pophover').hide();
-         $('#user_questionarie_pophover').hide();
-
+          
 
          $('#building_popup').hide();
          $('#office_popup').hide();
@@ -585,6 +607,7 @@
         });
 
 
+
          $('#seat_attribute_hover').popover({
             content:  $('#seat_attribute_pophover').html(),  
             placement: 'left',
@@ -615,9 +638,17 @@
             placement: 'left',
             html: true 
         });
-         
-    
+        
+       
 
+        $('#contract_pophover').hide();
+         $('#contract_hover_info').popover({
+            content:  $('#contract_pophover').html(),  
+            placement: 'left',
+            html: true
+        });
+
+        
      $('#office_asset_type_id').on('change', function(event) {
          event.preventDefault();  
          var assets_type_id = jQuery(this).val();  
@@ -643,6 +674,4 @@
             $('.collaborationspace').show();
          }
      });
-
-   
-       
+ 

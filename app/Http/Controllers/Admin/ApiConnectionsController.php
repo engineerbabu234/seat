@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\ApiHelper;
 use App\Http\Controllers\Controller;
 use App\Models\ApiConnections;
+use App\Models\User;
+use Auth;
 use Illuminate\Http\Request;
+use Throwable;
+use Twilio\Rest\Client;
 use Validator;
 
 class ApiConnectionsController extends Controller
@@ -19,9 +24,13 @@ class ApiConnectionsController extends Controller
     public function index(Request $request)
     {
 
-        $api_teleconference = array('1' => 'Zoom', '2' => 'Teams', '3' => 'Google Meet', '4' => 'Blue Jeans', '5' => 'Goto Meeting', '6' => 'Webex');
-        $api_contract = array('1' => 'Docusign', '2' => 'PandaDoc', '3' => 'EverSign', '4' => 'SignRequest', '5' => 'AdobeSign');
-        $api_type = array('1' => 'Teleconference', '2' => 'Contract');
+        $api_teleconference = ApiHelper::get_api_teleconference();
+
+        $api_contract = ApiHelper::get_api_contract();
+
+        $api_notification = ApiHelper::get_api_notification();
+        $api_type = ApiHelper::get_api_type();
+
         if ($request->ajax()) {
 
             $whereStr = '1 = ?';
@@ -67,8 +76,21 @@ class ApiConnectionsController extends Controller
 
                 if ($value->api_type == 1) {
                     $provider = @$api_teleconference[$value->api_provider];
-                } else {
-                    $provider = @$api_contract[$value->api_provider];
+                } else if ($value->api_type == 2) {
+                    if ($value->api_provider == 1) {
+                        $provider = '<span class="" data-trigger="hover" title="docusign" data-content="Docusign" ><img alt="Docusign" src="' . asset('admin_assets') . '/images/docusign.png"  width="80" height="50" class="border border-dark "  ></span>';
+                    } else {
+                        $provider = @$api_contract[$value->api_provider];
+
+                    }
+                } else if ($value->api_type == 3) {
+                    if ($value->api_provider == 1) {
+                        $provider = '<span class="" data-trigger="hover" title="Twilio" data-content="Twilio" ><img alt="Twilio" src="' . asset('admin_assets') . '/images/twilio.png"  width="80" height="50" class="border border-dark "  ></span>';
+                    } else {
+                        $provider = @$api_notification[$value->api_provider];
+
+                    }
+
                 }
 
                 $final[$key]['number_key'] = $number_key;
@@ -76,8 +98,8 @@ class ApiConnectionsController extends Controller
                 $final[$key]['api_type'] = @$api_type[$value->api_type];
                 $final[$key]['api_provider'] = $provider;
                 $final[$key]['api_title'] = $value->api_title;
-                $final[$key]['api_key'] = $value->api_key;
-                $final[$key]['api_secret'] = $value->api_secret;
+                $final[$key]['api_key'] = str_limit($value->api_key, $limit = 20, $end = '...');
+                $final[$key]['api_secret'] = str_limit($value->api_secret, $limit = 20, $end = '...');
                 $final[$key]['username'] = $value->username;
                 $final[$key]['password'] = $value->password;
                 $final[$key]['integrator_key'] = $value->integrator_key;
@@ -94,7 +116,7 @@ class ApiConnectionsController extends Controller
         }
         $data = array();
 
-        return view('admin.apiconnections.index', compact('data', 'api_teleconference', 'api_contract', 'api_type'));
+        return view('admin.apiconnections.index', compact('data', 'api_teleconference', 'api_contract', 'api_type', 'api_notification'));
     }
 
     /**
@@ -105,6 +127,7 @@ class ApiConnectionsController extends Controller
     public function store(Request $request)
     {
         $inputs = $request->all();
+        $rules = [];
         $rules = [
             'api_type' => 'required',
             'api_provider' => 'required',
@@ -112,11 +135,14 @@ class ApiConnectionsController extends Controller
 
         ];
 
-        if (($inputs['api_type'] == '2' or $inputs['api_provider'] == '1')) {
+        if (($inputs['api_type'] == '2' and $inputs['api_provider'] == '1')) {
             $rules['username'] = 'required';
             $rules['password'] = 'required';
             $rules['integrator_key'] = 'required';
             $rules['host'] = 'required';
+        } else if (($inputs['api_type'] == '3' and $inputs['api_provider'] == '1')) {
+            $rules['api_key'] = 'required';
+            $rules['api_secret'] = 'required';
         }
 
         $messages = [];
@@ -135,12 +161,17 @@ class ApiConnectionsController extends Controller
         $ApiConnections->api_provider = $inputs['api_provider'];
         $ApiConnections->api_title = $inputs['api_title'];
         $ApiConnections->api_description = $inputs['api_description'];
-        $ApiConnections->api_key = $inputs['api_key'];
-        $ApiConnections->api_secret = $inputs['api_secret'];
-        $ApiConnections->username = $inputs['username'];
-        $ApiConnections->password = $inputs['password'];
-        $ApiConnections->integrator_key = $inputs['integrator_key'];
-        $ApiConnections->host = $inputs['host'];
+
+        if (($inputs['api_type'] == '2' and $inputs['api_provider'] == '1')) {
+            $ApiConnections->username = $inputs['username'];
+            $ApiConnections->password = $inputs['password'];
+            $ApiConnections->integrator_key = $inputs['integrator_key'];
+            $ApiConnections->host = $inputs['host'];
+        } else {
+
+            $ApiConnections->api_key = $inputs['api_key'];
+            $ApiConnections->api_secret = $inputs['api_secret'];
+        }
         if ($ApiConnections->save()) {
             $response = [
                 'success' => true,
@@ -163,14 +194,15 @@ class ApiConnectionsController extends Controller
     {
         $apiconnections = ApiConnections::find($id);
 
-        $api_teleconference = array('1' => 'Zoom', '2' => 'Teams', '3' => 'Google Meet', '4' => 'Blue Jeans', '5' => 'Goto Meeting', '6' => 'Webex');
-        $api_contract = array('1' => 'Docusign', '2' => 'PandaDoc', '3' => 'EverSign', '4' => 'SignRequest', '5' => 'AdobeSign');
-        $api_type = array('1' => 'Teleconference', '2' => 'Contract');
+        $api_teleconference = ApiHelper::get_api_teleconference();
+        $api_contract = ApiHelper::get_api_contract();
+        $api_notification = ApiHelper::get_api_notification();
+        $api_type = ApiHelper::get_api_type();
         $response = [
             'success' => true,
             'api_type' => $apiconnections->api_type,
             'api_provider' => $apiconnections->api_provider,
-            'html' => view('admin.apiconnections.edit', compact('apiconnections', 'api_teleconference', 'api_contract', 'api_type'))->render(),
+            'html' => view('admin.apiconnections.edit', compact('apiconnections', 'api_teleconference', 'api_contract', 'api_type', 'api_notification'))->render(),
         ];
 
         return response()->json($response, 200);
@@ -193,7 +225,7 @@ class ApiConnectionsController extends Controller
 
         ];
 
-        if (($inputs['api_type'] == '2' or $inputs['api_provider'] == '1')) {
+        if (($inputs['api_type'] == '2' and $inputs['api_provider'] == '1')) {
             $rules['username'] = 'required';
             $rules['password'] = 'required';
             $rules['integrator_key'] = 'required';
@@ -258,11 +290,14 @@ class ApiConnectionsController extends Controller
      */
     public function get_api_provider_list(Request $request, $type)
     {
-        if ($type == 1) {
-            $provider = array('1' => 'Zoom', '2' => 'Teams', '3' => 'Google Meet', '4' => 'Blue Jeans', '5' => 'Goto Meeting', '6' => 'Webex');
-        } else {
-            $provider = array('1' => 'Docusign', '2' => 'PandaDoc', '3' => 'EverSign', '4' => 'SignRequest', '5' => 'AdobeSign');
 
+        if ($type == 1) {
+            $provider = ApiHelper::get_api_teleconference();
+        } else if ($type == 2) {
+            $provider = ApiHelper::get_api_contract();
+
+        } else if ($type == 3) {
+            $provider = ApiHelper::get_api_notification();
         }
         $response = [
             'success' => true,
@@ -278,11 +313,15 @@ class ApiConnectionsController extends Controller
 
         $inputs = $request->all();
 
+        $rules = [];
         if (($inputs['api_type'] == '2' and $inputs['api_provider'] == '1')) {
             $rules['username'] = 'required';
             $rules['password'] = 'required';
             $rules['integrator_key'] = 'required';
             $rules['host'] = 'required';
+        } else if (($inputs['api_type'] == '3' and $inputs['api_provider'] == '1')) {
+            $rules['api_key'] = 'required';
+            $rules['api_secret'] = 'required';
         }
 
         $messages = [];
@@ -303,20 +342,97 @@ class ApiConnectionsController extends Controller
             'host' => $inputs['host'],
         ]);
 
-        if (is_numeric($docusign->getAccountId())) {
-            $response = [
-                'success' => true,
-                'message' => 'Api Connection successfull',
-            ];
-            return response()->json($response, 200);
-        } else {
-            $response = [
-                'success' => false,
-                'message' => 'Api Connection failed',
-            ];
+        if (($inputs['api_type'] == '2' and $inputs['api_provider'] == '1')) {
 
-            return response()->json($response, 400);
+            try {
+
+                if (is_numeric($docusign->getAccountId())) {
+
+                    $modal_type = "seat_request_success";
+                    $title = "Api Connection Successfull";
+                    $message = "Your Api Connection Successfull";
+                    $what_is_next = "Nothing, You Have successfull Api Connection Test";
+
+                    $response = [
+                        'success' => true,
+                        'html' => view('modal_content', compact('modal_type', 'title', 'message', 'what_is_next'))->render(),
+                    ];
+
+                    return response()->json($response, 200);
+                }
+            } catch (Throwable $exception) {
+
+                $modal_type = "seat_request_error";
+                $title = "Api Connection Failed";
+                $message = "Your Api Connection Failed";
+                $what_is_next = "Please Check Api Connection value";
+
+                $response = [
+                    'error' => true,
+                    'html' => view('modal_content', compact('modal_type', 'title', 'message', 'what_is_next'))->render(),
+                ];
+
+                return response()->json($response, 400);
+            }
+
         }
+
+        if (($inputs['api_type'] == '3' and $inputs['api_provider'] == '1')) {
+
+            try {
+                $return = $this->check_twillo_api(trim($inputs['api_key']), trim($inputs['api_secret']));
+
+                if ($return) {
+                    $modal_type = "seat_request_success";
+                    $title = "Twillo Api Connection Successfull";
+                    $message = "Your Twillo Api Connection Successfull";
+                    $what_is_next = "Nothing, You Have successfull Api Connection Test";
+
+                    $response = [
+                        'success' => true,
+                        'html' => view('modal_content', compact('modal_type', 'title', 'message', 'what_is_next'))->render(),
+                    ];
+
+                    return response()->json($response, 200);
+                }
+            } catch (Throwable $exception) {
+
+                $modal_type = "seat_request_error";
+                $title = "Twillo Api Connection Failed";
+                $message = "Your Twillo Api Connection Failed";
+                $what_is_next = "Please check valid Account key and Secret Key";
+
+                $response = [
+                    'error' => true,
+                    'html' => view('modal_content', compact('modal_type', 'title', 'message', 'what_is_next'))->render(),
+                ];
+
+                return response()->json($response, 400);
+
+            }
+        }
+
+    }
+
+    public function check_twillo_api($sid, $token)
+    {
+        $twilio_whatsapp_number = '+14155238886';
+        $account_sid = $sid;
+        $auth_token = $token;
+
+        $client = new \Twilio\Rest\Client($account_sid, $auth_token);
+        $user_id = Auth::id();
+        $userinfo = User::find($user_id);
+
+        $message = $client->messages
+            ->create("whatsapp:+12014489373", // to  +12014489373
+                array(
+                    "from" => "whatsapp:+14155238886",
+                    "body" => "Your appointment is coming up on July 21 at 3PM",
+                )
+            );
+
+        return ($message->sid);
 
     }
 

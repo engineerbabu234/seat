@@ -12,7 +12,7 @@
 						<option value="">Record Not Found</option>
 					@else
 						@foreach($documents as $key => $value)
-							<option value="{{$value->id}}"  >{{$value->document_title}}</option>
+							<option value="{{$value->id}}"  >{{$value->contract_title}}</option>
 						@endforeach
 					@endif
 				@endif

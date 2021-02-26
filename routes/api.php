@@ -54,6 +54,11 @@ Route::post('login', [
     'uses' => 'APIController@loginCheck',
 ]);
 
+Route::post('chat-bot', [
+    'as' => 'chat-bot.post',
+    'uses' => 'WhatsappController@listenToReplies',
+]);
+
 Route::middleware('apiToken')
     ->group(function () {
 

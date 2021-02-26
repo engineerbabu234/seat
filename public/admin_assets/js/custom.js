@@ -52,7 +52,7 @@ $(document).ready(function(){
 
   function error_alert(messages) {
        title='Error';
-          message='{{$message}}';
+          message=messages;
           myalert(title,message)
           function myalert(title,msg){
           $.alert(msg, {

@@ -333,24 +333,6 @@
             </div>
         </div>
     </div>
-    <div id="user_questionarie_pophover">
-        <div class="row">
-            <div class="col-sm-12">
-                <div id="user_questionarie_info"></div>
-                <p>There are <span id="total_questionarie"></span> questionaries attached to this seat, below are your customized results</p>
-                <p> </p>
-            </div>
-        </div>
-    </div>
-     <div id="user_contract_pophover">
-        <div class="row">
-            <div class="col-sm-12">
-                <div id="user_contract_info"></div>
-                <p>There are <span id="total_contract"></span> Contract Atteched to this seat </p>
-                <p> </p>
-            </div>
-        </div>
-    </div>
 
     <div id="contract_pophover">
         <div class="row">

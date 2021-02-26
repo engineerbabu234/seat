@@ -2,23 +2,24 @@
 @section('content')
 <div class="main-body">
 	<div class="inner-body">
-		<!--header-->
+
 		<div class="header">
-			<div class="row">
+			<div class="title">
+			<div class="row align-items-center">
 				<div class="col-md-6 col-sm-6 col-xs-6">
-					<div class="title">
 						<h2>Api Connections List</h2>
-					</div>
 				</div>
 				<div class="col-md-6 col-sm-6 col-xs-12">
 					<div class="btns">
 						<a href="#" class="add-asset btn btn-info"  data-toggle="modal" data-target="#add_apiconnections"><i class="fas fa-plus"></i></a>
 
 					</div>
+					</div>
 				</div>
 			</div>
 		</div><!--END header-->
-		<!--my tenders-->
+
+		<!--Api connection-->
 		<div class="custom-data-table">
 			<div class="data-table">
 
@@ -43,7 +44,7 @@
 			</div>
 		</div>
 	</div>
-		</div><!--END my tenders-->
+		</div>
 	</div>
 </div>
 
@@ -380,13 +381,29 @@ $(document).on("click", ".edit_apiconnections_request", function(e) {
 				$('#edit_apiconnections').modal('show');
 				get_pophover()
 				get_api_provider();
+				$('.test_apiconnections').hide();
+				$('.edit_aapiconnections').show();
 				if(response.api_type == 2 && response.api_provider == 1){
-					$('.test_apiconnections').show();
-					$('.edit_aapiconnections').hide();
+
+
+					$('.api_target').on('input', function() {
+						$('.test_apiconnections').show();
+						$('.edit_aapiconnections').hide();
+					});
+
+				} else if(response.api_type == 3 && response.api_provider == 1){
+
+					$('.api_target').on('input', function() {
+						$('.test_apiconnections').show();
+						$('.edit_aapiconnections').hide();
+					});
+
 				} else {
 					$('.test_apiconnections').hide();
 					$('.edit_aapiconnections').show();
 				}
+
+
 
 
 
@@ -437,13 +454,16 @@ function test_api_provider(){
 $('.api_provider').on('change', function(event) {
 
 	event.preventDefault();
+
+	var api_type =  $('#api_type').find(":selected").val();
+
 	var api_provider = jQuery(this).val();
-        if(api_provider == 1){
-        		$('.test_apiconnections').show();
-        		$('.add_apiconnections').hide();
+        if(api_provider == 1 && api_type == 2 || api_type == 3){
+    		$('.test_apiconnections').show();
+    		$('.add_apiconnections').hide();
         } else{
-        		$('.test_apiconnections').hide();
-        		$('.add_apiconnections').show();
+    		$('.test_apiconnections').hide();
+    		$('.add_apiconnections').show();
         }
 });
 }
@@ -466,22 +486,33 @@ $(document).on("click", ".test_apiconnections", function(e) {
 			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 		},
 		error: function(response) {
-			if (response.status == 400) {
-				$.each(response.responseJSON.errors, function(k, v) {
-					$('#' + k + '_error').text(v);
-					$('#' + k + '_error').addClass('text-danger');
-				});
-			}
+			 if (response.status == 400) {
+			 	 $.each(response.responseJSON.errors, function(k, v) {
+                    $('#' + k + '_error').text(v);
+                    $('#' + k + '_error').addClass('text-danger');
+                });
+                if(response.responseJSON.error == true){
+                  $('#error_modal').show();
+                  $('#error_modal').modal({ backdrop: 'static', keyboard: false});
+                  $('#error_modal_text').html(response.responseJSON.html);
+                }
+            }
 			hidePageSpinner();
 		},
 		success: function(response) {
 			if (response.success) {
-				success_alert(response.message);
+			  $('#success_modal').show();
+              $('#success_modal').modal({ backdrop: 'static', keyboard: false});
+              $('#success_modal_text').html(response.html);
+
+
+
 				$('.test_apiconnections').hide();
         		$('.add_apiconnections').show();
         		$('.edit_aapiconnections').show();
-        		hidePageSpinner();
+
 			}
+            hidePageSpinner();
 		},
 	});
 });

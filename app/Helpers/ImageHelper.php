@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App;
 //use Image;
+use App\Helpers\ApiHelper;
 use url;
 
 class ImageHelper
@@ -30,6 +31,7 @@ class ImageHelper
     public static function getLogoImage($image)
     {
         if ($image) {
+            ApiHelper::makeDir(static::$getLogoImagePath, true);
             if (file_exists(static::$getLogoImagePath . $image)) {
                 return url(static::$getLogoImagePath . $image);
             }
@@ -45,6 +47,7 @@ class ImageHelper
     public static function getProfileImage($image)
     {
         if ($image) {
+            ApiHelper::makeDir(static::$getProfileImagePath, true);
             if (file_exists(static::$getProfileImagePath . $image)) {
                 return url(static::$getProfileImagePath . $image);
             }
@@ -60,6 +63,7 @@ class ImageHelper
     public static function getOfficeImage($image)
     {
         if ($image) {
+            ApiHelper::makeDir(static::$getOfficeImagePath, true);
             if (file_exists(static::$getOfficeImagePath . $image)) {
                 return url(static::$getOfficeImagePath . $image);
             }
@@ -75,6 +79,7 @@ class ImageHelper
     public static function getSelfieImage($image)
     {
         if ($image) {
+            ApiHelper::makeDir(static::$getSelfieImagePath, true);
             if (file_exists(static::$getSelfieImagePath . $image)) {
                 return url(static::$getSelfieImagePath . $image);
             }
@@ -90,6 +95,7 @@ class ImageHelper
     public static function getCategoryImage($image)
     {
         if ($image) {
+            ApiHelper::makeDir(static::$getCategoryImagePath, true);
             if (file_exists(static::$getCategoryImagePath . $image)) {
                 return url(static::$getCategoryImagePath . $image);
             }
@@ -105,6 +111,7 @@ class ImageHelper
     public static function getDriverDocumentImage($image)
     {
         if ($image) {
+            ApiHelper::makeDir(static::$getDriverDocumentImagePath, true);
             if (file_exists(static::$getDriverDocumentImagePath . $image)) {
                 return url(static::$getDriverDocumentImagePath . $image);
             }
@@ -135,6 +142,9 @@ class ImageHelper
     public static function getOfficeAssetsImage($image)
     {
         if ($image) {
+
+            ApiHelper::makeDir(static::$getOfficeAssetsImagePath, true);
+
             if (file_exists(static::$getOfficeAssetsImagePath . $image)) {
                 return url(static::$getOfficeAssetsImagePath . $image);
             }

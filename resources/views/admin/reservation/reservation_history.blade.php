@@ -18,7 +18,6 @@
 			</div>
 		</div><!--END header-->
 
-		<!--my tenders-->
 		<div class="custom-data-table">
 				<div class="data-table">
 					<div class="heading-search">
@@ -61,7 +60,7 @@
 						</div>
 					</div>
 				</div>
-			</div><!--END my tenders-->
+			</div>
 	</div>
 </div>
 @endsection

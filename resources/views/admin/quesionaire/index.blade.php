@@ -3,23 +3,22 @@
 <div class="main-body">
 	<div class="inner-body">
 		<!--header-->
-		<div class="header">
-			<div class="row">
-				<div class="col-md-6 col-sm-6 col-xs-6">
-					<div class="title">
-						<h2>Quesionaire List</h2>
-					</div>
-				</div>
 
+		<div class="header">
+					<div class="title">
+			<div class="row align-items-center">
+				<div class="col-md-6 col-sm-6 col-xs-6">
+						<h2>Quesionaire List</h2>
+				</div>
 				<div class="col-md-6 col-sm-6 col-xs-12">
 					<div class="btns">
 						<a href="#" class="add-asset btn btn-info"  data-toggle="modal" data-target="#add_quesionaire"><i class="fas fa-plus"></i></a>
 					</div>
+					</div>
 				</div>
-
 			</div>
 		</div><!--END header-->
-		<!--my tenders-->
+
 		<div class="custom-data-table">
 			<div class="data-table">
 
@@ -44,7 +43,7 @@
 			</div>
 		</div>
 	</div>
-		</div><!--END my tenders-->
+		</div>
 	</div>
 </div>
 

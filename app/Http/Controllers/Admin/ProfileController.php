@@ -354,6 +354,12 @@ class ProfileController extends Controller
         //
     }
 
+    /**
+     * [remove_user_image description]
+     * @param  Request $user_id [description]
+     * @param  [type]        [description]
+     * @return [type]           [description]
+     */
     public function remove_user_image($user_id)
     {
         $user = User::find($user_id);
@@ -366,6 +372,12 @@ class ProfileController extends Controller
         }
     }
 
+    /**
+     * [remove_logo_image description]
+     * @param  Request $user_id [description]
+     * @param  [type]        [description]
+     * @return [type]           [description]
+     */
     public function remove_logo_image($user_id)
     {
         $user = User::find($user_id);
@@ -377,6 +389,13 @@ class ProfileController extends Controller
             return false;
         }
     }
+
+    /**
+     * [update_env for timezone description]
+     * @param  Request $variable [description]
+     * @param  [type]$value   [description]
+     * @return [type]           [description]
+     */
 
     public function update_env($variable, $value)
     {
@@ -393,6 +412,13 @@ class ProfileController extends Controller
         Artisan::call('config:cache');
         return true;
     }
+
+    /**
+     * [setEnvironmentValue for timezone description]
+     * @param  Request $values [description]
+     * @param  [type]    [description]
+     * @return [type]           [description]
+     */
 
     public function setEnvironmentValue(array $values)
     {
@@ -425,5 +451,41 @@ class ProfileController extends Controller
 
         return true;
 
+    }
+
+    /**
+     * [UpdateNotificationReminder for notification for whatsapp subscription description]
+     * @param  Request $values [description]
+     * @param  [type]    [description]
+     * @return [type]           [description]
+     */
+    public function UpdateNotificationReminder(Request $request)
+    {
+        $user_id = Auth::id();
+        $inputs = $request->all();
+
+        $rules = [];
+        if (isset($inputs['reminder']) && $inputs['reminder'] = '') {
+            $rules['repeat_value'] = 'required';
+        }
+
+        $this->validate($request, $rules);
+
+        $User = User::find($user_id);
+        if (isset($inputs['reminder'])) {
+
+            $User->reminder = isset($inputs['reminder']) ? 1 : 0;
+            $User->repeat_value = $inputs['repeat_value'];
+        } else {
+            $User->reminder = 0;
+            $User->repeat_value = '';
+        }
+
+        if ($User->update()) {
+            return back()->with('success', 'Notification Reminder successfully');
+        } else {
+            return back()->with('success', 'Notification Reminder failed,please try again');
+
+        }
     }
 }

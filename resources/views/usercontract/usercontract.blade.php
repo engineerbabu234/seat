@@ -36,7 +36,7 @@
                                                 <th><span class="iconWrap iconSize_32" title="Restrict Seat" data-content="Restrict Seat"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/restrict-seat.png" class="icon bl-icon" width="30" ></span> </th>
                                                 <th><span class="iconWrap iconSize_32" title="Contract Description"  data-content="Contract Description"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/description.png" class="icon bl-icon" width="30" ></span> </th>
                                                 <th><span class="iconWrap iconSize_32" title="Update Date" data-content="Update Date"   data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/order_date.png" class="icon bl-icon" width="30" ></span> </th>
-                                                <th nowrap><span class="iconWrap iconSize_32" title="Action" data-content="Action"   data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/action.png" class="icon bl-icon" width="30" ></span> </th>
+                                                <th nowrap><span class="iconWrap iconSize_32" title="Action" data-content="Action"   data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/status.png" class="icon bl-icon" width="30" ></span> </th>
                                             </tr>
                                         </thead>
                                         <tbody >
@@ -68,7 +68,7 @@
                                 <select class="form-control  " id="document_id" name="document_id">
                                     <option value="">-- Select Documents --</option>
                                     @foreach ($Contract as $qkey => $qvalue)
-                                  <option value="{{ $qvalue->id }}">{{ $qvalue->contract_title }}  </option>
+                                  <option value="{{ $qvalue->contract_document_id }}">{{ $qvalue->contract_title }}  </option>
                                   @endforeach
                                 </select>
                                 <span class="error  " id="document_id_error">
@@ -123,7 +123,13 @@
                 { data: 'updated_at', name: 'updated_at' },
                 { data: 'id', name: 'id' ,
                     render: function (data, type, column, meta) {
-                        return ' ';
+
+                        if(column.is_expire==0){
+                            return '<label class="  text-success available">Available</label>';
+
+                        }else if(column.is_expire==1){
+                            return '<label class="  text-danger expire">Expired</label>';
+                        }
                     }
                 }
             ]
@@ -150,15 +156,9 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             error: function(response) {
-                if (response.status == 400) {
-                     if(response.responseJSON.errors){
-                        $.each(response.responseJSON.errors, function(k, v) {
-
-                            $('#' + k + '_error').text(v);
-                            $('#' + k + '_error').addClass('text-danger');
-                        });
-                    }
-
+                 hidePageSpinner();
+                if (response.success == 'false') {
+                     error_alert(response.message);
                 }
             },
             success: function(response) {
@@ -167,9 +167,14 @@
                     $("#add-contract-form").trigger('reset');
                     var redrawtable = jQuery('#laravel_datatable').dataTable();
                     redrawtable.fnDraw();
-                    hidePageSpinner();
                     swal("Success!", response.message, "success");
                 }
+
+                if (response.status == false) {
+                       swal("Error!", response.message, "error");
+                       $('#user_contract').modal('hide');
+                }
+                hidePageSpinner();
             },
         });
     });

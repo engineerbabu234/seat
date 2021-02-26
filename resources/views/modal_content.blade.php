@@ -95,6 +95,6 @@
 
 @if($modal_type == 'contract_failed')
 <h4 class="card-title">Booking Failed</h4>
- <p class="card-text  "> Failed to book a seat as one or more contract attached to this seat have not signed </p>
+ <p class="card-text  "> Failed to book a seat as one or more contract attached to this seat have not signed or expired </p>
  <h6 class="card-sub-title">What's next?</h6><p class="card-text"> Please visit your <a class="label label-info" href="{{ url('contracts') }}">Contract list</a> to resolve  </p>
 @endif

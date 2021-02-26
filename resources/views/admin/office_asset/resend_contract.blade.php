@@ -22,7 +22,7 @@
                 <div class="col-sm-6">
                 	<h5>Select Contract</h5>
 					<select class="form-control" name="document_id" id="document_id" required>
-					@if($contract->isEmpty())
+					@if($contract == '')
 						<option value="">Record Not Found</option>
 					@else
 						<option value="">-- Select Contract Template --</option>

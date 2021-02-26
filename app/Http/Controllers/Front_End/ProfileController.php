@@ -2,13 +2,17 @@
 
 namespace App\Http\Controllers\Front_End;
 
+use App\Helpers\ApiHelper;
 use App\Helpers\ImageHelper;
 use App\Http\Controllers\Controller;
+use App\Mail\NotifyMail;
 use App\Models\User;
 use Auth;
 use Hash;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Validator;
 
 class ProfileController extends Controller
 {
@@ -66,21 +70,13 @@ class ProfileController extends Controller
             if ($data['user']) {
                 $data['user']->profile_image = ImageHelper::getProfileImage($data['user']->profile_image);
             }
-            return view('profile', compact('data'));
+
+            $phone_prefix_list = ApiHelper::get_country_phone_prefix();
+
+            return view('profile', compact('data', 'phone_prefix_list'));
         } catch (\Exception $e) {
             return redirect()->route('500');
         }
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
     }
 
     /**
@@ -236,17 +232,6 @@ class ProfileController extends Controller
         return view('admin.profile.update_password');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
-
     public function remove_user_image($user_id)
     {
         $user = User::find($user_id);
@@ -258,4 +243,134 @@ class ProfileController extends Controller
             return false;
         }
     }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update_mobile_number(Request $request)
+    {
+        $user_id = Auth::id();
+        $input = $request->all();
+
+        $rules = [
+            'phone_prefix' => 'required',
+            'phone_number' => 'required|min:10|max:10',
+        ];
+        $messages = [];
+
+        $validator = Validator::make($request->all(), $rules, $messages);
+
+        if ($validator->fails()) {
+            $response = [
+                'success' => false,
+                'errors' => $validator->errors()->toArray(),
+            ];
+            return response()->json($response, 400);
+        }
+
+        $user = User::find($user_id);
+        $prestatus = $user->whatsapp_subscription_status;
+        if (isset($input['whatsapp_subscription_status'])) {
+            $whatsapp_subscription_status = $input['whatsapp_subscription_status'];
+
+            if ($whatsapp_subscription_status == 0 && $prestatus == 1) {
+                $user->whatsapp_subscription_status = 0;
+            } else {
+
+                $user->whatsapp_subscription_status = $whatsapp_subscription_status;
+            }
+
+            if ($user->whatsapp_subscription_id == '') {
+                try {
+                    $revalue = $this->sendWhatsAppMessage(" +14155238886 ", $input['phone_prefix'] . $input['phone_number']);
+
+                } catch (RequestException $th) {
+                    $response = json_decode($th->getResponse()->getBody());
+                    $response = [
+                        'success' => false,
+                        'message' => 'Cant Connect with whatsappPlease contact admin',
+                    ];
+                    return response()->json($response, 400);
+                }
+            }
+        }
+        $user->phone_prefix = $input['phone_prefix'];
+        $user->phone_number = $input['phone_number'];
+
+        if ($user->update()) {
+            if ($user->whatsapp_subscription_status == 1) {
+
+                $modal_type = "seat_request_success";
+                $title = "Whatsapp subscription";
+                $message = "Please check your mail for whatsapp subscription For Notification";
+                $what_is_next = "Nothing, You Have to join Whatsapp Subscription";
+
+                $response = [
+                    'success' => true,
+                    'html' => view('modal_content', compact('modal_type', 'title', 'message', 'what_is_next'))->render(),
+                ];
+
+            } else if ($user->whatsapp_subscription_status == 0) {
+                $modal_type = "seat_request_success";
+                $title = "Mobile Number Save";
+                $message = "Please check your mail for how to unsubscription whatsapp Notification";
+                $what_is_next = "Nothing, You Have to stop Whatsapp notification";
+
+                $response = [
+                    'success' => true,
+                    'html' => view('modal_content', compact('modal_type', 'title', 'message', 'what_is_next'))->render(),
+                ];
+            }
+            return response()->json($response, 200);
+        } else {
+            $response = [
+                'success' => false,
+                'message' => 'Your profile updated failed,please try again',
+            ];
+            return response()->json($response, 400);
+
+        }
+    }
+
+    /**
+     * Sends a WhatsApp message  to user using
+     * @param string $message Body of sms
+     * @param string $recipient Number of recipient
+     */
+    public function sendWhatsAppMessage(string $message, string $recipient)
+    {
+
+        $user_id = Auth::id();
+        $userinfo = User::find($user_id);
+
+        $user_email = $userinfo->email;
+
+        $Admin = User::where('role', '1')->first();
+        $logo_url = ImageHelper::getProfileImage($Admin->logo_image);
+
+        $userMailData = array(
+            'name' => $userinfo->user_name,
+            'email' => $user_email,
+            'user_name' => $userinfo->user_name,
+            'form_name' => 'Support@gmail.com',
+            'schedule_name' => 'weBOOK',
+            'template' => 'whatsapp_signup',
+            'subject' => 'Subscribe Whatsapp Notification',
+
+            'message' => $message,
+            'base_url' => url('/login'),
+            'logo_url' => $logo_url,
+        );
+        if (!empty($userMailData) && !empty($user_email && !is_null($user_email))) {
+            Mail::to($user_email)->send(new NotifyMail($userMailData));
+        } else {
+            return back()->with('error', 'please try again');
+        }
+
+    }
+
 }

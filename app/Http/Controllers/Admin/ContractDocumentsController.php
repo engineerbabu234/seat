@@ -46,8 +46,8 @@ class ContractDocumentsController extends Controller
                 $total = $ContractDocuments->get();
             }
 
-            if ($request->has('iDisplayStart') && $request->get('iDisplayLength') != '-1') {
-                $ContractDocuments = $ContractDocuments->take($request->get('iDisplayLength'))->skip($request->get('iDisplayStart'));
+            if ($request->has('start') && $request->get('length') != '-1') {
+                $ContractDocuments = $ContractDocuments->take($request->get('length'))->skip($request->get('start'));
             }
 
             if ($request->has('iSortCol_0')) {
@@ -192,7 +192,7 @@ class ContractDocumentsController extends Controller
     {
 
         $office_assets = OfficeAsset::find($id);
-        $columns = ['contract_documents.id', 'contract_templates.contract_document_id', 'contract_documents.document_title', 'contract_documents.document_name', 'contract_documents.document_description'];
+        $columns = ['contract_documents.id', 'contract_templates.contract_title', 'contract_templates.contract_document_id', 'contract_documents.document_title', 'contract_documents.document_name', 'contract_documents.document_description'];
 
         $documents = ContractDocuments::select($columns)->leftJoin("contract_templates", "contract_templates.contract_document_id", "contract_documents.id")->whereNotNull('api_connection_id')->where("contract_templates.contract_restrict_seat", 1)->get();
 

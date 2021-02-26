@@ -30,6 +30,12 @@ $('.conference_management').hide();
             render: function(data, type, column, meta) {
                 return '<a href="#" data-id="' + column.id + '" class="button accept get_office_assets">' + column.total_seats + '</a>';
         }
+        },{
+            data: 'id',
+            name: 'id',
+            render: function(data, type, column, meta) {
+                return '<a href="#" data-id="' + column.id + '" class="button  accept view_document">' + column.total_documents + '</a>';
+            }
         }, { 
             data: 'id',
             name: 'id',
@@ -39,12 +45,6 @@ $('.conference_management').hide();
                 }else{
                         return '<a href="#" data-id="' + column.id + '" class="button accept question_logic_modal">0</a>';
                         }
-            }
-        },{
-            data: 'id',
-            name: 'id',
-            render: function(data, type, column, meta) {
-                return '<a href="#" data-id="' + column.id + '" class="button  accept get_documents">' + column.total_documents + '</a>';
             }
         }, {   data: 'asset_type',
             name: 'asset_type'
@@ -56,6 +56,12 @@ $('.conference_management').hide();
             name: 'building_id',
             render: function(data, type, column, meta) {
                 return '<a href="#" data-id="' + column.id + '" class="button btn-wh edit_office_assets_request"  title="Edit" ><img src="'+base_url+'/admin_assets/images/edit.png" class="white-img"></a>' + '<button class="button btn-wh btn-delete" data-url="' + base_url + '/admin/office/asset/delete/' + column.id + '" title="Delete"><img src="'+base_url+'/admin_assets/images/delete.png"  class="white-img"></button>';
+            }
+        }, {
+            data: 'id',
+            name: 'id',
+            render: function(data, type, column, meta) {
+                return '<a href="#" data-id="' + column.id + '" class="button btn-wh contract_template"  data-content="Contract Template"  title="Contract Template"  data-trigger="hover" data-placement="left" ><img src="'+base_url+'/admin_assets/images/mail.png" class="white-img"></a>';
             }
         }]
     });
@@ -868,4 +874,65 @@ $(document).on("change", "#asset_type", function(e) {
 
 $(document).on('click' , '.set_canvas_scale',function(event) { 
     //$(this).attr('disabled',true);
+});
+
+$('#contract_template_pophover').hide();  
+$('#contract_template').popover({ 
+    content:  $('#contract_template_pophover').html(),  
+    placement: 'left',
+    html: true,
+    trigger: 'hover'
+});
+
+
+$(document).on("click", ".contract_template", function(e) {
+    e.preventDefault();
+    var id = $(this).data('id');
+    
+    var data = jQuery(this).parents('form:first').serialize(); 
+    var aurls = base_url + "/admin/office/asset/view_contract_template/"+id;
+    jQuery.ajax({
+        url: aurls,
+        type: 'post',
+        dataType: 'json',
+        data: data,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+       
+        success: function(response) {
+            if (response.success) { 
+                $('#contract_tempalte_info').html(response.html); 
+                $('#contract_template_modal').modal('show');
+            }
+        },
+        
+    });
+});
+
+$(document).on("click", ".send_contract_template", function(e) {
+    e.preventDefault();
+     showPageSpinner();    
+    var data = jQuery(this).parents('form:first').serialize(); 
+    var aurls = base_url + "/admin/office/asset/send_contract_signature_request/";
+    jQuery.ajax({
+        url: aurls,
+        type: 'post',
+        dataType: 'json',
+        data: data,
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }, 
+        error: function(response) {
+             hidePageSpinner();
+        },
+        success: function(response) {
+            if (response.success) { 
+                 hidePageSpinner();
+               success_alert(response.message);  
+               $('#contract_template_modal').modal('hide');    
+            }   
+        },
+        
+    });
 });

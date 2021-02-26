@@ -13,7 +13,7 @@
 
 			</div>
 		</div><!--END header-->
-		<!--my tenders-->
+
 		<div class="custom-data-table">
 			<div class="data-table">
 				<div class="heading-search">

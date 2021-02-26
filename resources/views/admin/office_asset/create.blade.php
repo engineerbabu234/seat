@@ -22,7 +22,6 @@ use Illuminate\Support\Facades\Session;
 				</div>
 			</div><!--END header-->
 
-			<!--my tenders-->
 			<form action="{{url('admin/office/store')}}" method="post" id="add-office-form">
 					@csrf
 				<div class="add-office">
@@ -111,7 +110,7 @@ use Illuminate\Support\Facades\Session;
 						<button class="add-office-btn"> Add Office</button>
 					</div>
 
-				</div><!--END my tenders-->
+				</div>
 		    </form>
 		</div>
 	</div>

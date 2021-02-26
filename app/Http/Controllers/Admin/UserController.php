@@ -211,4 +211,39 @@ class UserController extends Controller
             return ['status' => 'failed', 'message' => 'Status updated failed'];
         }
     }
+
+    public function send_whatsapp_subscription_notification()
+    {
+
+        $users = User::where('whatsapp_subscription_status', 0)->whereIn('role', ['2', '3'])->whereNotNull('phone_number')->get();
+        if ($users) {
+            foreach ($users as $key => $value) {
+                $this->sendemail($value->email, $value->user_name);
+            }
+        }
+    }
+
+    public function sendemail($user_email, $username)
+    {
+        $Admin = User::where('role', '1')->first();
+        $logo_url = ImageHelper::getProfileImage($Admin->logo_image);
+
+        $userMailData = array(
+            'name' => $username,
+            'email' => $user_email,
+            'user_name' => $username,
+            'form_name' => 'Support@gmail.com',
+            'schedule_name' => 'weBOOK',
+            'template' => 'whatsapp_signup',
+            'subject' => 'Subscribe Whatsapp Notification ',
+            'message' => " +14155238886 ",
+            'base_url' => url('/login'),
+            'logo_url' => $logo_url,
+        );
+        if (!empty($userMailData) && !empty($user_email && !is_null($user_email))) {
+            Mail::to($user_email)->send(new NotifyMail($userMailData));
+        } else {
+            return false;
+        }
+    }
 }

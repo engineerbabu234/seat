@@ -46,8 +46,8 @@ class QuestionsController extends Controller
                 $total = $Question->get();
             }
 
-            if ($request->has('iDisplayStart') && $request->get('iDisplayLength') != '-1') {
-                $Question = $Question->take($request->get('iDisplayLength'))->skip($request->get('iDisplayStart'));
+            if ($request->has('start') && $request->get('length') != '-1') {
+                $Question = $Question->take($request->get('length'))->skip($request->get('start'));
             }
 
             if ($request->has('iSortCol_0')) {

@@ -39,7 +39,7 @@ return [
     |
      */
 
-    'debug' => env('APP_DEBUG', false),
+    'debug' => (bool) env('APP_DEBUG', false),
 
     /*
     |--------------------------------------------------------------------------
@@ -67,8 +67,7 @@ return [
     |
      */
 
-    //'timezone' => 'UTC',
-    'timezone' => env('APP_TIMEZONE') ? env('APP_TIMEZONE') : 'Europe/Dublin',
+    'timezone' => 'UTC',
 
     /*
     |--------------------------------------------------------------------------
@@ -175,9 +174,10 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        //====Added By Ganesh
+
         Yajra\Datatables\DatatablesServiceProvider::class,
         Srmklive\PayPal\Providers\PayPalServiceProvider::class,
+        LaravelDocusign\DocusignServiceProvider::class,
 
     ],
 
@@ -211,6 +211,7 @@ return [
         'File' => Illuminate\Support\Facades\File::class,
         'Gate' => Illuminate\Support\Facades\Gate::class,
         'Hash' => Illuminate\Support\Facades\Hash::class,
+        'Http' => Illuminate\Support\Facades\Http::class,
         'Lang' => Illuminate\Support\Facades\Lang::class,
         'Log' => Illuminate\Support\Facades\Log::class,
         'Mail' => Illuminate\Support\Facades\Mail::class,
@@ -229,10 +230,10 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        //==========Added by Ganesh========
+
         'Datatables' => Yajra\Datatables\Facades\Datatables::class,
         'PayPal' => Srmklive\PayPal\Facades\PayPal::class,
-
+        'DocuSign' => LaravelDocusign\Facades\DocuSign::class,
     ],
 
 ];

@@ -2,23 +2,24 @@
 @section('content')
 <div class="main-body">
 	<div class="inner-body">
-		<!--header-->
-		<div class="header">
-			<div class="row">
-				<div class="col-md-6 col-sm-6 col-xs-6">
-					<div class="title">
-						<h2>Contract Templates List</h2>
-					</div>
-				</div>
-				<div class="col-md-6 col-sm-6 col-xs-12">
-					<div class="btns">
-						<a href="#" class="add-asset btn btn-info"  data-toggle="modal" data-target="#add_contracttemplates"><i class="fas fa-plus"></i></a>
 
+			<!--header-->
+			<div class="header">
+						<div class="title">
+				<div class="row align-items-center">
+					<div class="col-md-6 col-sm-6 col-xs-6">
+							<h2>Contract Templates List</h2>
+					</div>
+					<div class="col-md-6 col-sm-6 col-xs-12">
+						<div class="btns">
+							<a href="#" class="add-asset btn btn-info"  data-toggle="modal" data-target="#add_contracttemplates"><i class="fas fa-plus"></i></a>
+						</div>
+						</div>
 					</div>
 				</div>
 			</div>
-		</div><!--END header-->
-		<!--my tenders-->
+			<!--END header-->
+
 		<div class="custom-data-table">
 			<div class="data-table">
 
@@ -33,6 +34,7 @@
 							<th><span class="iconWrap iconSize_32" title="Contract Title" data-content="Contract Title"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/Name.png" class="icon bl-icon" width="30" ></span>  </th>
 							<th><span class="iconWrap iconSize_32" title="Restrict Seat" data-content="Restrict Seat"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/restrict-seat.png" class="icon bl-icon" width="30" ></span> </th>
 							<th><span class="iconWrap iconSize_32" title="Contract Description"  data-content="Contract Description"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/description.png" class="icon bl-icon" width="30" ></span> </th>
+							<th><span class="iconWrap iconSize_32" title="Expire Contract After"  data-trigger="hover" data-content="Expire Contract After" data-placement="left"><img src="{{asset('admin_assets')}}/images/expire_after.png" class="icon bl-icon" width="25" ></span> </th>
 							<th><span class="iconWrap iconSize_32" title="Update Date" data-content="Update Date"   data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/order_date.png" class="icon bl-icon" width="30" ></span> </th>
 							<th nowrap><span class="iconWrap iconSize_32" title="Action" data-content="Action"   data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/action.png" class="icon bl-icon" width="30" ></span> </th>
 						</tr>
@@ -43,7 +45,7 @@
 			</div>
 		</div>
 	</div>
-		</div><!--END my tenders-->
+		</div>
 	</div>
 </div>
 
@@ -111,7 +113,46 @@
 							</div>
 						</div>
 
-						<div class="col-sm-12">
+						<div class="col-sm-6">
+							<div class="form-group">
+								<h6 class="sub-title"><span class="iconWrap iconSize_32" title="Expire After" data-content="Expire After" data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/expire_after.png" class="icon bl-icon" width="30" ></span> <span class="text-danger">*</span></h6>
+								<div class="row">
+									<div class="col-sm-6">
+											<select class="form-control" name="expired_value" id="expired_value">
+												 <optgroup id="option_day" label="days">
+							        		 		 @for ($i = 1; $i <= 31; $i++)
+								            		<option value="{{ 'Day_'.$i }}">{{ $i }}</option>
+								            		@endfor
+							            	     </optgroup>
+							            	      <optgroup id="option_month" label="Month">
+							        		 		   @for ($i = 1; $i <= 12; $i++)
+								            		<option value="{{ 'Month_'.$i }}">{{ $i }}</option>
+								            		@endfor
+							            	     </optgroup>
+							            	      <optgroup id="option_week" label="Week">
+							        		 		 @for ($i = 1; $i <= 52; $i++)
+								            		<option value="{{ 'Week_'.$i }}">{{ $i }}</option>
+								            		@endfor
+							            	     </optgroup>
+							    		</select>
+
+
+									</div>
+									<div class="col-sm-6">
+										<select class="form-control" name="expired_option" id="expired_option">
+									        <option value="day">Day(s)</option>
+									       <!--  <option  value="month">Month(s)</option>
+									        <option value="week">Week(s)</option> -->
+									    </select>
+									</div>
+								</div>
+
+
+								 <span class="error" id="expired_option_error"></span>
+							</div>
+						</div>
+
+						<div class="col-sm-6">
 							<div class="form-group">
 								<h6 class="sub-title"><span class="iconWrap iconSize_32" data-content="Contract Description" title="Contract Description"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/description.png" class="icon bl-icon" width="30" ></span>  </h6>
 								 <textarea class="form-control" name="contract_description" id="contract_description" placeholder="Contract Description"></textarea>
@@ -237,15 +278,16 @@
 			columns: [
 				{ data: 'number_key', name: 'number_key' },
 				{ data: 'contract_provider', name: 'contract_provider' },
-				{ data: 'document_title', name: 'document_title' },
 				{ data: 'contract_title', name: 'contract_title' },
+				{ data: 'document_title', name: 'document_title' },
 				{ data: 'contract_restrict_seat', name: 'contract_restrict_seat' },
 				{ data: 'contract_description', name: 'contract_description'},
+				 { data: 'expired_option', name: 'expired_option' },
 				{ data: 'updated_at', name: 'updated_at' },
 				{ data: 'id', name: 'id' ,
 					render: function (data, type, column, meta) {
 						return '<a  href="#" data-id="'+column.id+'" class="button btn-wh   edit_contracttemplates_request"><img src="'+base_url+'/admin_assets/images/edit.png" title="edit" class="white-img"></a>'+
-	 					'<button class="button btn-wh   btn-delete" data-url="'+base_url+'/admin/contracttemplates/delete/'+column.id+'"><img src="'+base_url+'/admin_assets/images/delete.png" title="delete" class="white-img"></button>';
+	 					'<button class="button btn-wh   btn-delete" data-url="'+base_url+'/admin/contract_templates/delete/'+column.id+'"><img src="'+base_url+'/admin_assets/images/delete.png" title="delete" class="white-img"></button>';
 					}
 				}
 			]
@@ -260,7 +302,7 @@
 	 	  var url = $(this).attr('data-url');
   	 	 swal({
 		  title: "Are you sure?",
-		  text: "Are you sure you want to delete office and related office assets?",
+		  text: "Are you sure you want to delete Contract Templates?",
 		  icon: "warning",
 		  buttons: true,
 		  dangerMode: true,
@@ -402,6 +444,18 @@ $(document).on("click", ".edit_contracttemplates_request", function(e) {
 					var contract_id = $('.edit_contract_id option:selected').val();
 					if(contract_id){
 						$('.api_connection_id').val(contract_id);
+						$('.upload_document').show();
+					} else{
+						$('.upload_document').hide();
+					}
+
+				});
+
+				$('.edit_contract_id').on('change',function(event) {
+					event.preventDefault();
+					var contract_id = $(this).val();
+					get_document_list(contract_id);
+					if(contract_id ){
 						$('.upload_document').show();
 					} else{
 						$('.upload_document').hide();
@@ -580,6 +634,52 @@ $(document).on("click", ".test_apiconnections", function(e) {
 	});
 });
 
+$('#option_day').show();
+	$('#option_week').hide();
+	$('#option_month').hide();
+
+$(document).on('change',"#expired_option",function(){
+
+	 $(this).find('option').removeAttr("selected");
+	 $("#expired_value").find('option').removeAttr("selected");
+
+	var options = $(this).find("option:selected");
+
+	if(options.val() == 'month'){
+		$('#eoption_day').css('display', 'none');
+		$('#eoption_week').css('display', 'none');
+		$('#eoption_month').css('display', 'block');
+		$('#expired_option option[value=1]').attr('selected','selected');
+
+		$('#option_day').hide();
+		$('#option_week').hide();
+		$('#option_month').show();
+	}
+
+	if(options.val() == 'day'){
+		$('#eoption_day').css('display', 'block');
+		$('#eoption_week').css('display', 'none');
+		$('#eoption_month').css('display', 'none');
+		$('#expired_option option[value=1]').attr('selected','selected');
+
+		$('#option_day').show();
+		$('#option_week').hide();
+		$('#option_month').hide();
+	}
+
+	if(options.val() == 'week'){
+
+		$('#eoption_day').css('display', 'none');
+		$('#eoption_week').css('display', 'block');
+		$('#eoption_month').css('display', 'none');
+		$('#expired_option option[value=1]').attr('selected','selected');
+
+		$('#option_day').hide();
+		$('#option_week').show();
+		$('#option_month').hide();
+	}
+
+});
 
  </script>
 @endpush

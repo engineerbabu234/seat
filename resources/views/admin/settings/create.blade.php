@@ -42,7 +42,7 @@ use Illuminate\Support\Facades\Session;
 				</div>
 			</div><!--END header-->
 
-			<!--my tenders-->
+
 			<form method="POST" enctype="multipart/form-data" action="{{ url('admin/building/store') }}">
 				@csrf
 				<div class="add-office">
@@ -88,7 +88,7 @@ use Illuminate\Support\Facades\Session;
 						<button type="submit"> Add Bulding</button>
 					</div>
 
-				</div><!--END my tenders-->
+				</div>
 			</form>
 
 		</div>

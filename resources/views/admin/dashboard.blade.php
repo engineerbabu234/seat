@@ -14,7 +14,7 @@
 				</div>
 			</div><!--END header-->
 
-			<!--my tenders-->
+
 			<div class="setas-details">
 				<div class="inner-header">
 					<h2>All Buildings offices details</h2>
@@ -43,7 +43,7 @@
 						@endforeach
 					@endif
 				</div>
-			</div><!--END my tenders-->
+			</div>
 		</div>
 	</div>
 @endsection

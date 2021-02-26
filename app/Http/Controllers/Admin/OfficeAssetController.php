@@ -1209,7 +1209,12 @@ class OfficeAssetController extends Controller
         if ($office_assets) {
             $building = Building::find($office_assets->building_id);
             $office = Office::find($office_assets->office_id);
-            $contract = ContractDocuments::leftJoin("contract_templates", "contract_templates.contract_document_id", "contract_documents.id")->where('contract_templates.contract_restrict_seat', 1)->get();
+
+            $contract = '';
+            if ($office_assets->document_attech) {
+                $columns = ['contract_templates.contract_restrict_seat', 'contract_templates.contract_title', 'contract_documents.id', 'contract_documents.document_title', 'contract_documents.document_name'];
+                $contract = ContractDocuments::select($columns)->leftJoin("contract_templates", "contract_templates.contract_document_id", "contract_documents.id")->where('contract_templates.contract_restrict_seat', 1)->whereIn('contract_documents.id', json_decode($office_assets->document_attech))->whereNull('contract_templates.deleted_at')->get();
+            }
 
             $user_contract = UserContract::get();
 
@@ -1262,7 +1267,9 @@ class OfficeAssetController extends Controller
             $UserContract = UserContract::where('user_id', $inputs['user_id'])->where('document_id', $inputs['document_id'])->first();
 
             if ($UserContract) {
-                //$resend_envolop = $this->resend_request($inputs['document_id'], $UserContract->envolop_id);
+
+                $resend_envolop = $this->resend_request($inputs['document_id'], $UserContract->envolop_id);
+
                 $response = [
                     'success' => true,
                     'message' => 'Contract already sent to user',
@@ -1303,7 +1310,8 @@ class OfficeAssetController extends Controller
 
         if ($document_id) {
 
-            $document = ContractDocuments::where('id', $document_id)->first();
+            $document = $this->get_document_info($document_id);
+
             $provider_name = ApiConnections::find($document->api_connection_id);
             if ($provider_name->api_provider == 1 and isset($provider_name->username) and $provider_name->username != '' && $provider_name->password != '' && $provider_name->integrator_key != '' && $provider_name->host != '') {
                 # Create the document model
@@ -1321,9 +1329,9 @@ class OfficeAssetController extends Controller
 
                 $users = User::find($user_id);
 
+                $email_subject = "Please Sign " . $document->document_title . " Document";
                 $envelope_definition = $docusign->envelopeDefinition([
-                    'status' => 'sent', 'template_id' => $document->template_id, 'email_subject' => 'Please Sign This Document',
-                ]);
+                    'status' => 'sent', 'template_id' => $document->template_id, 'email_subject' => $email_subject]);
 
                 $signer = $docusign->TemplateRole([
                     'email' => $users->email, 'name' => $users->user_name,
@@ -1332,9 +1340,20 @@ class OfficeAssetController extends Controller
 
                 $envelope_definition->setTemplateRoles([$signer]);
 
-                $results = $docusign->envelopes->createEnvelope($envelope_definition);
+                if ($document->expired_value) {
+                    $notification = new \DocuSign\eSign\Model\Notification();
+                    $notification->setUseAccountDefaults('false');
+                    $expirations = new \DocuSign\eSign\Model\Expirations();
+                    $expirations->setExpireEnabled('true');
+                    $expirations->setExpireAfter($document->expired_value);
+                    $expirations->setExpireWarn('0');
+                    $notification->setExpirations($expirations);
+                    $envelope_definition->setNotification($notification);
+                }
 
+                $results = $docusign->envelopes->createEnvelope($envelope_definition);
                 $envelope_id = $results->getEnvelopeId();
+
                 return $envelope_id;
             }
 
@@ -1349,7 +1368,8 @@ class OfficeAssetController extends Controller
 
         if ($document_id) {
 
-            $document = ContractDocuments::where('id', $document_id)->first();
+            $document = $this->get_document_info($document_id);
+
             $provider_name = ApiConnections::find($document->api_connection_id);
             if ($provider_name->api_provider == 1 and isset($provider_name->username) and $provider_name->username != '' && $provider_name->password != '' && $provider_name->integrator_key != '' && $provider_name->host != '') {
                 # Create the document model
@@ -1365,19 +1385,22 @@ class OfficeAssetController extends Controller
                     'host' => $host,
                 ]);
 
-                $envelope_definition = $docusign->envelopeDefinition([
-                    'status' => 'sent', 'template_id' => $document->template_id,
-                ]);
+                $envelope_info = $docusign->envelopes->getEnvelope($envelop_id);
 
-                $results = $docusign->envelopes->updateRecipients($envelop_id);
-
-                return $results;
+                return $envelope_info;
             }
 
         } else {
             return false;
         }
 
+    }
+
+    public function get_document_info($document_id)
+    {
+        $columns = ['contract_templates.contract_restrict_seat', 'contract_documents.template_id', 'contract_documents.api_connection_id', 'contract_templates.contract_title', 'contract_documents.id', 'contract_documents.document_title', 'contract_documents.document_name', 'contract_templates.expired_option', 'contract_templates.expired_value'];
+        $document = ContractDocuments::select($columns)->leftJoin("contract_templates", "contract_templates.contract_document_id", "contract_documents.id")->where('contract_templates.contract_restrict_seat', 1)->where('contract_documents.id', $document_id)->whereNull('contract_templates.deleted_at')->first();
+        return $document;
     }
 
 }

@@ -59,7 +59,50 @@
 							</div>
 						</div>
 
-						<div class="col-sm-12">
+						<div class="col-sm-6">
+							<div class="form-group">
+								<h6 class="sub-title"><span class="iconWrap iconSize_32" title="Expire After"  data-toggle="tooltip" data-placement="left"><img src="{{asset('admin_assets')}}/images/expire_after.png" class="icon bl-icon" width="30" ></span> <span class="text-danger">*</span></h6>
+								<div class="row">
+
+									<div class="col-sm-6">
+											<select class="form-control" name="expired_value" id="expired_value">
+
+												 <optgroup  id="eoption_day" @php if($contract_templates->expired_option ==  'Day'){ echo "style='display:block'"; } else { echo "style='display:none'";  } @endphp  id="option_day" label="days">
+
+							        		 		 @for ($i = 1; $i <= 31; $i++)
+								            		<option @if($contract_templates->expired_value == $i) {{'selected'}} @endif value="{{ 'Day_'.$i }}">{{ $i }}</option>
+								            		@endfor
+							            	     </optgroup>
+
+							            	      <optgroup  id="eoption_month" @php if($contract_templates->expired_option ==  'Month'){ echo "style='display:block'"; } else { echo "style='display:none'";  } @endphp    id="option_month" label="Month">
+							        		 		   @for ($i = 1; $i <= 12; $i++)
+								            		<option @if($contract_templates->expired_value == $i) {{'selected'}} @endif value="{{ 'Month_'.$i }}">{{ $i }}</option>
+								            		@endfor
+							            	     </optgroup>
+
+							            	      <optgroup id="eoption_week"  @php if($contract_templates->expired_option ==  'Week'){ echo "style='display:block'"; } else { echo "style='display:none'";  } @endphp  id="option_week" label="Week">
+							        		 		 @for ($i = 1; $i <= 52; $i++)
+								            		<option @if($contract_templates->expired_value == $i) {{'selected'}} @endif value="{{ 'Week_'.$i }}">{{ $i }}</option>
+								            		@endfor
+							            	     </optgroup>
+							            	     <span class="error" id="edit_expired_value_error"></span>
+
+							    		</select>
+									</div>
+
+									<div class="col-sm-6">
+										<select class="form-control" name="expired_option" id="expired_option">
+									        <option @if($contract_templates->expired_option ==  'Day') {{'selected'}} @endif  value="day">Day(s)</option>
+									      <!--   <option  @if($contract_templates->expired_option ==  'Month') {{'selected'}} @endif value="month">Month(s)</option>
+									        <option @if($contract_templates->expired_option ==  'Week') {{'selected'}} @endif value="week">Week(s)</option> -->
+									    </select>
+									</div>
+								</div>
+								 <span class="error" id="edit_expired_option_error"></span>
+							</div>
+						</div>
+
+						<div class="col-sm-6">
 							<div class="form-group">
 								<h6 class="sub-title"><span class="iconWrap iconSize_32" data-content="Contract Description" title="Contract Description"  data-trigger="hover" data-placement="left"><img src="{{asset('admin_assets')}}/images/description.png" class="icon bl-icon" width="30" ></span>  </h6>
 								 <textarea class="form-control" name="contract_description" id="contract_description" placeholder="Contract Description">{{ $contract_templates->contract_description}}</textarea>
